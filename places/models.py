@@ -1,46 +1,71 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# from places.models import City, Locale, Place, UserInfo
-
-
-class City(models.Model):
-    user = models.ForeignKey(User)
-    name = models.CharField(max_length=80)
-
-    def __str__(self):
-        return self.name
-
-
-class Locale(models.Model):
-    user = models.ForeignKey(User)
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=200, blank=True)
-    city = models.ForeignKey(City)
-
-    def __str__(self):
-        return '{}, {}'.format(self.name, self.city.name)
-
 
 class Place(models.Model):
     user = models.ForeignKey(User)
     name = models.CharField(max_length=100)
-    locale = models.ForeignKey(Locale)
+    locale = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
     outdoor = models.BooleanField(default=False, blank=True)
     dog_friendly = models.BooleanField(default=False, blank=True)
-
-    def __str__(self):
-        return '{} at the {} in {}'.format(self.name, self.locale.name, self.locale.city.name)
-
-
-class UserInfo(models.Model):
-    user = models.ForeignKey(User)
-    place = models.ForeignKey(Place)
     rating = models.IntegerField(default=0)
     want_to_go = models.BooleanField(default=False, blank=True)
     good_for = models.CharField(max_length=50, blank=True)
     comment = models.CharField(max_length=200, blank=True)
 
+    @classmethod
+    def from_csv(cls, text, delimiter=','):
+        # create a place from a csv string
+        # field order is:
+        #   0 - username     string
+        #   1 - place name   string
+        #   2 - locale       string
+        #   3 - city         string
+        #   4 - outdoor      0 or 1
+        #   5 - dog_friendly 0 or 1
+        #   6 - rating       0 if unset, 1-3 otherwise
+        #   7 - want_to_go   0 or 1
+        #   8 - good_for     string
+        #   9 - comment      string
+        #
+        self = cls()
+        fields = text.split(delimiter)
+        if len(fields) != 10:
+            print('ERROR: wrong number of fields in from_csv. got {} but should have 10'.format(len(fields)))
+            print(fields)
+            return None
+
+        self.user = User.objects.get(username=fields[0])
+        self.name = fields[1]
+        self.locale = fields[2]
+        self.city = fields[3]
+        self.outdoor = fields[4] == '1'
+        self.dog_fiendly = fields[5] == '1'
+        self.rating = fields[6]
+        self.want_to_go = fields[7] == '1'
+        self.good_for = fields[8]
+        self.comment = fields[9]
+        self.save()
+        return self
+
+    def __str__(self):
+        return '{} at the {} in {}'.format(self.name, self.locale, self.locale.city)
+
+    def __repr__(self):
+        s = 'Place('
+        s += 'user={},'.format(self.user.__repr__())
+        s += 'name="{}",'.format(self.name)
+        s += 'locale="{}",'.format(self.locale)
+        s += 'city="{}",'.format(self.city)
+        s += 'outdoor="{}",'.format(self.outdoor)
+        s += 'dog_friendly="{}",'.format(self.dog_friendly)
+        s += 'rating="{}",'.format(self.rating)
+        s += 'want_to_go="{}",'.format(self.want_to_go)
+        s += 'good_for="{}",'.format(self.good_for)
+        s += 'comment="{}",'.format(self.comment)
+        s += ')'
+        return s
 
 # class Artist(models.Model):
 #     name = models.CharField('Artist Name', max_length=100)

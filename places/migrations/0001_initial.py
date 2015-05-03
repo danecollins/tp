@@ -13,52 +13,18 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='City',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
-                ('name', models.CharField(max_length=80)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='Locale',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
-                ('name', models.CharField(max_length=50)),
-                ('description', models.CharField(max_length=200)),
-                ('city', models.ForeignKey(to='places.City')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
             name='Place',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
                 ('name', models.CharField(max_length=100)),
+                ('locale', models.CharField(max_length=100)),
+                ('city', models.CharField(max_length=100)),
                 ('outdoor', models.BooleanField(default=False)),
                 ('dog_friendly', models.BooleanField(default=False)),
-                ('locale', models.ForeignKey(to='places.Locale')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='UserInfo',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
-                ('rating', models.IntegerField()),
-                ('want_to_goo', models.BooleanField(default=False)),
-                ('good_for', models.CharField(max_length=50)),
-                ('comment', models.CharField(max_length=200)),
-                ('place', models.ForeignKey(to='places.Place')),
+                ('rating', models.IntegerField(default=0)),
+                ('want_to_go', models.BooleanField(default=False)),
+                ('good_for', models.CharField(blank=True, max_length=50)),
+                ('comment', models.CharField(blank=True, max_length=200)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={

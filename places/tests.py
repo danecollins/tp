@@ -53,18 +53,10 @@ def create_johnnys(user):
     return(p)
 
 
-campbell_restaurants = [
-    "Aqui Cal-Mex,Downtown,Campbell,1,1,2,0,Swirls,",
-    "Bellagio,Downtown,Campbell,0,0,1,0,,",
-    "Blue Line Pizza,Downtown,Campbell,1,1,2,0,,deep dish pizza",
-    "Buca di Beppo,Pruneyard,Campbell,0,0,1,0,big groups,"]
-
-
 def create_campbell():
+    user = get_user(1)
     for s in campbell_restaurants:
-        # restaurants defined without user so add username
-        s = username(1) + "," + s
-        Place.from_csv(s)
+        Place.from_csv(user, s)
 
 
 def create_some_places():
@@ -74,12 +66,15 @@ def create_some_places():
     create_engfer(2)
 
 
+campbell_restaurants = [
+    "Aqui Cal-Mex,Downtown,Campbell,1,1,2,0,Swirls,",
+    "Bellagio,Downtown,Campbell,0,0,1,0,,",
+    "Blue Line Pizza,Downtown,Campbell,1,1,2,0,,deep dish pizza",
+    "Buca di Beppo,Pruneyard,Campbell,0,0,1,0,big groups,"]
+
+
 def create_many_places():
     create_campbell()
-
-
-def user(n):
-    return User.objects.get(username=username(n))
 
 
 class TestUtility(TestCase):
@@ -89,9 +84,9 @@ class TestUtility(TestCase):
 
     def test_create_users(self):
         create_users()
-        u1 = user(1)
+        u1 = get_user(1)
         self.assertEqual(u1.username, username(1))
-        u2 = user(2)
+        u2 = get_user(2)
         self.assertEqual(u2.username, username(2))
 
 
@@ -119,7 +114,7 @@ class TestPlace(TestCase):
         self.assertEqual(len(outdoor), 2)
         self.assertEqual(outdoor[0].name, 'Engfer Pizza')
         self.assertEqual(outdoor[0].user.username, username(1))
-        u2 = Place.objects.filter(user=user(2))
+        u2 = Place.objects.filter(user=get_user(2))
         self.assertEqual(len(u2), 1)
 
     def test_create_many_places(self):

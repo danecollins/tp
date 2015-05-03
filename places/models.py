@@ -15,37 +15,36 @@ class Place(models.Model):
     comment = models.CharField(max_length=200, blank=True)
 
     @classmethod
-    def from_csv(cls, text, delimiter=','):
+    def from_csv(cls, user, text, delimiter=','):
         # create a place from a csv string
         # field order is:
-        #   0 - username     string
-        #   1 - place name   string
-        #   2 - locale       string
-        #   3 - city         string
-        #   4 - outdoor      0 or 1
-        #   5 - dog_friendly 0 or 1
-        #   6 - rating       0 if unset, 1-3 otherwise
-        #   7 - want_to_go   0 or 1
-        #   8 - good_for     string
-        #   9 - comment      string
+        #   0 - place name   string
+        #   1 - locale       string
+        #   2 - city         string
+        #   3 - outdoor      0 or 1
+        #   4 - dog_friendly 0 or 1
+        #   5 - rating       0 if unset, 1-3 otherwise
+        #   6 - want_to_go   0 or 1
+        #   7 - good_for     string
+        #   8 - comment      string
         #
         self = cls()
         fields = text.split(delimiter)
-        if len(fields) != 10:
-            print('ERROR: wrong number of fields in from_csv. got {} but should have 10'.format(len(fields)))
+        if len(fields) != 9:
+            print('ERROR: invalid fields in from_csv. got {} should be 9'.format(len(fields)))
             print(fields)
             return None
 
-        self.user = User.objects.get(username=fields[0])
-        self.name = fields[1]
-        self.locale = fields[2]
-        self.city = fields[3]
-        self.outdoor = fields[4] == '1'
-        self.dog_fiendly = fields[5] == '1'
-        self.rating = fields[6]
-        self.want_to_go = fields[7] == '1'
-        self.good_for = fields[8]
-        self.comment = fields[9]
+        self.user = user
+        self.name = fields[0]
+        self.locale = fields[1]
+        self.city = fields[2]
+        self.outdoor = fields[3] == '1'
+        self.dog_fiendly = fields[4] == '1'
+        self.rating = fields[5]
+        self.want_to_go = fields[6] == '1'
+        self.good_for = fields[7]
+        self.comment = fields[8]
         self.save()
         return self
 

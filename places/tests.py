@@ -3,7 +3,6 @@ from django.test import TestCase
 # Create your tests here.
 from places.models import Place
 from django.contrib.auth.models import User
-import pdb
 
 
 def username(n):
@@ -123,3 +122,8 @@ class TestPlace(TestCase):
         n = len(Place.objects.all())
         self.assertTrue(n > 3, msg='There are only {} places in db'.format(n))
 
+    def test_create_from_file(self):
+        create_users()
+        fn = '/Users/dane/src/tp/places/initial.txt'
+        Place.from_file(get_user(1), fn)
+        self.assertEqual(len(Place.objects.all()), 102)

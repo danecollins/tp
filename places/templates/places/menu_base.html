@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>{% block title %}default title in menu_base.html{% endblock %}</title>
+
+        {% load staticfiles %}
+
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <link rel="stylesheet"  href="{% static 'side-menu.css' %}" />
+
+        <style>
+        .custom-restricted-width {
+            /* To limit the menu width to the content of the menu: */
+            display: inline-block;
+            /* Or set the width explicitly: */
+            /* width: 10em; */
+        }
+        </style>
+    </head>
+
+    <body>
+        <div id="layout">
+            <div id="menu">
+            <div class="pure-menu custom-restricted-width">
+                <span class="pure-menu-heading">Places</span>
+
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Cities</a></li>
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Places</a></li>
+                    <li class="pure-menu-heading">Company</li>
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">About</a></li>
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Contact</a></li>
+                </ul>
+            </div>
+            </div>
+            <div id="main">
+              
+                <div class="header">
+                    {% block header %} {% endblock %}
+                </div>
+
+                <div class="content">
+                    {% block content %} {% endblock %}
+                </div>
+            </div>
+        </div>
+
+        <script src="{% static 'ui.js' %}"></script>
+
+    </body>
+</html>

@@ -7,12 +7,20 @@
 {% endblock %}
 
 {% block content %}
+{% load dict %}
     <div class='container'>
-        <ul>
+      <ul>
             {% for locale in llist %}
-                <li><a href='/places/city/{{ city }}/{{ locale }}'>{{ locale }}</a></li>
+              <li>{{ locale }}</li>
+              <ul>
+                {% for p in dict|sort_hash:locale %}
+                  <li><a href='/places/place/{{ p }}'>
+                      {{ p }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
             {% endfor %}
-        </ul>
+      </ul>
     </div>
 
 {% endblock %}

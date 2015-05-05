@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from places.models import Place
+from collections import defaultdict
 
 # Create your views here.
 
@@ -14,8 +15,13 @@ def city_list(request):
 
 
 def locale_list(request, city):
-    locales = sorted(set([x.locale for x in Place.objects.filter(city=city)]))
-    return render(request, 'places/locale_list.html', {'llist': locales,
+    places = Place.objects.filter(city=city)
+    by_locale = defaultdict(set)
+    for p in places:
+        by_locale[p.locale].add(p.name)
+
+    return render(request, 'places/locale_list.html', {'llist': sorted(by_locale.keys()),
+                                                       'dict': by_locale,
                                                        'city': city})
 
 
@@ -24,3 +30,9 @@ def place_list(request, city, locale):
     return render(request, 'places/place_list.html', {'plist': locales,
                                                       'city': city,
                                                       'locale': locale})
+
+
+def place_detail(request, place):
+    place = Place.objects.filter(name=place)
+    place = place[0]
+    return render(request, 'places/place_detail.html', {'p': place})

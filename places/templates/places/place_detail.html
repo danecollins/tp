@@ -1,0 +1,20 @@
+{% extends 'places/menu_base.html' %}
+
+{% block title %}TrackPlaces - Details{% endblock %}
+
+{% block header %}
+    <h3>{{ p.name }}</h3>
+{% endblock %}
+
+{% block content %}
+    <div class='container'>
+    	<ul>
+    		<li>Rating: {{ p.rating }}</li>
+    		<li>Outdoor Seating: {{ p.outdoor }}</li>
+    		<li>Dog Friendly: {{ p.dog_friendly }}</li>
+    		<li>Good For: {{ p.good_for }}</li>
+    		<li>Comment: {{ p.comment }}</li>
+    	</ul>
+    </div>
+
+{% endblock %}

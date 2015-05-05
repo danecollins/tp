@@ -6,4 +6,5 @@ urlpatterns = patterns('',
                        url(r'^city/$', views.city_list, name='city_list'),
                        url(r'^city/(?P<city>[\w|\W]+)/(?P<locale>[\w|\W]+)/$', views.place_list, name='place_list'),
                        url(r'^city/(?P<city>[\w|\W]+)/$', views.locale_list, name='locale_list'),
+                       url(r'^place/?(?P<place>[\w|\W]+)/$', views.place_detail, name='place_detail'),
                        )

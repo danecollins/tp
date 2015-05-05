@@ -1,0 +1,18 @@
+{% extends 'places/menu_base.html' %}
+
+{% block title %}TrackPlaces - Cities{% endblock %}
+
+{% block header %}
+    <h1>Locales for {{ city }}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class='container'>
+        <ul>
+            {% for locale in llist %}
+                <li><a href='/places/city/{{ city }}/{{ locale }}'>{{ locale }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}

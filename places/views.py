@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from places.models import Place
 from collections import defaultdict
-import sys
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -10,11 +10,13 @@ def index(request):
     return render(request, 'places/index.html')
 
 
+@login_required
 def city_list(request):
     cities = sorted(set([x.city for x in Place.objects.all()]))
     return render(request, 'places/city_list.html', {'clist': cities})
 
 
+@login_required
 def locale_list(request, city):
     places = Place.objects.filter(city=city)
     by_locale = defaultdict(set)
@@ -35,16 +37,21 @@ def locale_list(request, city):
 #                                                       'locale': locale})
 
 
+@login_required
 def place_detail(request, place_id):
     place = Place.objects.filter(id=place_id)
     place = place[0]
     return render(request, 'places/place_detail.html', {'p': place})
 
+
+@login_required
 def place_edit(request, place_id):
     place = Place.objects.get(id=place_id)
 
     return render(request, 'places/place_edit.html', {'p': place})
 
+
+@login_required
 def place_save(request, place_id):
     args = request.POST
     p = Place.objects.get(id=place_id)

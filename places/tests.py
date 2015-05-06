@@ -3,6 +3,7 @@ from django.test import TestCase
 # Create your tests here.
 from places.models import Place
 from django.contrib.auth.models import User
+import pdb
 
 
 def username(n):

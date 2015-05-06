@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import os
+import pdb
 
 
 class Place(models.Model):
@@ -53,7 +54,8 @@ class Place(models.Model):
     @classmethod
     def from_file(cls, user, fn):
         assert os.path.exists(fn)
-        with open(fn) as fp:
+        print(fn)
+        with open(fn, 'U') as fp:  # need 'U' for 2.7 compatibility
             fp.readline()  # skip header
             for line in fp.readlines():
                 cls.from_csv(user, line, delimiter='\t')

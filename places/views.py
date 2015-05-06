@@ -1,24 +1,29 @@
+from __future__ import print_function
 from django.shortcuts import render
 from places.models import Place
 from collections import defaultdict
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
-# Create your views here.
+import sys
 
 
 def index(request):
+    print('User is {}'.format(request.user), file=sys.stderr)
+    if request.user.username == 'admin':
+        logout(request)
     return render(request, 'places/index.html')
 
 
 @login_required
 def city_list(request):
-    cities = sorted(set([x.city for x in Place.objects.all()]))
+    cities = sorted(set([x.city for x in Place.objects.filter(user=request.user)]))
     return render(request, 'places/city_list.html', {'clist': cities})
 
 
 @login_required
 def locale_list(request, city):
-    places = Place.objects.filter(city=city)
+    places = Place.objects.filter(city=city, user=request.user)
     by_locale = defaultdict(set)
     id_by_name = {p.name: p.id for p in places}
     for p in places:

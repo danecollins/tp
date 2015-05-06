@@ -14,6 +14,7 @@ class Place(models.Model):
     want_to_go = models.BooleanField(default=False, blank=True)
     good_for = models.CharField(max_length=50, blank=True)
     comment = models.CharField(max_length=200, blank=True)
+    yelp = models.CharField(max_length=200, blank=True)
 
     @classmethod
     def from_csv(cls, user, text, delimiter=','):
@@ -72,6 +73,7 @@ class Place(models.Model):
         s += 'want_to_go="{}",'.format(self.want_to_go)
         s += 'good_for="{}",'.format(self.good_for)
         s += 'comment="{}",'.format(self.comment)
+        s += 'yelp="{}"'.format(self.yelp)
         s += ')'
         return s
 

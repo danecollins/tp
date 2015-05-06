@@ -1,0 +1,44 @@
+{% extends 'places/menu_base.html' %}
+
+{% block title %}TrackPlaces - Edit{% endblock %}
+
+{% block header %}
+    <h3>{{ p.name }}</h3>
+{% endblock %}
+
+{% block content %}
+
+    	<h3>Edit Restaurant Information</h3>
+        <form action="/places/save/{{ p.id }}/" method="post">
+        {% csrf_token %}
+    	<table>
+            <tr>
+                <td>City:</td><td><input type="text" name="city" value="{{ p.city }}"></td>
+            </tr>
+            <tr>
+                <td>Locale:</td><td><input type="text" name="locale" value="{{ p.locale }}"></td>
+            </tr>
+            <tr>
+                <td>Rating:</td><td><input type="text" name="rating" value={{ p.rating }}></td>
+            </tr>
+            <tr>
+                <td>Outdoor Seating:</td><td><input type="checkbox" name="outdoor" {% if p.outdoor %}checked{% endif %}></td>
+            </tr>
+            <tr>
+                <td>Dog Friendly:</td><td><input type="checkbox" name="dog_friendly" {% if p.dog_friendly %}checked{% endif %}></td>
+            </tr>
+            <tr>
+                <td>Good For:</td><td><input type="text" name="good_for" value="{{ p.good_for }}"></td>
+            </tr>
+            <tr>
+                <td>Yelp Link:</td><td><input type="text" name="yelp" value="{{ p.yelp }}" size="70"></td>
+            </tr>
+            <tr>
+                <td>Comment:</td><td><input type="text" name="comment" value="{{ p.comment }}" size="70"></td>
+            </tr>
+    	</table>
+        <input type="submit" value="Submit">
+        </form>
+    </div>
+
+{% endblock content %}

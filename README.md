@@ -7,10 +7,14 @@ Track Places Project
 * Allow you to share a place with a friend (with or without your metadata)
 
 ## Status
-* Just getting started
+* Can now view and edit places
 
 ## Todo
-1) Create model
+TODO: Add place form
+TODO: Add users
+TODO: User checks
+TODO: User login
+TODO: Push to heroku
 
 ## Details
 * Using sqlite for database for now

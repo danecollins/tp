@@ -33,20 +33,26 @@
                     <li class="pure-menu-heading">Company</li>
                     <li class="pure-menu-item"><a href="#" class="pure-menu-link">About</a></li>
                     <li class="pure-menu-item"><a href="#" class="pure-menu-link">Contact</a></li>
+                    <li class="pure-menu-item"><a href="http://purecss.io/" class="pure-menu-link">Pure</a></li>
                 </ul>
-            </div>
-            </div>
+            </div><!-- pure-menu -->
+            </div><!-- menu -->
             <div id="main">
               
                 <div class="header">
                     {% block header %} {% endblock %}
-                </div>
+                </div><!-- header -->
 
                 <div class="content">
                     {% block content %} {% endblock %}
-                </div>
-            </div>
-        </div>
+                </div><!-- content -->
+            </div><!-- main -->
+            <div class="pure-g">
+                <div class="pure-u-3-24"></div>
+                <div class="pure-u-20-24">{% block extra %} {% endblock %}</div>
+                <div class="pure-u-1-24"></div>
+            </div><!-- pure-g -->
+        </div><!-- layout -->
 
         <script src="{% static 'ui.js' %}"></script>
 

@@ -7,14 +7,29 @@
 {% endblock %}
 
 {% block content %}
-    <div class='container'>
+
+    	<h3>Restaurant Information</h3>
     	<ul>
+    		<li>City: <a href="/places/city/{{ p.city }}">{{ p.city }}</a></li>
+    		<li>Locale: {{ p.locale }}</li>
     		<li>Rating: {{ p.rating }}</li>
-    		<li>Outdoor Seating: {{ p.outdoor }}</li>
-    		<li>Dog Friendly: {{ p.dog_friendly }}</li>
+    		<li>Outdoor Seating: {% if p.outdoor %}Yes{% else %}No{% endif %}</li>
+    		<li>Dog Friendly: {% if p.dog_friendly %}Yes{% else %}No{% endif %}</li>
     		<li>Good For: {{ p.good_for }}</li>
     		<li>Comment: {{ p.comment }}</li>
     	</ul>
+    	<a class="pure-button pure-button-primary" href="/places/edit/{{ p.id }}">Edit Restaurant Information</a>
     </div>
+    <hr>
 
-{% endblock %}
+{% endblock content %}
+
+{% block extra %}
+    {% if p.yelp|length > 4 %}
+	    <object data={{ p.yelp }} width="1000" height="400">
+	      <embed src={{ p.yelp }} width="1000" height="400"> </embed>
+	      Error: Embedded data could not be displayed.
+	    </object>
+	    </div>
+    {% endif %}
+{% endblock extra %}

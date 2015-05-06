@@ -13,6 +13,7 @@
 /tmp
 *.swp
 *~
+*.pyc
 
 # Ignore derived files
 .project
@@ -21,4 +22,4 @@ bundler_stubs/
 .lock
 .py[cod]
 __pycache__/
-
+.pyc

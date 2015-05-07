@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import redirect, render_to_response, get_object_or_404
+from django.shortcuts import redirect, render,render_to_response, get_object_or_404
 from django.template import RequestContext
 
 from models import Post
@@ -27,6 +27,11 @@ def view_post(request, slug):
         comment.post = post
         comment.save()
         return redirect(request.path)
-    return render_to_response('blog/blog_post.html',
+    return render_to_response('blog/detail_view.html',
                               {'post': post, 'form': form},
                               context_instance=RequestContext(request))
+
+
+def archive(request):
+    posts = sorted(Post.objects.all(), key=lambda x: x.created_on, reverse=True)
+    return render(request, 'blog/archive.html', {'posts': posts})

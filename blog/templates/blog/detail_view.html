@@ -1,12 +1,19 @@
+{% extends "places/menu_base.html" %}
+
+{% block title %}Track Places Blog{% endblock title %}
+
+{% block header %}
+<h1>Track Places Blog</h1>
+{% endblock header %}
+
+{% block content %}
+
 <h2>{{ post.title }}</h2>
 
 <div >
     <p>
         {{ post.text|safe }}
     </p>
-    <span>
-        Written by {{ post.author }}  on {{ post.created_on }}
-    </span>
 </div>
 
 {% if post.comment_set.all %}
@@ -14,11 +21,11 @@
 <div class="comments">
     {% for comment in post.comment_set.all %}
         <span>
-            <a href="{{ comment.website }}">{{ comment.name }}</a> said on {{ comment.created_on }}
+            {{ comment.name }}</a> said on {{ comment.created_on }}
         </span>
-        <p>
-            {{ comment.text }}
-        </p>
+        <ul>
+            <li>{{ comment.text }}</li>
+        </ul>
     {% endfor %}
 </div>
 {% endif %}
@@ -34,3 +41,5 @@
     </table>
     <input type="submit" name="submit" value="Submit" />
 </form>
+
+{% endblock content %}

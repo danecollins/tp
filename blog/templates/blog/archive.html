@@ -1,0 +1,22 @@
+{% extends "places/menu_base.html" %}
+
+{% block content %}
+
+<h2>Post archives</h2>
+
+<div class="posts">
+  {% for post in posts %}
+    <table class="pure-table pure-table-bordered">
+	    <thead><tr>
+	      <th>{{ post.title }}</a></th>
+	      <th align="right">{{ post.created_on|date }}</th>
+	    </tr></thead>
+	    <tbody><tr>
+	      <td colspan=2>{{ post.text|safe }}</td>
+	    </tr></tbody>
+     </table>
+     <h4><a href="{% url 'blog:detail' post.slug %}">View and Add Comments</a></h4>
+  {% endfor %}
+</div>
+
+{% endblock content %}

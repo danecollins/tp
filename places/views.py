@@ -4,6 +4,7 @@ from places.models import Place
 from collections import defaultdict
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
 
 import sys
 
@@ -54,6 +55,38 @@ def place_edit(request, place_id):
     place = Place.objects.get(id=place_id)
 
     return render(request, 'places/place_edit.html', {'p': place})
+
+
+@login_required
+def place_add(request):
+    if request.method == 'GET':
+        return render(request, 'places/place_add.html')
+    else:
+        args = request.POST
+
+        p = Place()
+        p.name = args['name']
+        p.city = args['city']
+        p.locale = args['locale']
+        p.rating = int(args['rating'])
+        p.good_for = args['good_for']
+        p.comment = args['comment']
+        p.dog_friendly = 'dog_friendly' in args
+        p.outdoor = 'ourdoor' in args
+        p.user = request.user
+        p.save()
+
+        return place_detail(request, p.id)
+
+
+@login_required
+def place_share(request, place_id, username):
+    place = Place.objects.get(id=place_id)
+    user = User.objects.get(username=username)
+    place.id = None
+    place.user = user
+    place.save()
+    return place_detail(request, place_id)
 
 
 @login_required

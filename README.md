@@ -10,13 +10,11 @@ Track Places Project
 * Can now view and edit places
 
 ## Todo
-TODO: Add place form
-TODO: Add users
-TODO: User checks
-TODO: User login
+TODO: User registration form
 TODO: Add cancel button to edit form
 TODO: Figure out how to get db back from heroku
-TODO: Get rid of hr in login page
+TODO: Get rid of <hr> in login page
+TODO: Need a way to share a place, can do by url but no UI
 
 ## Details
 * Using sqlite for database for now

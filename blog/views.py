@@ -6,7 +6,11 @@ from models import Post
 from forms import PostForm, CommentForm
 
 
-@user_passes_test(lambda u: u.is_superuser)
+def can_post(user):
+    return user.is_superuser or user.username == 'dane'
+
+
+@user_passes_test(lambda u: can_post(u))
 def add_post(request):
     form = PostForm(request.POST or None)
     if form.is_valid():
@@ -34,4 +38,5 @@ def view_post(request, slug):
 
 def archive(request):
     posts = sorted(Post.objects.all(), key=lambda x: x.created_on, reverse=True)
-    return render(request, 'blog/archive.html', {'posts': posts})
+    return render(request, 'blog/archive.html', {'posts': posts,
+                                                 'show_add': can_post(request.user)})

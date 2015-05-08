@@ -1,10 +1,21 @@
-<h2>Hello {{ user.username }}</h2>
-<br />
-<h2>Add new post</h2>
+{% extends "places/menu_base.html" %}
+
+{% block title %}TP Blog{% endblock title %}
+
+{% block header %}
+<h3>Adding new blog post as user {{ user.username }}</h1>
+{% endblock header %}
+
+{% block content %}
+
+<form action="" method="POST">
+    {% csrf_token %}
 <form action="" method="POST">
     {% csrf_token %}
     <table>
-        {{ form.as_table }}
+        <tr><th><label for="id_title">Title:</label></th>  <td><input id="id_title" maxlength="100" size="81" name="title" type="text" /></td></tr>
+        <tr><th><label for="id_text">Text:</label></th>  <td><textarea cols="80" id="id_text" name="text" rows="10"></textarea></td></tr>
     </table>
-    <input type="submit" name="add" value="Add" />
+    <input type="submit" name="add" value="Save Blog Post" />
 </form>
+{% endblock content %}

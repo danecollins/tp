@@ -1,21 +1,29 @@
 {% extends "places/menu_base.html" %}
 
-{% block content %}
+{% block title %}TP Blog{% endblock title %}
 
-<h2>Post archives</h2>
+{% block header %}
+<h1>TP Development Blog</h1>
+{% if show_add %}<a href='{% url 'blog:add_post' %}'>Add Post</a>{% endif %}
+{% endblock header %}
+
+{% block content %}
 
 <div class="posts">
   {% for post in posts %}
-    <table class="pure-table pure-table-bordered">
-	    <thead><tr>
-	      <th>{{ post.title }}</a></th>
-	      <th align="right">{{ post.created_on|date }}</th>
-	    </tr></thead>
-	    <tbody><tr>
-	      <td colspan=2>{{ post.text|safe }}</td>
-	    </tr></tbody>
-     </table>
-     <h4><a href="{% url 'blog:detail' post.slug %}">View and Add Comments</a></h4>
+    <section class="post">
+        <header class="post-header">
+            <h2 class="post-title">{{ post.title }}</h2>
+            <p class="post-meta">{{ post.created_on|date }}</p>
+        </header>
+
+        <div class="post-description">
+            <p>
+                {{ post.text|safe }}
+            </p>
+            <p><a href="{% url 'blog:detail' post.slug %}">View and Add Comments</a></p>
+        </div>
+    </section>
   {% endfor %}
 </div>
 

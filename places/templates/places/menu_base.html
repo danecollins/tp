@@ -8,7 +8,7 @@
 
         {% load staticfiles %}
 
-        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'pure-min.css' %}" />
         <link rel="stylesheet"  href="{% static 'side-menu.css' %}" />
 
         <style>
@@ -23,9 +23,12 @@
 
     <body>
         <div id="layout">
+            <a href="#menu" id="menuLink" class="menu-link">
+            <span></span>
+            </a>
             <div id="menu">
-            <div class="pure-menu custom-restricted-width">
-                <span class="pure-menu-heading"><a href="/" class="pure-menu-heading">Place</a></span>
+            <div class="pure-menu">
+                <a class="pure-menu-heading"><a href="/" class="pure-menu-heading">Place</a>
 
                 <ul class="pure-menu-list">
                     <li class="pure-menu-item"><a href="/places/city" class="pure-menu-link">Cities</a></li>
@@ -38,6 +41,7 @@
                 </ul>
             </div><!-- pure-menu -->
             </div><!-- menu -->
+
             <div id="main">
               
                 <div class="header">

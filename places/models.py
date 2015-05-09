@@ -19,35 +19,26 @@ class Place(models.Model):
 
     @classmethod
     def from_csv(cls, user, text, delimiter=','):
-        # create a place from a csv string
-        # field order is:
-        #   0 - place name   string
-        #   1 - locale       string
-        #   2 - city         string
-        #   3 - outdoor      0 or 1
-        #   4 - dog_friendly 0 or 1
-        #   5 - rating       0 if unset, 1-3 otherwise
-        #   6 - want_to_go   0 or 1
-        #   7 - good_for     string
-        #   8 - comment      string
-        #
         self = cls()
         fields = text.split(delimiter)
-        if len(fields) != 9:
-            print('ERROR: invalid fields in from_csv. got {} should be 9'.format(len(fields)))
+        fields = [x.strip("'") for x in fields]
+        if len(fields) != 12:
+            print('ERROR: invalid fields in from_csv. got {} should be 12'.format(len(fields)))
             print(fields)
             return None
 
-        self.user = user
-        self.name = fields[0]
-        self.locale = fields[1]
-        self.city = fields[2]
-        self.outdoor = fields[3] == '1'
-        self.dog_fiendly = fields[4] == '1'
-        self.rating = fields[5]
-        self.want_to_go = fields[6] == '1'
-        self.good_for = fields[7]
-        self.comment = fields[8]
+        self.id = fields[0]
+        self.user = User.objects.get(id=fields[11])
+        self.yelp = fields[1]
+        self.name = fields[2]
+        self.locale = fields[3]
+        self.city = fields[4]
+        self.outdoor = fields[5] == '1'
+        self.dog_fiendly = fields[6] == '1'
+        self.rating = fields[7]
+        self.want_to_go = fields[8] == '1'
+        self.good_for = fields[9]
+        self.comment = fields[10]
         self.save()
         return self
 
@@ -56,9 +47,10 @@ class Place(models.Model):
         assert os.path.exists(fn)
         print(fn)
         with open(fn, 'U') as fp:  # need 'U' for 2.7 compatibility
-            fp.readline()  # skip header
+            #fp.readline()  # skip header
             for line in fp.readlines():
-                cls.from_csv(user, line, delimiter='\t')
+                line = line.strip()
+                cls.from_csv(user, line)
 
     def __str__(self):
         return '{} at the {} in {}'.format(self.name, self.locale, self.locale.city)

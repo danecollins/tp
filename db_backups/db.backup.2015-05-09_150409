@@ -1,0 +1,1320 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE auth_group (
+    id integer NOT NULL,
+    name character varying(80) NOT NULL
+);
+
+
+ALTER TABLE auth_group OWNER TO dane;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: dane
+--
+
+CREATE SEQUENCE auth_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth_group_id_seq OWNER TO dane;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dane
+--
+
+ALTER SEQUENCE auth_group_id_seq OWNED BY auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE auth_group_permissions OWNER TO dane;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: dane
+--
+
+CREATE SEQUENCE auth_group_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth_group_permissions_id_seq OWNER TO dane;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dane
+--
+
+ALTER SEQUENCE auth_group_permissions_id_seq OWNED BY auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE auth_permission OWNER TO dane;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: dane
+--
+
+CREATE SEQUENCE auth_permission_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth_permission_id_seq OWNER TO dane;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dane
+--
+
+ALTER SEQUENCE auth_permission_id_seq OWNED BY auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(30) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(30) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE auth_user OWNER TO dane;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE auth_user_groups OWNER TO dane;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: dane
+--
+
+CREATE SEQUENCE auth_user_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth_user_groups_id_seq OWNER TO dane;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dane
+--
+
+ALTER SEQUENCE auth_user_groups_id_seq OWNED BY auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: dane
+--
+
+CREATE SEQUENCE auth_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth_user_id_seq OWNER TO dane;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dane
+--
+
+ALTER SEQUENCE auth_user_id_seq OWNED BY auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE auth_user_user_permissions OWNER TO dane;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: dane
+--
+
+CREATE SEQUENCE auth_user_user_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth_user_user_permissions_id_seq OWNER TO dane;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dane
+--
+
+ALTER SEQUENCE auth_user_user_permissions_id_seq OWNED BY auth_user_user_permissions.id;
+
+
+--
+-- Name: blog_comment; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE blog_comment (
+    id integer NOT NULL,
+    name character varying(42) NOT NULL,
+    email character varying(75) NOT NULL,
+    text text NOT NULL,
+    created_on timestamp with time zone NOT NULL,
+    post_id integer NOT NULL
+);
+
+
+ALTER TABLE blog_comment OWNER TO dane;
+
+--
+-- Name: blog_comment_id_seq; Type: SEQUENCE; Schema: public; Owner: dane
+--
+
+CREATE SEQUENCE blog_comment_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE blog_comment_id_seq OWNER TO dane;
+
+--
+-- Name: blog_comment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dane
+--
+
+ALTER SEQUENCE blog_comment_id_seq OWNED BY blog_comment.id;
+
+
+--
+-- Name: blog_post; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE blog_post (
+    id integer NOT NULL,
+    title character varying(100) NOT NULL,
+    slug character varying(50) NOT NULL,
+    text text NOT NULL,
+    created_on timestamp with time zone NOT NULL,
+    author_id integer NOT NULL
+);
+
+
+ALTER TABLE blog_post OWNER TO dane;
+
+--
+-- Name: blog_post_id_seq; Type: SEQUENCE; Schema: public; Owner: dane
+--
+
+CREATE SEQUENCE blog_post_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE blog_post_id_seq OWNER TO dane;
+
+--
+-- Name: blog_post_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dane
+--
+
+ALTER SEQUENCE blog_post_id_seq OWNED BY blog_post.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE django_admin_log OWNER TO dane;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: dane
+--
+
+CREATE SEQUENCE django_admin_log_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE django_admin_log_id_seq OWNER TO dane;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dane
+--
+
+ALTER SEQUENCE django_admin_log_id_seq OWNED BY django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE django_content_type OWNER TO dane;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: dane
+--
+
+CREATE SEQUENCE django_content_type_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE django_content_type_id_seq OWNER TO dane;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dane
+--
+
+ALTER SEQUENCE django_content_type_id_seq OWNED BY django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE django_migrations OWNER TO dane;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: dane
+--
+
+CREATE SEQUENCE django_migrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE django_migrations_id_seq OWNER TO dane;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dane
+--
+
+ALTER SEQUENCE django_migrations_id_seq OWNED BY django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE django_session OWNER TO dane;
+
+--
+-- Name: places_place; Type: TABLE; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE TABLE places_place (
+    id integer NOT NULL,
+    name character varying(100) NOT NULL,
+    locale character varying(100) NOT NULL,
+    city character varying(100) NOT NULL,
+    outdoor boolean NOT NULL,
+    dog_friendly boolean NOT NULL,
+    rating integer NOT NULL,
+    want_to_go boolean NOT NULL,
+    good_for character varying(50) NOT NULL,
+    comment character varying(200) NOT NULL,
+    user_id integer NOT NULL,
+    yelp character varying(200) NOT NULL
+);
+
+
+ALTER TABLE places_place OWNER TO dane;
+
+--
+-- Name: places_place_id_seq; Type: SEQUENCE; Schema: public; Owner: dane
+--
+
+CREATE SEQUENCE places_place_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE places_place_id_seq OWNER TO dane;
+
+--
+-- Name: places_place_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dane
+--
+
+ALTER SEQUENCE places_place_id_seq OWNED BY places_place.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_group ALTER COLUMN id SET DEFAULT nextval('auth_group_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_permission ALTER COLUMN id SET DEFAULT nextval('auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_user ALTER COLUMN id SET DEFAULT nextval('auth_user_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_user_groups ALTER COLUMN id SET DEFAULT nextval('auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY blog_comment ALTER COLUMN id SET DEFAULT nextval('blog_comment_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY blog_post ALTER COLUMN id SET DEFAULT nextval('blog_post_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY django_admin_log ALTER COLUMN id SET DEFAULT nextval('django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY django_content_type ALTER COLUMN id SET DEFAULT nextval('django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY django_migrations ALTER COLUMN id SET DEFAULT nextval('django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY places_place ALTER COLUMN id SET DEFAULT nextval('places_place_id_seq'::regclass);
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dane
+--
+
+SELECT pg_catalog.setval('auth_group_id_seq', 1, false);
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dane
+--
+
+SELECT pg_catalog.setval('auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can add permission	2	add_permission
+5	Can change permission	2	change_permission
+6	Can delete permission	2	delete_permission
+7	Can add group	3	add_group
+8	Can change group	3	change_group
+9	Can delete group	3	delete_group
+10	Can add user	4	add_user
+11	Can change user	4	change_user
+12	Can delete user	4	delete_user
+13	Can add content type	5	add_contenttype
+14	Can change content type	5	change_contenttype
+15	Can delete content type	5	delete_contenttype
+16	Can add session	6	add_session
+17	Can change session	6	change_session
+18	Can delete session	6	delete_session
+19	Can add place	7	add_place
+20	Can change place	7	change_place
+21	Can delete place	7	delete_place
+22	Can add post	8	add_post
+23	Can change post	8	change_post
+24	Can delete post	8	delete_post
+25	Can add comment	9	add_comment
+26	Can change comment	9	change_comment
+27	Can delete comment	9	delete_comment
+\.
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dane
+--
+
+SELECT pg_catalog.setval('auth_permission_id_seq', 27, true);
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+1	pbkdf2_sha256$20000$XoK2k350CQfR$pF/nFhJsa7le8g0bQIOztHdVuZxNqul2DLAFXKYB0dM=	2015-05-09 13:16:38.636281-07	t	admin			dane@dacxl.com	t	t	2015-05-09 13:16:10.197015-07
+3	pbkdf2_sha256$20000$BkxMRKtJa4Gf$XTI1q8KKcMNttx9qYzoZ+kQ6G8c7Bel+lkJTvP/m394=	\N	f	cindy	Cindy	Collins	cindy@pobox.com	f	t	2015-05-09 13:17:30-07
+2	pbkdf2_sha256$20000$8rP4IhyaryNY$WLt45aub+MQyTYXV50/PZMZyJAydEOqTLIx4nWsJYGE=	2015-05-09 13:57:43.648915-07	f	dane	Dane	Collins	dane@pobox.com	f	t	2015-05-09 13:16:57-07
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dane
+--
+
+SELECT pg_catalog.setval('auth_user_groups_id_seq', 1, false);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dane
+--
+
+SELECT pg_catalog.setval('auth_user_id_seq', 3, true);
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dane
+--
+
+SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- Data for Name: blog_comment; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY blog_comment (id, name, email, text, created_on, post_id) FROM stdin;
+\.
+
+
+--
+-- Name: blog_comment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dane
+--
+
+SELECT pg_catalog.setval('blog_comment_id_seq', 1, false);
+
+
+--
+-- Data for Name: blog_post; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY blog_post (id, title, slug, text, created_on, author_id) FROM stdin;
+1	How to handle ratings	how-to-handle-ratings	<p>Iâve been thinking through how to handle place ratings. My original plan was to use a number from -1 to 3 with the following meanings:</p>\n<ul>\n<li>3 = favorite place</li>\n<li>2 = good</li>\n<li>1 = OK, good for certain circumstances</li>\n<li>0 = Have not been to but want to go</li>\n<li>-1 = Donât go back</li>\n</ul>\n<p>This could be represented by 4 symbols, -1 by a red circle with a line through it (or some equivalent) and then 1-3 with stars.</p>\n<p>Is this sufficient?</p>	2015-05-07 18:34:51.242046-07	1
+\.
+
+
+--
+-- Name: blog_post_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dane
+--
+
+SELECT pg_catalog.setval('blog_post_id_seq', 1, false);
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2015-05-09 13:16:57.12569-07	2	dane	1		4	1
+2	2015-05-09 13:17:20.431014-07	2	dane	2	Changed first_name, last_name and email.	4	1
+3	2015-05-09 13:17:30.42565-07	3	cindy	1		4	1
+4	2015-05-09 13:17:44.719259-07	3	cindy	2	Changed first_name, last_name and email.	4	1
+\.
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dane
+--
+
+SELECT pg_catalog.setval('django_admin_log_id_seq', 4, true);
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY django_content_type (id, app_label, model) FROM stdin;
+1	admin	logentry
+2	auth	permission
+3	auth	group
+4	auth	user
+5	contenttypes	contenttype
+6	sessions	session
+7	places	place
+8	blog	post
+9	blog	comment
+\.
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dane
+--
+
+SELECT pg_catalog.setval('django_content_type_id_seq', 9, true);
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2015-05-09 08:27:37.69439-07
+2	auth	0001_initial	2015-05-09 08:27:37.781505-07
+3	admin	0001_initial	2015-05-09 08:27:37.805185-07
+4	contenttypes	0002_remove_content_type_name	2015-05-09 08:27:37.844685-07
+5	auth	0002_alter_permission_name_max_length	2015-05-09 08:27:37.875594-07
+6	auth	0003_alter_user_email_max_length	2015-05-09 08:27:37.889437-07
+7	auth	0004_alter_user_username_opts	2015-05-09 08:27:37.901977-07
+8	auth	0005_alter_user_last_login_null	2015-05-09 08:27:37.915209-07
+9	auth	0006_require_contenttypes_0002	2015-05-09 08:27:37.917541-07
+10	blog	0001_initial	2015-05-09 08:27:37.96822-07
+11	blog	0002_remove_comment_website	2015-05-09 08:27:37.985536-07
+12	places	0001_initial	2015-05-09 08:27:38.01206-07
+13	places	0002_place_yelp	2015-05-09 08:27:38.037892-07
+14	sessions	0001_initial	2015-05-09 08:27:38.118863-07
+\.
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dane
+--
+
+SELECT pg_catalog.setval('django_migrations_id_seq', 14, true);
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY django_session (session_key, session_data, expire_date) FROM stdin;
+zb3gvmqov13h8gs9uqimwf50j8vs34el	MDkzODdmNzJkMjU4MWM4ZjVhY2FlOGU5ZGJjMjY1NTdjM2JlZDJhYTp7fQ==	2015-05-23 13:16:31.20712-07
+ve6h8o6o798e41ohvu2p222n4blfglyd	MGNiNmUzZjM2NGNlZDc2NGJjNmJiMmU2OTkyYzYxN2MwNWVjZmIzMDp7Il9hdXRoX3VzZXJfaGFzaCI6ImY5N2VhNTdlM2Q1YzBmOWI4ZTA1NjZmNTA4ZTVmNmM0NzQ5Y2ZiNDYiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIyIn0=	2015-05-23 13:57:43.650704-07
+\.
+
+
+--
+-- Data for Name: places_place; Type: TABLE DATA; Schema: public; Owner: dane
+--
+
+COPY places_place (id, name, locale, city, outdoor, dog_friendly, rating, want_to_go, good_for, comment, user_id, yelp) FROM stdin;
+1	Kiantis Pizza	Downtown	Santa Cruz	f	f	-1	f		Dog hostile. Food is so-so.	2	http://www.yelp.com/biz/kiantis-pizza-and-pasta-bar-santa-cruz
+11	Engfer Pizza Works	Harbor	Santa Cruz	t	f	3	f			2	
+12	515 Kitchen and Cocktails	Downtown	Santa Cruz	f	f	3	f	Dinner when warm out	Nice upstairs deck	2	http://www.yelp.com/biz/515-kitchen-and-cocktails-santa-cruz
+13	Center Street Grill	Downtown	Santa Cruz	f	f	3	f			2	
+14	Laili	Downtown	Santa Cruz	f	f	3	f	Fancy		2	
+15	Il Fornaio	Downtown	Palo Alto	f	f	3	f	Work		2	
+16	Oswald Restaurant	Downtown	Santa Cruz	f	f	3	f			2	
+17	Kyoto Palace	Pruneyard	Campbell	f	f	3	f	"Work Group"		2	
+18	Los Gatos Bar & Grill	Downtown	Los Gatos	f	f	3	f			2	
+19	Los Gatos Brewing Company	Downtown	Los Gatos	f	f	3	f			2	
+20	Maggiano''s Little Italy	Santana Row	San Jose	f	f	3	f			2	
+21	Wine Cellar	Downtown	Los Gatos	f	f	3	f			2	
+22	Kuleto''s	Union Square	San Francisco	f	f	3	f			2	
+23	Gabriella Cafe	Downtown	Santa Cruz	t	f	3	f	Italian		2	
+24	Hoffman''s Bistro	Downtown	Santa Cruz	t	f	3	f			2	
+25	Forge in the Forest	Downtown	Carmel	t	f	3	f			2	
+26	La Pizzeria	Downtown	Campbell	t	f	3	f			2	
+2	Soif Restaurant	Downtown	Santa Cruz	f	f	-1	f	Wine	Food seems odd OK as a wine bar	2	
+3	Yan Flower	Downtown	Santa Cruz	f	f	-1	f	Chinese	Terrible	2	
+4	Tramonti Pizza Pasta	Harbor	Santa Cruz	f	f	-1	f			2	
+5	FireFish Grill	Wharf	Santa Cruz	f	f	-1	f	View		2	
+6	Ninety Nine Bottles of Beer	Downtown	Santa Cruz	t	f	-1	f			2	
+7	Surf Bistro & Bakery	Harbor	Santa Cruz	t	f	-1	f			2	
+8	Blue Line Pizza	Downtown	Campbell	t	f	3	f			2	
+9	Capers	Home	Campbell	t	f	3	f			2	
+10	I Gatti	Downtown	Los Gatos	t	f	3	f	Dinner		2	http://www.yelp.com/biz/i-gatti-los-gatos
+27	LB Steak	Santana Row	San Jose	t	f	3	f	SO		2	
+28	Surfrider Cafe	Downtown	Santa Cruz	t	f	3	f			2	
+29	Walnut Avenue Cafe	Downtown	Santa Cruz	t	f	3	f	Lunch		2	
+30	Outback	Pruneyard	Campbell	t	f	3	f			2	
+31	Pasta Pomodoro	Santana Row	San Jose	t	f	3	f			2	
+32	Rock Bottom	Pruneyard	Campbell	t	f	3	f			2	
+33	Sonoma Chicken Coop	Downtown	Campbell	t	f	3	f			2	
+34	Stacks	Downtown	Campbell	t	f	3	f	Breakfast		2	
+35	Steak Out	Downtown	Mountain View	t	f	3	f			2	
+36	The Counter	Santana Row	San Jose	t	f	3	f			2	
+37	The Veggie Grill	Santana Row	San Jose	t	f	3	f			2	
+38	Village California Bistro	Santana Row	San Jose	t	f	3	f			2	
+39	West End Eatery	41st	Capitola	t	f	3	f			2	
+40	Willow Street	Downtown	Los Gatos	t	f	3	f			2	
+41	Willow Street	Home	Campbell	t	f	3	f			2	
+42	Cascal	Downtown	Mountain View	f	f	2	f			2	
+43	Golden Palace	Ocean	Santa Cruz	f	f	2	f	Chinese		2	
+44	Forbes Mill Steakhouse	Downtown	Los Gatos	f	f	2	f	SO		2	
+45	Louie''s Cajun Kitchen	Downtown	Santa Cruz	f	f	2	f			2	
+46	Rosie McCann''s	Downtown	Santa Cruz	f	f	3	f	Dinner		2	http://www.yelp.com/biz/rosie-mccanns-irish-pub-and-restaurant-santa-cruz
+47	La Strada Ristorante	Downtown	Palo Alto	f	f	2	f			2	
+48	Pacific Catch	Pruneyard	Campbell	f	f	2	f			2	
+49	Ristorante Don Giovanni	Downtown	Mountain View	f	f	2	f			2	
+51	Jonny''s Harborside	Harbor	Santa Cruz	f	f	2	f	View		2	
+52	The Pastaria & Market	Downtown	Los Gatos	f	f	2	f			2	
+53	Linda''s Seabreeze Cafe	Harbor	Santa Cruz	f	f	2	f			2	
+54	Assembly	Downtown	Santa Cruz	t	f	2	f	Dinner		2	http://www.yelp.com/biz/assembly-santa-cruz
+55	Aqui Cal-Mex	Downtown	Campbell	t	f	2	f			2	
+56	Bistro Beaujolais	Downtown	Carmel	t	f	2	f			2	
+57	Brown Chicken Brown Cow	Downtown	Campbell	t	f	2	f			2	
+58	Cafe Lucio	Ocean	Santa Cruz	t	f	2	f	Italian		2	
+59	California Cafe	Downtown	Los Gatos	t	f	2	f			2	
+60	Hog''s Breath Inn	Downtown	Carmel	t	f	2	f			2	
+61	Katie Blooms Irish Pub	Downtown	Campbell	t	f	2	f			2	
+62	Left Bank Brasserie	Santana Row	San Jose	t	f	2	f			2	
+63	Sino	Santana Row	San Jose	t	f	2	f			2	
+65	Naschmarkt Restaurant	Downtown	Campbell	t	f	0	t			2	
+66	Cafe Mare	Downtown	Santa Cruz	f	f	0	t			2	
+67	Amber India	Santana Row	San Jose	f	f	0	t			2	
+68	Blowfish Sushi To Die For	Santana Row	San Jose	f	f	0	t			2	
+69	KC''s	Downtown	Santa Cruz	f	f	0	t	Sports Bar		2	
+70	Dio Deka	Downtown	Los Gatos	f	f	0	t			2	
+50	Cafe El Palomar	Harbor	Santa Cruz	f	f	2	f	View	"Inside food is very good. outside so-so"	2	
+64	Seabright Brewery	Harbor	Santa Cruz	t	f	2	f		Burgers are good. Everything else so-so	2	
+71	El Jardin Tequila Bar	Santana Row	San Jose	f	f	0	t			2	
+72	Los Gatos Cafe Downtown	Downtown	Los Gatos	f	f	0	t			2	
+73	Nick''s On Main	Downtown	Los Gatos	f	f	0	t			2	
+74	The Reef	Downtown	Santa Cruz	f	f	0	t			2	
+75	Palacio	Downtown	Los Gatos	f	f	0	t			2	
+76	Pedro''s	Downtown	Los Gatos	f	f	0	t			2	
+77	Thai Spice of Los Gatos	Downtown	Los Gatos	f	f	0	t			2	
+78	Lark Creek Blue	Santana Row	San Jose	t	f	0	t			2	
+79	Mr Pickle''s Sandwich Shop	Downtown	Los Gatos	t	f	0	t			2	
+80	Rosie McCann''s	Santana Row	San Jose	t	f	0	t			2	
+81	Cafe Campbell	Downtown	Campbell	t	f	1	f			2	
+82	Hawgs	Home	Campbell	t	f	1	f			2	
+83	Bellagio	Downtown	Campbell	f	f	1	f			2	
+84	Buca di Beppo	Pruneyard	Campbell	f	f	1	f	Group		2	
+85	Jack''s Hamburgers	Downtown	Santa Cruz	f	f	1	f		Food good but dog hostile	2	
+86	Gardino''s Ristorante Italiano	Downtown	Los Gatos	f	f	1	f			2	
+87	Saturn Cafe	Downtown	Santa Cruz	f	f	1	f			2	
+88	Opa Authentic Greek Cuisine	Downtown	Los Gatos	f	f	1	f			2	
+89	Pampas Brazilian Steakhouse	Downtown	Palo Alto	f	f	1	f			2	
+90	Red Robin	Home	Campbell	f	f	1	f			2	
+91	Scratch	Downtown	Mountain View	f	f	1	f			2	
+92	La Posta	Harbor	Santa Cruz	f	f	1	f	Fancy		2	
+93	Tigelleria Organic	Downtown	Campbell	f	f	1	f			2	
+94	Grasing''s Restaurant	Downtown	Carmel	t	f	1	f			2	
+95	Mo''s	Downtown	Campbell	t	f	1	f	Breakfast		2	
+96	Opa Authentic Greek Cuisine	Downtown	Campbell	t	f	1	f			2	
+97	Zoccoli''s Deli	Downtown	Santa Cruz	t	f	1	f			2	
+98	Steamer''s Grillhouse	Downtown	Los Gatos	t	f	1	f			2	
+99	Cielo Wine Bar	Santana Row	San Jose	f	f	1	f	Wine		2	
+100	Crow''s Nest Restaurant	Harbor	Santa Cruz	f	f	2	f	View		2	
+101	Zelda''s	Downtown	Capitola	t	f	1	f	View		2	
+102	Aldo''s	Harbor	Santa Cruz	t	f	1	f	View		2	
+103	Kiantis Pizza	Downtown	Santa Cruz	f	f	-1	f		Dog hostile. Food is so-so.	3	http://www.yelp.com/biz/kiantis-pizza-and-pasta-bar-santa-cruz
+104	La Pizzeria	Downtown	Campbell	t	f	3	f			3	
+105	La Pizzeria	Downtown	Campbell	t	f	3	f			3	
+106	Blue Line Pizza	Downtown	Campbell	t	f	3	f			3	
+107	Rock Bottom	Pruneyard	Campbell	t	f	3	f			3	
+108	Walnut Brewery	Downtown	Boulder	f	f	2	f	Casual		2	
+109	Walnut Brewery	Downtown	Boulder	f	f	2	f	Casual		2	
+\.
+
+
+--
+-- Name: places_place_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dane
+--
+
+SELECT pg_catalog.setval('places_place_id_seq', 1, false);
+
+
+--
+-- Name: auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions_group_id_permission_id_key; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_key UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission_content_type_id_codename_key; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_key UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups_user_id_group_id_key; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_key UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_permission_id_key; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_key UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: blog_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY blog_comment
+    ADD CONSTRAINT blog_comment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: blog_post_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY blog_post
+    ADD CONSTRAINT blog_post_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: blog_post_slug_key; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY blog_post
+    ADD CONSTRAINT blog_post_slug_key UNIQUE (slug);
+
+
+--
+-- Name: django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type_app_label_45f3b1d93ec8c61c_uniq; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY django_content_type
+    ADD CONSTRAINT django_content_type_app_label_45f3b1d93ec8c61c_uniq UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: places_place_pkey; Type: CONSTRAINT; Schema: public; Owner: dane; Tablespace: 
+--
+
+ALTER TABLE ONLY places_place
+    ADD CONSTRAINT places_place_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group_name_253ae2a6331666e8_like; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX auth_group_name_253ae2a6331666e8_like ON auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_0e939a4f; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX auth_group_permissions_0e939a4f ON auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_8373b171; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX auth_group_permissions_8373b171 ON auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_417f1b1c; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX auth_permission_417f1b1c ON auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_0e939a4f; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX auth_user_groups_0e939a4f ON auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_e8701ad4; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX auth_user_groups_e8701ad4 ON auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_8373b171; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX auth_user_user_permissions_8373b171 ON auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_e8701ad4; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX auth_user_user_permissions_e8701ad4 ON auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_user_username_51b3b110094b8aae_like; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX auth_user_username_51b3b110094b8aae_like ON auth_user USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: blog_comment_f3aa1999; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX blog_comment_f3aa1999 ON blog_comment USING btree (post_id);
+
+
+--
+-- Name: blog_post_4f331e2f; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX blog_post_4f331e2f ON blog_post USING btree (author_id);
+
+
+--
+-- Name: blog_post_slug_67896a0ddb3eb704_like; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX blog_post_slug_67896a0ddb3eb704_like ON blog_post USING btree (slug varchar_pattern_ops);
+
+
+--
+-- Name: django_admin_log_417f1b1c; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX django_admin_log_417f1b1c ON django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_e8701ad4; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX django_admin_log_e8701ad4 ON django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_de54fa62; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX django_session_de54fa62 ON django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_461cfeaa630ca218_like; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX django_session_session_key_461cfeaa630ca218_like ON django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: places_place_e8701ad4; Type: INDEX; Schema: public; Owner: dane; Tablespace: 
+--
+
+CREATE INDEX places_place_e8701ad4 ON places_place USING btree (user_id);
+
+
+--
+-- Name: auth_content_type_id_508cf46651277a81_fk_django_content_type_id; Type: FK CONSTRAINT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_content_type_id_508cf46651277a81_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissio_group_id_689710a9a73b7457_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_group_id_689710a9a73b7457_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permission_id_1f49ccbbdc69d2fc_fk_auth_permission_id; Type: FK CONSTRAINT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permission_id_1f49ccbbdc69d2fc_fk_auth_permission_id FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user__permission_id_384b62483d7071f0_fk_auth_permission_id; Type: FK CONSTRAINT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user__permission_id_384b62483d7071f0_fk_auth_permission_id FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups_group_id_33ac548dcf5f8e37_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_33ac548dcf5f8e37_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups_user_id_4b5ed4ffdb8fd9b0_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_4b5ed4ffdb8fd9b0_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permiss_user_id_7f0938558328534a_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permiss_user_id_7f0938558328534a_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: blog_comment_post_id_db30037971b60ee_fk_blog_post_id; Type: FK CONSTRAINT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY blog_comment
+    ADD CONSTRAINT blog_comment_post_id_db30037971b60ee_fk_blog_post_id FOREIGN KEY (post_id) REFERENCES blog_post(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: blog_post_author_id_5d99f39cce94a67b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY blog_post
+    ADD CONSTRAINT blog_post_author_id_5d99f39cce94a67b_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: djan_content_type_id_697914295151027a_fk_django_content_type_id; Type: FK CONSTRAINT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT djan_content_type_id_697914295151027a_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log_user_id_52fdd58701c5f563_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_52fdd58701c5f563_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: places_place_user_id_76a4b6d10e6ea0d7_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dane
+--
+
+ALTER TABLE ONLY places_place
+    ADD CONSTRAINT places_place_user_id_76a4b6d10e6ea0d7_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: dane
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM dane;
+GRANT ALL ON SCHEMA public TO dane;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

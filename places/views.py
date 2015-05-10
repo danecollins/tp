@@ -125,6 +125,10 @@ def place_save(request, place_id):
             if p.locale != v:
                 p.locale = v
                 changed = True
+        elif k == 'name':
+            if p.name != v:
+                p.name = v
+                changed = True
         elif k == 'rating':
             int_val = int(v)
             if p.rating != int_val:

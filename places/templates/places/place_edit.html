@@ -13,6 +13,9 @@
         {% csrf_token %}
     	<table>
             <tr>
+                <td>Name:</td><td><input type="text" name="name" value="{{ p.name }}"></td>
+            </tr>
+            <tr>
                 <td>City:</td><td><input type="text" name="city" value="{{ p.city }}"></td>
             </tr>
             <tr>

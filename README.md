@@ -12,9 +12,9 @@ Track Places Project
 ## Todo
 TODO: User registration form
 TODO: Add cancel button to edit form
-TODO: Figure out how to get db back from heroku
 TODO: Get rid of <hr> in login page
 TODO: Need a way to share a place, can do by url but no UI
+TODO: Create a read-only demo account
 
 ## Details
 * Using sqlite for database for now

@@ -4,6 +4,14 @@ from django.shortcuts import render
 from models import Vote
 
 
+def index(request):
+    votes = Vote.objects.all()
+    mtot = len([x for x in votes if not x.type])
+    wtot = len([x for x in votes if x.type])
+    return render(request, 'vote/index.html', {'mtot': mtot,
+                                               'wtot': wtot})
+
+
 def man(request):
     v = Vote(type=False)
     v.save()

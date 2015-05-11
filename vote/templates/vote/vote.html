@@ -1,0 +1,15 @@
+{% extends 'places/menu_base.html' %}
+
+{% block title %}Vote Counted{% endblock %}
+
+{% block header %}
+    <h1>Vote Added For a {{ type }}</h1>
+{% endblock %}
+
+{% block content %}
+    <h2 class="content-subhead">Vote Totals</h2>
+    <ul>
+        <li>Men: {{ mtot }}</li>
+        <li>Women: {{ wtot }}</li>
+    </ul>
+{% endblock %}

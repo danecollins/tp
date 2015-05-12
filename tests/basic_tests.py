@@ -2,7 +2,7 @@ import os
 import django
 from django.conf import settings
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tp.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
 
 from places.models import Place

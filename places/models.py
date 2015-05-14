@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 import os
-import pdb
 
 
 class Place(models.Model):
@@ -9,6 +8,7 @@ class Place(models.Model):
     name = models.CharField(max_length=100)
     locale = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
+    cuisine = models.CharField(max_length=100, blank=True)
     outdoor = models.BooleanField(default=False, blank=True)
     dog_friendly = models.BooleanField(default=False, blank=True)
     rating = models.IntegerField(default=0)
@@ -69,6 +69,7 @@ class Place(models.Model):
         s += 'name="{}",'.format(self.name)
         s += 'locale="{}",'.format(self.locale)
         s += 'city="{}",'.format(self.city)
+        s += 'cuisine="{}"'.format(self.cuisine)
         s += 'outdoor="{}",'.format(self.outdoor)
         s += 'dog_friendly="{}",'.format(self.dog_friendly)
         s += 'rating="{}",'.format(self.rating)

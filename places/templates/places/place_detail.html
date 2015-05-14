@@ -3,15 +3,16 @@
 {% block title %}TrackPlaces - Details{% endblock %}
 
 {% block header %}
-    <h3>{{ p.name }} - {% if anon %}Guest View{% endif %}</h3>
+    <h3>{{ p.name }}{% if anon %} - Guest View{% endif %}</h3>
 {% endblock %}
 
 {% block content %}
 
-    	<h3>Restaurant Information</h3>
+    	<h3>Details</h3>
     	<ul>
     		<li>City: <a href="/places/city/{{ p.city }}">{{ p.city }}</a></li>
     		<li>Locale: {{ p.locale }}</li>
+            <li>Cuisine: {{ p.cuisine }}</li>
     		<li>Outdoor Seating: {% if p.outdoor %}Yes{% else %}No{% endif %}</li>
     		<li>Dog Friendly: {% if p.dog_friendly %}Yes{% else %}No{% endif %}</li>
             {% if not anon %}

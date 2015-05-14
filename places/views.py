@@ -85,6 +85,7 @@ def place_add(request):
         p.name = args['name']
         p.city = args['city']
         p.locale = args['locale']
+        p.cuisine = args['cuisine']
         p.rating = int(args['rating'])
         p.good_for = args['good_for']
         p.comment = args['comment']
@@ -92,7 +93,6 @@ def place_add(request):
         p.outdoor = 'ourdoor' in args
         p.user = request.user
         p.save()
-
         return place_detail(request, p.id)
 
 
@@ -133,6 +133,10 @@ def place_save(request, place_id):
         elif k == 'city':
             if p.city != v:
                 p.city = v
+                changed = True
+        elif k == 'cuisine':
+            if p.cuisine != v:
+                p.cuisine = v
                 changed = True
         elif k == 'yelp':
             if p.yelp != v:

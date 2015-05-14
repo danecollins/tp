@@ -19,16 +19,15 @@
                 "I want my data to be mine and not some company's revenue opportunity!"
             </p>
     </div>
-    <div id="layout">
-    <div class="hero">
-    <div class="hero-cta">
-<p>
+    {% if user.is_anonymous %}
+    <div id="layout"><div class="hero"><div class="hero-cta">
+        <p>
             <a class="pure-button pure-button-primary button-xlarge" href="/login">Login</a>
 
             <a class="button-cta pure-button button-xlarge" href="/newuser">Register</a>
 
             <a class="pure-button pure-button-secondary button-xlarge" href="/places/city">Use As Guest</a>
-</p>
-
+        </p>
     </div></div></div>
+    {% endif %}
 {% endblock %}

@@ -29,6 +29,7 @@ def view_post(request, slug):
         comment = form.save(commit=False)
         comment.post = post
         comment.save()
+        print('Comment added to blog post')
         return redirect(request.path)
     return render_to_response('blog/detail_view.html',
                               {'post': post, 'form': form},

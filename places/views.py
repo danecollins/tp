@@ -11,7 +11,7 @@ import sys
 
 
 def index(request):
-    print('User is {}'.format(request.user), file=sys.stderr)
+    print('Home Page Request: User is {}'.format(request.user))
     if request.user.username == 'admin':
         logout(request)
     return render(request, 'places/index.html')
@@ -20,7 +20,6 @@ def index(request):
 def city_list(request):
     if request.user.is_anonymous():
         username = 'Guest User'
-        print(username, file=sys.stderr)
         cities = sorted(set([x.city for x in Place.objects.all()]))
     else:
         username = request.user.first_name
@@ -83,7 +82,7 @@ def place_add(request):
         args = request.POST
 
         p = Place()
-        p.id = False
+        p.id = None
         p.name = args['name']
         p.city = args['city']
         p.locale = args['locale']
@@ -96,6 +95,7 @@ def place_add(request):
         p.outdoor = 'ourdoor' in args
         p.user = request.user
         p.save()
+        print('User:{} added Place:{}'.format(request.user, p.name))
         return place_detail(request, p.id)
 
 
@@ -122,8 +122,9 @@ def place_copy(request, place_id):
                   outdoor=source.outdoor,
                   yelp=source.yelp,
                   )
+    place.id = None
     place.save()
-    return place_edit(request, place_id)
+    return place_edit(request, place.id)
 
 
 @login_required
@@ -190,10 +191,11 @@ def search(request):
         places = [p for p in Place.objects.all() if pat.search(p.name)]
 
     places = sorted(places, key=lambda p: p.name)
+    print('User:{} searched for:{}'.format(request.user, args.get('pat', '')))
     return render(request, 'places/search.html',
                   {'places': places, 'args': args})
 
 
 def about(request):
+    print('User:{} looked at about page'.format(request.user))
     return render(request, 'places/about.html')
-

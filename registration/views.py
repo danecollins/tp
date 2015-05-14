@@ -5,12 +5,10 @@ from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from forms import UserForm
-import logging
+
 
 
 def newuser(request):
-    logging.info('Creating new user')
-
     if request.user.is_anonymous():
         form = UserForm(request.POST or None)
         if form.is_valid():
@@ -22,6 +20,9 @@ def newuser(request):
                                          password=form_data.password,
                                          email=form_data.email)
             u.save()
+            print('Created new user:{} with name {} {}'.format(form_data.username,
+                                                        form_data.first_name,
+                                                        form_data.last_name))
             user = authenticate(username=form_data.username,
                                 password=form_data.password)
             login(request, user)

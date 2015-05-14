@@ -10,9 +10,7 @@
 
 <form action="" method="POST">
     {% csrf_token %}
-<form action="" method="POST">
-    {% csrf_token %}
-    <table>
+    <table class="pure-table">
         <tr><th><label for="id_title">Title:</label></th>  <td><input id="id_title" maxlength="100" size="81" name="title" type="text" /></td></tr>
         <tr><th><label for="id_text">Text:</label></th>  <td><textarea cols="80" id="id_text" name="text" rows="10"></textarea></td></tr>
     </table>

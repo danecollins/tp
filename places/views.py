@@ -90,6 +90,7 @@ def place_add(request):
         p.rating = int(args['rating'])
         p.good_for = args['good_for']
         p.comment = args['comment']
+        p.yelp = args['yelp']
         p.dog_friendly = 'dog_friendly' in args
         p.outdoor = 'ourdoor' in args
         p.user = request.user
@@ -117,7 +118,8 @@ def place_copy(request, place_id):
                   locale=source.locale,
                   cuisine=source.cuisine,
                   dog_friendly=source.dog_friendly,
-                  outdoor=source.outdoor
+                  outdoor=source.outdoor,
+                  yelp=source.yelp,
                   )
     place.save()
     return place_edit(request, place_id)
@@ -189,3 +191,8 @@ def search(request):
     places = sorted(places, key=lambda p: p.name)
     return render(request, 'places/search.html',
                   {'places': places, 'args': args})
+
+
+def about(request):
+    return render(request, 'places/about.html')
+

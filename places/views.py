@@ -82,7 +82,7 @@ def place_add(request):
         args = request.POST
 
         p = Place()
-        p.id = None
+        p.id = False
         p.name = args['name']
         p.city = args['city']
         p.locale = args['locale']
@@ -103,7 +103,7 @@ def place_add(request):
 def place_share(request, place_id, username):
     place = Place.objects.get(id=place_id)
     user = User.objects.get(username=username)
-    place.id = None
+    place.id = False
     place.user = user
     place.save()
     return place_detail(request, place_id)
@@ -122,7 +122,7 @@ def place_copy(request, place_id):
                   outdoor=source.outdoor,
                   yelp=source.yelp,
                   )
-    place.id = None
+    place.id = False
     place.save()
     return place_edit(request, place.id)
 

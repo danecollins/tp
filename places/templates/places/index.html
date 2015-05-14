@@ -1,4 +1,4 @@
-{% extends 'places/menu_base.html' %}
+{% extends 'menu_base.html' %}
 
 {% block title %}Welcome to Track Places{% endblock %}
 
@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block content %}
+    <div class="container">
             <h2 class="content-subhead">Track the restaurants you've been to or want to go to</h2>
             <p>
                 "What was the name of that great place I went to in Chicago?"
@@ -17,6 +18,17 @@
             <p>
                 "I want my data to be mine and not some company's revenue opportunity!"
             </p>
+    </div>
+    <div id="layout">
+    <div class="hero">
+    <div class="hero-cta">
+<p>
+            <a class="pure-button pure-button-primary button-xlarge" href="/login">Login</a>
 
+            <a class="button-cta pure-button button-xlarge" href="/newuser">Register</a>
 
+            <a class="pure-button pure-button-secondary button-xlarge" href="/places/city">Use As Guest</a>
+</p>
+
+    </div></div></div>
 {% endblock %}

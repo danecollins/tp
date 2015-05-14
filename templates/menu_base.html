@@ -18,6 +18,21 @@
             /* Or set the width explicitly: */
             /* width: 10em; */
         }
+
+
+        .button-xsmall {
+            font-size: 70%;
+        }
+        .button-small {
+            font-size: 85%;
+        }
+        .button-large {
+            font-size: 110%;
+        }
+        .button-xlarge {
+            font-size: 125%;
+        }
+
         </style>
     </head>
 
@@ -36,8 +51,12 @@
                     <li class="pure-menu-heading">Company</li>
                     <li class="pure-menu-item"><a href="#" class="pure-menu-link">About</a></li>
                     <li class="pure-menu-item"><a href="{% url 'blog:archive' %}" class="pure-menu-link">Blog</a></li>
+                    {% if not user.is_anonymous %}
                     <li class="pure-menu-item"><a href="/logout?next=/" class="pure-menu-link">Logout</a></li>
+                    {% if user.username == 'dane' %}
                     <li class="pure-menu-item"><a href="http://purecss.io/" class="pure-menu-link">Pure</a></li>
+                    {% endif %}
+                    {% endif %}
                 </ul>
             </div><!-- pure-menu -->
             </div><!-- menu -->

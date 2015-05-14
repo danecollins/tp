@@ -16,15 +16,33 @@ def index(request):
     return render(request, 'places/index.html')
 
 
-@login_required
 def city_list(request):
-    cities = sorted(set([x.city for x in Place.objects.filter(user=request.user)]))
-    return render(request, 'places/city_list.html', {'clist': cities})
+    if request.user.is_anonymous():
+        username = 'Guest User'
+        print(username, file=sys.stderr)
+        cities = sorted(set([x.city for x in Place.objects.all()]))
+    else:
+        username = request.user.first_name
+        cities = sorted(set([x.city for x in Place.objects.filter(user=request.user)]))
+
+    return render(request, 'places/city_list.html', {'clist': cities,
+                                                     'username': username})
 
 
-@login_required
 def locale_list(request, city):
-    places = Place.objects.filter(city=city, user=request.user)
+    if request.user.is_anonymous():
+        username = 'Guest User'
+        places = []
+        # we can end up with duplicate places due to multiple users which we don't want
+        place_names = set()
+        for place in Place.objects.filter(city=city):
+            if place.name not in place_names:
+                place_names.add(place.name)
+                places.append(place)
+    else:
+        username = request.user.username
+        places = Place.objects.filter(city=city, user=request.user)
+
     by_locale = defaultdict(set)
     id_by_name = {p.name: p.id for p in places}
     for p in places:
@@ -33,7 +51,8 @@ def locale_list(request, city):
     return render(request, 'places/locale_list.html', {'llist': sorted(by_locale.keys()),
                                                        'dict': by_locale,
                                                        'ids': id_by_name,
-                                                       'city': city})
+                                                       'city': city,
+                                                       'username': username})
 
 
 # def place_list(request, city, locale):
@@ -43,17 +62,15 @@ def locale_list(request, city):
 #                                                       'locale': locale})
 
 
-@login_required
 def place_detail(request, place_id):
-    place = Place.objects.filter(id=place_id)
-    place = place[0]
-    return render(request, 'places/place_detail.html', {'p': place})
+    place = Place.objects.get(id=place_id)
+    return render(request, 'places/place_detail.html', {'p': place,
+                                                        'anon': request.user.is_anonymous()})
 
 
 @login_required
 def place_edit(request, place_id):
     place = Place.objects.get(id=place_id)
-
     return render(request, 'places/place_edit.html', {'p': place})
 
 

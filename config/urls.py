@@ -10,5 +10,6 @@ urlpatterns = patterns('',
                        url(r'^vote/', include('vote.urls', namespace="vote")),
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^accounts/login/$', auth_views.login),
+                       url(r'^newuser/$', 'registration.views.newuser', name='newuser'),
                        url('^', include('django.contrib.auth.urls'))
                        )

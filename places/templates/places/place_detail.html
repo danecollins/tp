@@ -1,9 +1,9 @@
-{% extends 'places/menu_base.html' %}
+{% extends 'menu_base.html' %}
 
 {% block title %}TrackPlaces - Details{% endblock %}
 
 {% block header %}
-    <h3>{{ p.name }}</h3>
+    <h3>{{ p.name }} - {% if anon %}Guest View{% endif %}</h3>
 {% endblock %}
 
 {% block content %}
@@ -12,14 +12,18 @@
     	<ul>
     		<li>City: <a href="/places/city/{{ p.city }}">{{ p.city }}</a></li>
     		<li>Locale: {{ p.locale }}</li>
-    		<li>Rating: {{ p.rating }}</li>
     		<li>Outdoor Seating: {% if p.outdoor %}Yes{% else %}No{% endif %}</li>
     		<li>Dog Friendly: {% if p.dog_friendly %}Yes{% else %}No{% endif %}</li>
+            {% if not anon %}
+            <li>Rating: {{ p.rating }}</li>
     		<li>Good For: {{ p.good_for }}</li>
     		<li>Comment: {{ p.comment }}</li>
+            {% endif %}
     	</ul>
+        {% if not anon %}
     	<a class="pure-button pure-button-primary" href="/places/edit/{{ p.id }}">Edit Restaurant Information</a>
         <a class="pure-button pure-button-secondary" href="/places/share/{{ p.id }}">Share</a>
+        {% endif %}
     </div>
     <hr>
 

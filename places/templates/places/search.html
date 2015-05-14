@@ -1,0 +1,41 @@
+{% extends "menu_base.html" %} 
+
+{% block title %}View Places{% endblock title %}
+
+{% block header %}
+<form action="{% url 'places:search' %}" method="post">
+  {% csrf_token %}
+   <p>
+      <label>Places containing:</label>
+      <input type="text" name="pat" value={{ args.pat }}>
+      <input type="submit" value="Search">
+   </p>
+  </form>
+{% endblock header %}
+
+{% block content %}
+<hr />
+{% load staticfiles %}
+<div class="container">
+    <h3>Click on <img border="0" alt="add {{ p.name }}" src="{% static 'add-button.png' %}" 
+                       width="5%" height="5%"> to add other users places to your list</h3>
+    {% if places|length > 0 %}
+        <ul>
+          {% for p in places %}
+              <li>{{ p.name }}
+                  {% if p.user != user %}
+                   <a href="/places/copy/{{ p.id }}">
+                       <img border="0" alt="add {{ p.name }}" src="{% static 'add-button.png' %}" 
+                       width="5%" height="5%"></a></li>
+                  {% endif %}
+          {% endfor %}
+        </ul>
+    {% else %}
+      <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">No Places Match</span>
+        
+      </div>
+    {% endif %}
+</div>
+{% endblock content %}

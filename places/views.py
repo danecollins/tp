@@ -5,7 +5,8 @@ from collections import defaultdict
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
-
+import re
+import pdb
 import sys
 
 
@@ -61,7 +62,7 @@ def locale_list(request, city):
 #                                                       'city': city,
 #                                                       'locale': locale})
 
-
+# we don't need to check the user since the place is found by id
 def place_detail(request, place_id):
     place = Place.objects.get(id=place_id)
     return render(request, 'places/place_detail.html', {'p': place,
@@ -104,6 +105,22 @@ def place_share(request, place_id, username):
     place.user = user
     place.save()
     return place_detail(request, place_id)
+
+
+@login_required
+def place_copy(request, place_id):
+    source = Place.objects.get(id=place_id)
+
+    place = Place(user=request.user,
+                  name=source.name,
+                  city=source.city,
+                  locale=source.locale,
+                  cuisine=source.cuisine,
+                  dog_friendly=source.dog_friendly,
+                  outdoor=source.outdoor
+                  )
+    place.save()
+    return place_edit(request, place_id)
 
 
 @login_required
@@ -158,3 +175,17 @@ def place_save(request, place_id):
     if changed:
         p.save()
     return render(request, 'places/place_detail.html', {'p': p})
+
+
+def search(request):
+    if request.method == 'GET':
+        places = Place.objects.all()
+        args = {}
+    else:
+        args = request.POST
+        pat = re.compile(args['pat'], re.IGNORECASE)
+        places = [p for p in Place.objects.all() if pat.search(p.name)]
+
+    places = sorted(places, key=lambda p: p.name)
+    return render(request, 'places/search.html',
+                  {'places': places, 'args': args})

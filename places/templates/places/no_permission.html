@@ -1,0 +1,16 @@
+{% extends 'menu_base.html' %}
+
+{% block title %}TrackPlaces - Edit{% endblock %}
+
+{% block header %}
+    <h3>{{ p.name }}</h3>
+{% endblock %}
+
+{% block content %}
+
+    <h3>No Permission</h3>
+    <p>This place is owned by another user and you cannot edit it.
+       Do you want to <a href="/places/copy/{{ p.id }}">make a copy</a>
+    </p>
+ 
+{% endblock content %}

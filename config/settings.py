@@ -22,9 +22,9 @@ PROJECT_DIR = os.path.dirname(CONFIG_DIR)
 SECRET_KEY = 'ei525#5#vnh9ouwg18f708kcmsru%$otjqy4&537mu3lq&$(_7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

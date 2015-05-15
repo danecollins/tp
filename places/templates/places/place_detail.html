@@ -10,15 +10,15 @@
 
     	<h3>Details</h3>
     	<ul>
-    		<li>City: <a href="/places/city/{{ p.city }}">{{ p.city }}</a></li>
-    		<li>Locale: {{ p.locale }}</li>
-            <li>Cuisine: {{ p.cuisine }}</li>
-    		<li>Outdoor Seating: {% if p.outdoor %}Yes{% else %}No{% endif %}</li>
-    		<li>Dog Friendly: {% if p.dog_friendly %}Yes{% else %}No{% endif %}</li>
+    		<li class='place-field'>City: <a href="/places/city/{{ p.city }}">{{ p.city }}</a></li>
+    		<li class='place-field'>Locale: {{ p.locale }}</li>
+            <li class='place-field'>Cuisine: {{ p.cuisine }}</li>
+    		<li class='place-field'>Outdoor Seating: {% if p.outdoor %}Yes{% else %}No{% endif %}</li>
+    		<li class='place-field'>Dog Friendly: {% if p.dog_friendly %}Yes{% else %}No{% endif %}</li>
             {% if not anon %}
-            <li>Rating: {{ p.rating }}</li>
-    		<li>Good For: {{ p.good_for }}</li>
-    		<li>Comment: {{ p.comment }}</li>
+            <li class='place-field'>Rating: {{ p.rating }}</li>
+    		<li class='place-field'>Good For: {{ p.good_for }}</li>
+    		<li class='place-field'>Comment: {{ p.comment }}</li>
             {% endif %}
     	</ul>
         {% if not anon %}

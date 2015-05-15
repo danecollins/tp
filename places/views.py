@@ -1,5 +1,5 @@
 from __future__ import print_function
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from places.models import Place
 from collections import defaultdict
 from django.contrib.auth.decorators import login_required
@@ -63,15 +63,22 @@ def locale_list(request, city):
 
 # we don't need to check the user since the place is found by id
 def place_detail(request, place_id):
-    place = Place.objects.get(id=place_id)
+    place = get_object_or_404(Place, id=place_id)
+    if request.user.is_anonymous() or request.user != place.user:
+        anon = True
+    else:
+        anon = False
     return render(request, 'places/place_detail.html', {'p': place,
-                                                        'anon': request.user.is_anonymous()})
+                                                        'anon': anon})
 
 
 @login_required
 def place_edit(request, place_id):
-    place = Place.objects.get(id=place_id)
-    return render(request, 'places/place_edit.html', {'p': place})
+    place = get_object_or_404(Place, id=place_id)
+    if request.user == place.user:
+        return render(request, 'places/place_edit.html', {'p': place})
+    else:
+        return render(request, 'places/no_permission.html', {'p': place})
 
 
 @login_required
@@ -92,7 +99,7 @@ def place_add(request):
         p.comment = args['comment']
         p.yelp = args['yelp']
         p.dog_friendly = 'dog_friendly' in args
-        p.outdoor = 'ourdoor' in args
+        p.outdoor = 'outdoor' in args
         p.user = request.user
         p.save()
         print('User:{} added Place:{}'.format(request.user, p.name))
@@ -101,7 +108,7 @@ def place_add(request):
 
 @login_required
 def place_share(request, place_id, username):
-    place = Place.objects.get(id=place_id)
+    place = get_object_or_404(Place, id=place_id)
     user = User.objects.get(username=username)
     place.id = False
     place.user = user
@@ -111,7 +118,7 @@ def place_share(request, place_id, username):
 
 @login_required
 def place_copy(request, place_id):
-    source = Place.objects.get(id=place_id)
+    source = get_object_or_404(Place, id=place_id)
 
     place = Place(user=request.user,
                   name=source.name,
@@ -130,7 +137,7 @@ def place_copy(request, place_id):
 @login_required
 def place_save(request, place_id):
     args = request.POST
-    p = Place.objects.get(id=place_id)
+    p = get_object_or_404(Place, id=place_id)
     changed = False
     for k, v in args.items():
         if k == 'comment':

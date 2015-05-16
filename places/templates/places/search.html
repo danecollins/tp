@@ -22,7 +22,7 @@
     {% if places|length > 0 %}
         <ul>
           {% for p in places %}
-              <li>{{ p.name }}
+              <li><a href="/places/view/{{ p.id }}">{{ p.name }}</a>
                   {% if p.user != user and user.is_authenticated %}
                    <a href="/places/copy/{{ p.id }}">
                        <img border="0" alt="add {{ p.name }}" src="{% static 'add-button.png' %}" 

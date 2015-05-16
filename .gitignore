@@ -24,3 +24,4 @@ bundler_stubs/
 __pycache__/
 .pyc
 static/extra
+staticfiles

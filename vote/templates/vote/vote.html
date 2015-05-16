@@ -2,8 +2,12 @@
 
 {% block title %}Vote Counted{% endblock %}
 
+
+
 {% block header %}
     <h1>Vote Added For a {{ type }}</h1>
+    {% load staticfiles %}
+    <link rel="apple-touch-icon" href="/static/vote-{{ type }}.png">
 {% endblock %}
 
 {% block content %}

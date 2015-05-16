@@ -6,12 +6,20 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 import re
-import pdb
 import sys
+import os
+
+
+def logprint(s):
+    s = 'app_log: ' + s
+    if os.environ.get('DB', False):
+        print(s)
+    else:
+        print(s, file=sys.stderr)
 
 
 def index(request):
-    print('Home Page Request: User is {}'.format(request.user))
+    logprint('Home Page Request: User is {}'.format(request.user))
     if request.user.username == 'admin':
         logout(request)
     return render(request, 'places/index.html')
@@ -25,8 +33,17 @@ def city_list(request):
         username = request.user.first_name
         cities = sorted(set([x.city for x in Place.objects.filter(user=request.user)]))
 
+    logprint('User: {} is on city list'.format(request.user))
     return render(request, 'places/city_list.html', {'clist': cities,
                                                      'username': username})
+
+
+def info(request):
+    data = {}
+    data['username'] = "{}".format(request.user)
+    data['num_users'] = len(User.objects.all())
+    data['num_places'] = len(Place.objects.all())
+    return render(request, 'places/info.html', {'data': data})
 
 
 def locale_list(request, city):
@@ -75,6 +92,7 @@ def place_detail(request, place_id):
 @login_required
 def place_edit(request, place_id):
     place = get_object_or_404(Place, id=place_id)
+    logprint('User: {} is editing place: {}'.format(request.user, place.name))
     if request.user == place.user:
         return render(request, 'places/place_edit.html', {'p': place})
     else:
@@ -102,7 +120,7 @@ def place_add(request):
         p.outdoor = 'outdoor' in args
         p.user = request.user
         p.save()
-        print('User:{} added Place:{}'.format(request.user, p.name))
+        logprint('User:{} added Place:{}'.format(request.user, p.name))
         return place_detail(request, p.id)
 
 
@@ -131,6 +149,7 @@ def place_copy(request, place_id):
                   )
     place.id = False
     place.save()
+    logprint('User: {} copied place: {}'.format(request.user, place.name))
     return place_edit(request, place.id)
 
 
@@ -184,6 +203,7 @@ def place_save(request, place_id):
                 p.rating = int_val
                 changed = True
     if changed:
+        logprint('User: {} edited place: {}'.format(request.user, p.name))
         p.save()
     return render(request, 'places/place_detail.html', {'p': p})
 
@@ -192,17 +212,18 @@ def search(request):
     if request.method == 'GET':
         places = Place.objects.all()
         args = {}
+        logprint('User:{} is on search page'.format(request.user, args.get('pat', '')))
     else:
         args = request.POST
         pat = re.compile(args['pat'], re.IGNORECASE)
         places = [p for p in Place.objects.all() if pat.search(p.name)]
+        logprint('User:{} searched for: {}'.format(request.user, args.get('pat', '')))
 
     places = sorted(places, key=lambda p: p.name)
-    print('User:{} searched for:{}'.format(request.user, args.get('pat', '')))
     return render(request, 'places/search.html',
                   {'places': places, 'args': args})
 
 
 def about(request):
-    print('User:{} looked at about page'.format(request.user))
+    logprint('User:{} is on about page'.format(request.user))
     return render(request, 'places/about.html')

@@ -1,0 +1,31 @@
+{% extends 'menu_base.html' %}
+
+{% block title %}TrackPlaces - Info{% endblock %}
+
+{% block header %}
+    <h1>Info Page</h1>
+{% endblock %}
+
+{% block content %}
+<p/>
+	<table class='pure-table'>
+		<thead>
+			<tr>
+				<th>Parameter</th>
+				<th>Value</th>
+			</tr>
+		</thead>
+		<tdata>
+			<tr>
+				<td>User</td><td>{{ data.username }}</td>
+			</tr>
+			<tr>
+				<td>Number of Users</td><td>{{ data.num_users }}</td>
+			</tr>
+			<tr>
+				<td>Number of Places</td><td>{{ data.num_places }}</td>
+			</tr>
+		</tdata>
+	</table>
+ 
+{% endblock content %}

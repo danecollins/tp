@@ -12,5 +12,6 @@ urlpatterns = patterns('',
                        url(r'^accounts/login/$', auth_views.login),
                        url(r'^newuser/$', 'registration.views.newuser', name='newuser'),
                        url(r'^about/$', 'places.views.about', name='about'),
+                       url(r'^dane/$', 'places.views.info', name='info'),
                        url('^', include('django.contrib.auth.urls'))
                        )

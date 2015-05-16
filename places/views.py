@@ -5,6 +5,7 @@ from collections import defaultdict
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from vote.models import Vote
 import re
 import sys
 import os
@@ -19,7 +20,7 @@ def logprint(s):
 
 
 def index(request):
-    logprint('Home Page Request: User is {}'.format(request.user))
+    logprint('User: {} is on home page'.format(request.user))
     if request.user.username == 'admin':
         logout(request)
     return render(request, 'places/index.html')
@@ -43,6 +44,9 @@ def info(request):
     data['username'] = "{}".format(request.user)
     data['num_users'] = len(User.objects.all())
     data['num_places'] = len(Place.objects.all())
+    data['men_votes'] = len(Vote.objects.filter(type=False))
+    data['women_votes'] = len(Vote.objects.filter(type=True))
+    logprint('User: {} is on info page'.format(request.user))
     return render(request, 'places/info.html', {'data': data})
 
 
@@ -120,7 +124,7 @@ def place_add(request):
         p.outdoor = 'outdoor' in args
         p.user = request.user
         p.save()
-        logprint('User:{} added Place:{}'.format(request.user, p.name))
+        logprint('User: {} added Place:{}'.format(request.user, p.name))
         return place_detail(request, p.id)
 
 

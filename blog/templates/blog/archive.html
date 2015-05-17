@@ -10,18 +10,19 @@
 {% block content %}
 
 <div class="posts">
-  {% for post in posts %}
+  {% for pi in pinfo %}
     <section class="post">
         <header class="post-header">
-            <h2 class="post-title">{{ post.title }}</h2>
-            <p class="post-meta">{{ post.created_on|date }}</p>
+            <h2 class="post-title">{{ pi.post.title }}</h2>
+                <h4 class="post-meta">{{ pi.post.created_on|date }} - {{ pi.num_comments }} Comments 
+                {% if pi.num_comments != 0 %} - Last On: {{ pi.last|date }} {% endif %}</h4>
         </header>
 
         <div class="post-description">
             <p>
-                {{ post.text|safe }}
+                {{ pi.post.text|safe }}
             </p>
-            <p><a href="{% url 'blog:detail' post.slug %}">View and Add Comments</a></p>
+            <p><a href="{% url 'blog:detail' pi.post.slug %}">View and Add Comments</a></p>
         </div>
     </section>
   {% endfor %}

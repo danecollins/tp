@@ -2,9 +2,9 @@ from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import redirect, render, render_to_response, get_object_or_404
 from django.template import RequestContext
 
-from models import Post
+from models import Post, Comment
 from forms import PostForm, CommentForm
-
+import sys
 
 def can_post(user):
     return user.is_superuser or user.username == 'dane'
@@ -38,5 +38,19 @@ def view_post(request, slug):
 
 def archive(request):
     posts = sorted(Post.objects.all(), key=lambda x: x.created_on, reverse=True)
-    return render(request, 'blog/archive.html', {'posts': posts,
+    comments = Comment.objects.all()
+    comment_info = {}
+    for p in posts:
+        comment_info[p.id] = dict(num_comments=0, last=p.created_on, post=p)
+    for c in comments:
+        comment_info[c.post.id]['num_comments'] += 1
+        if c.created_on > comment_info[c.post.id]['last']:
+            comment_info[c.post.id]['last'] = c.created_on
+
+    pinfo = []
+    for p in posts:
+        pinfo.append(comment_info[p.id])
+
+    print(comment_info, sys.stderr)
+    return render(request, 'blog/archive.html', {'pinfo': pinfo,
                                                  'show_add': can_post(request.user)})

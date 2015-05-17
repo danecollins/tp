@@ -109,15 +109,9 @@ def place_add(request):
         return render(request, 'places/place_add.html')
     else:
         args = request.POST
-
-        p = Place()
-        logprint('New pace with id={}'.format(p.id))
-        p.save()
-        logprint('Now the id={}'.format(p.id))
-        # p.id = False
-        p.name = args['name']
-        p.city = args['city']
-        p.locale = args['locale']
+        max_id = max([x.id for x in Place.objects.all()])
+        p = Place(user=request.user, name=args['name'], city=args['city'], locale=args['locale'])
+        p.id = max_id + 1
         p.cuisine = args['cuisine']
         p.rating = int(args['rating'])
         p.good_for = args['good_for']
@@ -126,8 +120,8 @@ def place_add(request):
         p.dog_friendly = 'dog_friendly' in args
         p.outdoor = 'outdoor' in args
         p.user = request.user
-        status = p.save()
-        logprint('User: {} added Place:{}'.format(request.user, p.name, status))
+        p.save()
+        logprint('User: {} added Place:{} with id:{}'.format(request.user, p.name, p.id))
         return place_detail(request, p.id)
 
 

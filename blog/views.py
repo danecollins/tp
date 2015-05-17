@@ -1,3 +1,4 @@
+from __future__ import print_function
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import redirect, render, render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -5,6 +6,16 @@ from django.template import RequestContext
 from models import Post, Comment
 from forms import PostForm, CommentForm
 import sys
+import os
+
+
+def logprint(s):
+    s = 'app_log: ' + s
+    if os.environ.get('DB', False):
+        print(s)
+    else:
+        print(s, file=sys.stderr)
+
 
 def can_post(user):
     return user.is_superuser or user.username == 'dane'
@@ -29,7 +40,7 @@ def view_post(request, slug):
         comment = form.save(commit=False)
         comment.post = post
         comment.save()
-        print('Comment added to blog post')
+        logprint('Comment added to post: {}'.format(post.title))
         return redirect(request.path)
     return render_to_response('blog/detail_view.html',
                               {'post': post, 'form': form},
@@ -51,6 +62,5 @@ def archive(request):
     for p in posts:
         pinfo.append(comment_info[p.id])
 
-    print(comment_info, sys.stderr)
     return render(request, 'blog/archive.html', {'pinfo': pinfo,
                                                  'show_add': can_post(request.user)})

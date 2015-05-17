@@ -111,7 +111,7 @@ def place_add(request):
         args = request.POST
 
         p = Place()
-        p.id = False
+        # p.id = False
         p.name = args['name']
         p.city = args['city']
         p.locale = args['locale']

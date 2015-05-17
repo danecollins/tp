@@ -111,6 +111,9 @@ def place_add(request):
         args = request.POST
 
         p = Place()
+        logprint('New pace with id={}'.format(p.id))
+        p.save()
+        logprint('Now the id={}'.format(p.id))
         # p.id = False
         p.name = args['name']
         p.city = args['city']
@@ -123,8 +126,8 @@ def place_add(request):
         p.dog_friendly = 'dog_friendly' in args
         p.outdoor = 'outdoor' in args
         p.user = request.user
-        p.save()
-        logprint('User: {} added Place:{}'.format(request.user, p.name))
+        status = p.save()
+        logprint('User: {} added Place:{}'.format(request.user, p.name, status))
         return place_detail(request, p.id)
 
 

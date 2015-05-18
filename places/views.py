@@ -166,7 +166,9 @@ def place_copy(request, place_id):
                   outdoor=source.outdoor,
                   yelp=source.yelp,
                   )
-    place.id = False
+
+    max_id = max([x.id for x in Place.objects.all()])
+    place.id = max_id + 1
     place.save()
     m = 'User: {} copied place: {}'.format(request.user, place.name)
     logprint(m)

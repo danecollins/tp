@@ -1,14 +1,30 @@
 from __future__ import print_function
 from django.shortcuts import render, get_object_or_404
-from places.models import Place
+
 from collections import defaultdict
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+
 from django.contrib.auth.models import User
+from places.models import Place
 from vote.models import Vote
+
 import re
 import sys
 import os
+
+
+def log_to_slack(message):
+    slack_token = os.environ.get('SLACK_TP', False)
+    tp_server = os.environ.get('TP_SERVER', False)
+    if slack_token:
+        import requests
+        import json
+
+        url = 'https://hooks.slack.com/services/{}'.format(slack_token)
+        bot_name = tp_server or 'heroku_p'
+        payload = {'text': message, 'username': bot_name, }
+        requests.post(url, data=json.dumps(payload))
 
 
 def logprint(s):
@@ -121,7 +137,9 @@ def place_add(request):
         p.outdoor = 'outdoor' in args
         p.user = request.user
         p.save()
-        logprint('User: {} added Place:{} with id:{}'.format(request.user, p.name, p.id))
+        m = 'User: {} added place: {} with id: {}'.format(request.user, p.name, p.id)
+        logprint(m)
+        log_to_slack(m)
         return place_detail(request, p.id)
 
 
@@ -150,7 +168,9 @@ def place_copy(request, place_id):
                   )
     place.id = False
     place.save()
-    logprint('User: {} copied place: {}'.format(request.user, place.name))
+    m = 'User: {} copied place: {}'.format(request.user, place.name)
+    logprint(m)
+    log_to_slack(m)
     return place_edit(request, place.id)
 
 

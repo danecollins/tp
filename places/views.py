@@ -220,7 +220,27 @@ def search(request):
         places = [p for p in Place.objects.all() if pat.search(p.name)]
         logprint('User:{} searched for: {}'.format(request.user, args.get('pat', '')))
 
+    # create a unique set of places, want to prefer places you own
+    # create a dict based on place names
+    p_by_name = defaultdict(list)
+    for p in places:
+        p_by_name[p.name].append(p)
+
+    # if there are multiple places with same name, keep the one the user owns
+    for k, v in p_by_name.items():
+        if len(v) > 1:
+            tmp = [x for x in v if x.user == request.user]
+            if len(tmp) == 0:  # user owns none, keep first one
+                p_by_name[k] = v[:1]
+            elif len(tmp) == 1:  # user owns one, keep that one
+                p_by_name[k] = tmp
+            else:  # user owns multiple, keep just one
+                p_by_name[k] = tmp[:1]
+
+    # now all p_by_name have just one item
+    places = [x[0] for x in p_by_name.values()]
     places = sorted(places, key=lambda p: p.name)
+
     return render(request, 'places/search.html',
                   {'places': places, 'args': args})
 

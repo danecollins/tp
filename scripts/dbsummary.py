@@ -16,7 +16,7 @@ def summary():
     p = Place.objects.all()
     message = 'There are %d users and %d places' % (len(u), len(p))
     url = 'https://hooks.slack.com/services/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'
-    bot_name = 'tpserver'
+    bot_name = 'dbsummary'
     payload = {'text': message, 'username': bot_name, }
     r = requests.post(url, data=json.dumps(payload))
 

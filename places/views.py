@@ -145,11 +145,12 @@ def place_add(request):
 
 @login_required
 def place_share(request, place_id, username):
-    place = get_object_or_404(Place, id=place_id)
-    user = User.objects.get(username=username)
-    place.id = False
-    place.user = user
-    place.save()
+    # place = get_object_or_404(Place, id=place_id)
+    # user = User.objects.get(username=username)
+    # max_id = max([x.id for x in Place.objects.all()])
+    # place.id = max_id + 1
+    # place.user = user
+    # place.save()
     return place_detail(request, place_id)
 
 
@@ -166,7 +167,9 @@ def place_copy(request, place_id):
                   outdoor=source.outdoor,
                   yelp=source.yelp,
                   )
-    place.id = False
+
+    max_id = max([x.id for x in Place.objects.all()])
+    place.id = max_id + 1
     place.save()
     m = 'User: {} copied place: {}'.format(request.user, place.name)
     logprint(m)
@@ -240,7 +243,27 @@ def search(request):
         places = [p for p in Place.objects.all() if pat.search(p.name)]
         logprint('User:{} searched for: {}'.format(request.user, args.get('pat', '')))
 
+    # create a unique set of places, want to prefer places you own
+    # create a dict based on place names
+    p_by_name = defaultdict(list)
+    for p in places:
+        p_by_name[p.name].append(p)
+
+    # if there are multiple places with same name, keep the one the user owns
+    for k, v in p_by_name.items():
+        if len(v) > 1:
+            tmp = [x for x in v if x.user == request.user]
+            if len(tmp) == 0:  # user owns none, keep first one
+                p_by_name[k] = v[:1]
+            elif len(tmp) == 1:  # user owns one, keep that one
+                p_by_name[k] = tmp
+            else:  # user owns multiple, keep just one
+                p_by_name[k] = tmp[:1]
+
+    # now all p_by_name have just one item
+    places = [x[0] for x in p_by_name.values()]
     places = sorted(places, key=lambda p: p.name)
+
     return render(request, 'places/search.html',
                   {'places': places, 'args': args})
 

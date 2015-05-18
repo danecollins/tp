@@ -17,7 +17,7 @@
                                                                             {% else %}<img src="/static/down.gif" alt="thumbs down" height="55"/>{% endif %}</td></tr>
     		<tr><td class='place-field'>Dog Friendly</td>   <td>{% if p.dog_friendly %}<img src="/static/up.gif" alt="thumbs up" height="55"/>
                                                                             {% else %}<img src="/static/down.gif" alt="thumbs down" height="55"/>{% endif %}</td></tr>
-            {% if not anon %}
+            {% if p.user == user %}
             <tr><td class='place-field'>Rating</td>         <td>{% if p.rating == -1 %}<img src="/static/dislike.gif" alt="distdke" height="55"/>
                 {% else %}<img = src="/static/star_{{ p.rating }}.gif" alt="rated {{ p.rating }} stars" height="55"/>
                 {% endif %}
@@ -28,9 +28,12 @@
         </table>
 
         <table>
-        {% if not anon %}
+        {% if p.user == user %}
     	<td><a class="pure-button pure-button-primary" href="/places/edit/{{ p.id }}">Edit Restaurant Information</a></td>
         <td><a class="pure-button pure-button-disabled" href="/places/share/{{ p.id }}">Share</a></td>
+        {% endif %}
+        {% if p.user != user and user.is_authenticated %}
+        <td><a class="pure-button pure-button-primary" href="/places/copy/{{ p.id }}">Add To My Places</a></td>
         {% endif %}
         </table>
     <hr>

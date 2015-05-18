@@ -145,11 +145,12 @@ def place_add(request):
 
 @login_required
 def place_share(request, place_id, username):
-    place = get_object_or_404(Place, id=place_id)
-    user = User.objects.get(username=username)
-    place.id = False
-    place.user = user
-    place.save()
+    # place = get_object_or_404(Place, id=place_id)
+    # user = User.objects.get(username=username)
+    # max_id = max([x.id for x in Place.objects.all()])
+    # place.id = max_id + 1
+    # place.user = user
+    # place.save()
     return place_detail(request, place_id)
 
 

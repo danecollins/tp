@@ -6,7 +6,7 @@
 <form action="{% url 'places:search' %}" method="post">
   {% csrf_token %}
    <p>
-      <label>Places containing:</label>
+      <label>Show places containing:</label>
       <input type="text" name="pat" value={{ args.pat }}>
       <input type="submit" value="Search">
    </p>
@@ -20,7 +20,7 @@
     {% if places|length > 0 %}
         <ul>
           {% for p in places %}
-              <li><a href="/places/view/{{ p.id }}">{{ p.name }}</a>
+              <li><a href="/places/view/{{ p.id }}"><span title="{{ p.city }}, {{ p.locale }}">{{ p.name }}</span></a>
                   {% if p.user != user and user.is_authenticated %}
                   -- new
                   {% endif %}

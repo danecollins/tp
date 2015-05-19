@@ -38,7 +38,7 @@ menus = {
 anon_place_fields = [u'City', u'Locale', u'Cuisine',
                      u'Outdoor Seating', u'Dog Friendly']
 
-user_place_fields = [u'City', u'Locale', u'Cuisine',
+user_place_fields = [u'City', u'Locale', u'Cuisine', u'Visit Type',
                      u'Outdoor Seating', u'Dog Friendly',
                      u'Rating', u'Good For', u'Comment']
 
@@ -140,6 +140,7 @@ class TestCityPage(unittest.TestCase):
 
 
 class TestViewPlace(unittest.TestCase):
+    '''Tests the place_details.html view'''
     url = '/places/view/107/'
 
     def test_page_title(self):
@@ -154,17 +155,23 @@ class TestViewPlace(unittest.TestCase):
 
     def test_page_content(self):
         (anon, user) = get_page_variants(self.url)
-        li_items = anon.find_all('li', class_='place-field')
-        fields = [x.text.split(':')[0] for x in li_items]
+        # all the table fields are labelled with a class
+        td_items = anon.find_all('td', class_='place-field')
+        fields = [x.text for x in td_items]
+        # test place etails field labels
         self.assertEqual(fields, anon_place_fields)
-        li_items = user.find_all('li', class_='place-field')
-        fields = [x.text.split(':')[0] for x in li_items]
-        self.assertEqual(fields, user_place_fields)
+        td_items = user.find_all('td', class_='place-field')
+        fields = [x.text for x in td_items]
+        num_fields = len(user_place_fields)
+        self.assertEqual(len(fields), num_fields)
+        self.assertEqual(sorted(fields), sorted(user_place_fields))
 
         self.assertEqual(get_button_links(anon), {})
         user_buttons = get_button_links(user)
         desired = {u'Edit Restaurant Information': u'/places/edit/107',
-                   u'Share': u'/places/share/107'}
+                   u'Share': u'/places/share/107',
+                   u'Open In Yelp':
+                   u'http://www.yelp.com/biz/rock-bottom-restaurant-and-brewery-campbell'}
         self.assertEqual(user_buttons, desired)
 
 if __name__ == '__main__':

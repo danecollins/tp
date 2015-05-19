@@ -4,21 +4,22 @@ import os
 
 
 class Status:
-    WantToGo = 1
-    DontGoAgain = -1
-    HaveNotBeenTo = 0
-    HaveBeenTo = 2
+    WantToGo = 0
+    HaveBeenTo = 1
+    NotInterested = 2
+    DontGoAgain = 3
+
 
     @classmethod
-    def as_string(cls,int_value):
-        if int_value == 1:
+    def as_string(cls, int_value):
+        if int_value == cls.WantToGo:
             return 'Want To Go To'
-        elif int_value == 0:
-            return 'Have Not Been To'
-        elif int_value == -1:
-            return "Don't Go Again"
-        elif int_value == 2:
+        elif int_value == cls.HaveBeenTo:
             return 'Have Been To'
+        elif int_value == cls.DontGoAgain:
+            return "Don't Go Back"
+        elif int_value == cls.NotInterested:
+            return 'Not Interested'
         else:
             return 'Illegal Value'
 

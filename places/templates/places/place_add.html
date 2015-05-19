@@ -11,7 +11,7 @@
     	<h3>Restaurant Information</h3>
         <form action="/places/add/" method="post">
         {% csrf_token %}
-    	<table>
+    	<table >
             <tr>
                 <td>Name:</td><td><input type="text" name="name" value=""></td>
             </tr>
@@ -27,6 +27,7 @@
             <tr>
                 <td>Rating:</td><td><input type="text" name="rating" value=0 size="5"></td>
             </tr>
+            <tr><td style="padding-left: 20px;" colspan=2> 0=unrated or 1, 2 or 3 for a rating</td></tr>
             <tr>
                 <td>Outdoor Seating:&nbsp;&nbsp;</td><td><input type="checkbox" name="outdoor"></td>
             </tr>
@@ -34,11 +35,15 @@
                 <td>Dog Friendly:</td><td><input type="checkbox" name="dog_friendly"></td>
             </tr>
             <tr>
-                <td>Visited:</td><td>
-                                 <input type="radio" name="status" value="0" checked> Have Not Been To<br/>
-                                 <input type="radio" name="status" value="1" > Want To Go To<br/>
-                                 <input type="radio" name="status" value="-1" > Don't Go Again<br/>
-                                 </td>
+                <td>Visit Type:</td>
+                <td>
+                  <select name="status"> 
+                    <option value="0" {% if p.status == 0 %}selected{% endif %}>Want To Go To</option>
+                    <option value="1" {% if p.status == 1 %}selected{% endif %}>Have Been To</option>
+                    <option value="2" {% if p.status == 2 %}selected{% endif %}>Not Interested</option>
+                    <option value="3" {% if p.status == 3 %}selected{% endif %}>Don't Go Again</option>
+                  </select>
+                </td>
             </tr>
             <tr>
                 <td>Good For:</td><td><input type="text" name="good_for" value=""></td>

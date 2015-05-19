@@ -3,6 +3,26 @@ from django.contrib.auth.models import User
 import os
 
 
+class Status:
+    WantToGo = 1
+    DontGoAgain = -1
+    HaveNotBeenTo = 0
+    HaveBeenTo = 2
+
+    @classmethod
+    def as_string(cls,int_value):
+        if int_value == 1:
+            return 'Want To Go To'
+        elif int_value == 0:
+            return 'Have Not Been To'
+        elif int_value == -1:
+            return "Don't Go Again"
+        elif int_value == 2:
+            return 'Have Been To'
+        else:
+            return 'Illegal Value'
+
+
 class Place(models.Model):
     user = models.ForeignKey(User)
     name = models.CharField(max_length=100)
@@ -16,6 +36,10 @@ class Place(models.Model):
     good_for = models.CharField(max_length=50, blank=True)
     comment = models.CharField(max_length=200, blank=True)
     yelp = models.CharField(max_length=200, blank=True)
+    opentable = models.CharField(max_length=200, blank=True)
+    archived = models.BooleanField(default=False, blank=True)
+    status = models.IntegerField(default=0)
+
 
     @classmethod
     def from_csv(cls, user, text, delimiter=','):

@@ -28,6 +28,16 @@
                 <td>Rating:</td><td><input type="text" name="rating" value={{ p.rating }}></td>
             </tr>
             <tr>
+                <td>Visit Type:</td><td>
+                                 <input type="radio" name="status" value="0"
+                                  {% if p.status == 0 %} checked{% endif %}> Have Not Been To<br/>
+                                 <input type="radio" name="status" value="1" 
+                                  {% if p.status == 1 %} checked{% endif %}> Want To Go To<br/>
+                                 <input type="radio" name="status" value="-1" 
+                                  {% if p.status == -1 %} checked{% endif %}> Don't Go Again<br/>
+                                 </td>
+            </tr>
+            <tr>
                 <td>Outdoor Seating:</td><td><input type="checkbox" name="outdoor" {% if p.outdoor %}checked{% endif %}></td>
             </tr>
             <tr>

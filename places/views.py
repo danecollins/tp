@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
 from django.contrib.auth.models import User
-from places.models import Place
+from places.models import Place, Status
 from vote.models import Vote
 
 import re
@@ -105,8 +105,9 @@ def place_detail(request, place_id):
         anon = True
     else:
         anon = False
-    return render(request, 'places/place_detail.html', {'p': place,
-                                                        'anon': anon})
+    logprint('User: {} is viewing details on {}'.format(request.user, place.name))
+    return render(request, 'places/place_detail.html',
+                  {'p': place, 'statustext': Status.as_string(place.status), 'anon': anon})
 
 
 @login_required
@@ -114,7 +115,8 @@ def place_edit(request, place_id):
     place = get_object_or_404(Place, id=place_id)
     logprint('User: {} is editing place: {}'.format(request.user, place.name))
     if request.user == place.user:
-        return render(request, 'places/place_edit.html', {'p': place})
+        return render(request, 'places/place_edit.html',
+                      {'p': place, 'statustext': Status.as_string(place.status)})
     else:
         return render(request, 'places/no_permission.html', {'p': place})
 
@@ -135,6 +137,7 @@ def place_add(request):
         p.yelp = args['yelp']
         p.dog_friendly = 'dog_friendly' in args
         p.outdoor = 'outdoor' in args
+        p.status = int(args['status'])
         p.user = request.user
         p.save()
         m = 'User: {} added place: {} with id: {}'.format(request.user, p.name, p.id)
@@ -226,10 +229,16 @@ def place_save(request, place_id):
             if p.rating != int_val:
                 p.rating = int_val
                 changed = True
+        elif k == 'status':
+            int_val = int(v)
+            if p.status != int_val:
+                p.status = int_val
+                changed = True
     if changed:
         logprint('User: {} edited place: {}'.format(request.user, p.name))
         p.save()
-    return render(request, 'places/place_detail.html', {'p': p})
+    return render(request, 'places/place_detail.html',
+                  {'p': p, 'statustext': Status.as_string(p.status)})
 
 
 def search(request):

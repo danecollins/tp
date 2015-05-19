@@ -13,10 +13,10 @@
     		<tr><td class='place-field'>City</td>           <td><a href="/places/city/{{ p.city }}">{{ p.city }}</a></td></tr>
     		<tr><td class='place-field'>Locale</td>         <td>{{ p.locale }}</td></tr>
             <tr><td class='place-field'>Cuisine</td>        <td>{{ p.cuisine }}</td></tr>
-    		<tr><td class='place-field'>Outdoor Seating&nbsp;&nbsp;</td><td>{% if p.outdoor %}<img src="/static/up.gif" alt="thumbs up" height="55"/>
-                                                                            {% else %}<img src="/static/down.gif" alt="thumbs down" height="55"/>{% endif %}</td></tr>
-    		<tr><td class='place-field'>Dog Friendly</td>   <td>{% if p.dog_friendly %}<img src="/static/up.gif" alt="thumbs up" height="55"/>
-                                                                            {% else %}<img src="/static/down.gif" alt="thumbs down" height="55"/>{% endif %}</td></tr>
+    		<tr><td class='place-field'>Outdoor Seating&nbsp;&nbsp;</td><td>{% if p.outdoor %}<img src="/static/happy.gif" alt="thumbs up" height="55"/>
+                                                                            {% else %}<img src="/static/sad.gif" alt="thumbs down" height="55"/>{% endif %}</td></tr>
+    		<tr><td class='place-field'>Dog Friendly</td>   <td>{% if p.dog_friendly %}<img src="/static/hapy.gif" alt="thumbs up" height="55"/>
+                                                                            {% else %}<img src="/static/sad.gif" alt="thumbs down" height="55"/>{% endif %}</td></tr>
             {% if p.user == user %}
             <tr><td class='place-field'>Rating</td>         <td>{% if p.rating == -1 %}<img src="/static/dislike.gif" alt="distdke" height="55"/>
                 {% else %}<img = src="/static/star_{{ p.rating }}.gif" alt="rated {{ p.rating }} stars" height="55"/>

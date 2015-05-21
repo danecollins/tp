@@ -264,7 +264,10 @@ def place_save(request, place_id):
                 p.name = v
                 changed = True
         elif k == 'rating':
-            int_val = int(v)
+            try:
+                int_val = int(v)
+            except ValueError:
+                int_val = 0
             if p.rating != int_val:
                 p.rating = int_val
                 changed = True

@@ -31,7 +31,22 @@
 			<tr>
 				<td>Votes for Women</td><td>{{ data.women_votes }}</td>
 			</tr>
+			<tr>
+				<td>Current Survey</td><td>{{ data.survey }}</td>
+			</tr>
 		</tdata>
 	</table>
- 
+ <hr>
+<table class='pure-table'>
+	<thead>
+		<tr>
+			<td>Server</td><td>Database</td><td>Debug</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>{{ server }}</td><td>{{ database }}</td><td>{{ debug }}</td>
+		</tr>
+	</tbody>
+</table>
 {% endblock content %}

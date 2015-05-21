@@ -8,7 +8,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from .models import Place, VisitType
 from .forms import PlaceForm
-from vote.models import Vote
+from vote.models import Vote, Survey
 
 import re
 import sys
@@ -87,8 +87,16 @@ def info(request):
     data['num_places'] = len(Place.objects.all())
     data['men_votes'] = len(Vote.objects.filter(type=False))
     data['women_votes'] = len(Vote.objects.filter(type=True))
+    data['survey'] = Survey.get()
+
+    # get server information
+    s = os.environ.get('TP_SERVER', 'Missing')
+    x = os.environ.get('DATABASE_URL', '/Missing')
+    d = x.split('/')[-1]
+    debug = os.environ.get('DJANGO_DEBUG', 'Missing')
     logprint('User: {} is on info page'.format(request.user))
-    return render(request, 'places/info.html', {'data': data})
+    return render(request, 'places/info.html',
+                  {'data': data, 'server': s, 'database': d, 'debug': debug})
 
 
 def locale_list(request, city):

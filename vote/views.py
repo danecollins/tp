@@ -1,54 +1,56 @@
 from django.shortcuts import render
 
 # Create your views here.
-from models import Vote, Problem
+from models import Vote, Survey
 
 
 def index(request):
-    votes = Vote.objects.all()
+    s = Survey.get()
+    votes = Vote.objects.filter(survey=s)
     mtot = len([x for x in votes if not x.type])
     wtot = len([x for x in votes if x.type])
     return render(request, 'vote/index.html', {'mtot': mtot,
-                                               'wtot': wtot})
+                                               'wtot': wtot,
+                                               'survey': s})
 
 
 def man(request):
     v = Vote(type=False)
-    v.problem = Problem.get()
+    v.survey = Survey.get()
     v.save()
-    votes = Vote.objects.all()
+    votes = Vote.objects.filter(survey=v.survey)
     mtot = len([x for x in votes if not x.type])
     wtot = len([x for x in votes if x.type])
     return render(request, 'vote/vote.html', {'type': 'man',
-                                              'problem': v.problem,
+                                              'survey': v.survey,
                                               'mtot': mtot,
                                               'wtot': wtot})
 
 
 def woman(request):
     v = Vote(type=True)
-    v.problem = Problem.get()
+    v.survey = Survey.get()
     v.save()
-    votes = Vote.objects.all()
+    votes = Vote.objects.filter(survey=v.survey)
     mtot = len([x for x in votes if not x.type])
     wtot = len([x for x in votes if x.type])
     return render(request, 'vote/vote.html', {'type': 'woman',
-                                              'problem': v.problem,
+                                              'survey': v.survey,
                                               'mtot': mtot,
                                               'wtot': wtot})
 
 
-def view_problem(request):
-    p = Problem.objects.get(id=1)
-    return render(request, 'vote/problem.html', {'p': p})
+def view_survey(request):
+    p = Survey.objects.get(id=1)
+    return render(request, 'vote/survey.html', {'p': p})
 
 
-def set_problem(request, problem):
+def set_survey(request, name):
     try:
-        p = Problem.objects.get(id=1)
+        p = Survey.objects.get(id=1)
     except:
-        p = Problem()
+        p = Survey()
 
-    p.last = problem
+    p.last = name
     p.save()
-    return view_problem(request)
+    return view_survey(request)

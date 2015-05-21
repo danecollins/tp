@@ -169,9 +169,7 @@ class TestViewPlace(unittest.TestCase):
         self.assertEqual(get_button_links(anon), {})
         user_buttons = get_button_links(user)
         desired = {u'Edit Restaurant Information': u'/places/edit/107',
-                   u'Share': u'/places/share/107',
-                   u'Open In Yelp':
-                   u'http://www.yelp.com/biz/rock-bottom-restaurant-and-brewery-campbell'}
+                   u'Share': u'/places/share/107'}
         self.assertEqual(user_buttons, desired)
 
 if __name__ == '__main__':

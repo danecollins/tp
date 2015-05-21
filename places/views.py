@@ -70,10 +70,10 @@ def index(request):
 def city_list(request):
     if request.user.is_anonymous():
         username = 'Guest User'
-        cities = sorted(set([x.city for x in Place.objects.all()]))
+        cities = sorted(set([x.city for x in Place.objects.filter(archived=False)]))
     else:
         username = request.user.first_name
-        cities = sorted(set([x.city for x in Place.objects.filter(user=request.user)]))
+        cities = sorted(set([x.city for x in Place.objects.filter(user=request.user, archived=False)]))
 
     logprint('User: {} is on city list'.format(request.user))
     return render(request, 'places/city_list.html', {'clist': cities,
@@ -105,13 +105,13 @@ def locale_list(request, city):
         places = []
         # we can end up with duplicate places due to multiple users which we don't want
         place_names = set()
-        for place in Place.objects.filter(city=city):
+        for place in Place.objects.filter(city=city, archived=False):
             if place.name not in place_names:
                 place_names.add(place.name)
                 places.append(place)
     else:
         username = request.user.username
-        places = Place.objects.filter(city=city, user=request.user)
+        places = Place.objects.filter(city=city, user=request.user, archived=False)
 
     by_locale = defaultdict(set)
     id_by_name = {p.name: p.id for p in places}
@@ -285,13 +285,13 @@ def place_save(request, place_id):
 
 def search(request):
     if request.method == 'GET':
-        places = Place.objects.all()
+        places = Place.objects.filter(archived=False)
         args = {}
         logprint('User:{} is on search page'.format(request.user, args.get('pat', '')))
     else:
         args = request.POST
         pat = re.compile(args['pat'], re.IGNORECASE)
-        places = [p for p in Place.objects.all() if pat.search(p.name)]
+        places = [p for p in Place.objects.filter(archived=False) if pat.search(p.name)]
         logprint('User:{} searched for: {}'.format(request.user, args.get('pat', '')))
 
     # create a unique set of places, want to prefer places you own
@@ -317,6 +317,23 @@ def search(request):
 
     return render(request, 'places/search.html',
                   {'places': places, 'args': args})
+
+
+def delete(request, place_id):
+    p = Place.objects.get(id=place_id)
+    if request.method == 'GET':
+        return render(request, 'places/confirm.html', {'place': p})
+    else:
+        args = request.POST
+        answer = args['confirm']
+
+        if answer == 'Yes':
+            p.archived = True
+            p.save()
+            logprint('User: {} deleted place named: {}'.format(request.user, p.name))
+            return city_list(request)
+        else:
+            return place_detail(request, p.id)
 
 
 def about(request):

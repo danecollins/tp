@@ -13,4 +13,5 @@ urlpatterns = patterns('',
                        url(r'^share/(?P<place_id>[\d]+)/(?P<username>[\w|\W]+)/$',
                            views.place_share, name='place_share'),
                        url(r'^copy/(?P<place_id>[\d]+)/$', views.place_copy, name='place_copy'),
+                       url(r'^delete/(?P<place_id>[\d]+)/$', views.delete),
                        )

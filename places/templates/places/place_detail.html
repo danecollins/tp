@@ -46,8 +46,10 @@
         {% if p.user != user and user.is_authenticated %}
         <td><a class="pure-button pure-button-primary" href="/places/copy/{{ p.id }}">Add To My Places</a></td>
         {% endif %}
+        {% if p.user == user %}
         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-        <td><a href="#">Delete Restaurant</a></td>
+        <td><a href="/places/delete/{{ p.id }}">Delete Restaurant</a></td>
+        {% endif %}
         </tr>
         </table>
 

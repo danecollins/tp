@@ -1,0 +1,20 @@
+{% extends 'menu_base.html' %}
+
+{% block title %}TrackPlaces - Confirm Delete{% endblock %}
+
+{% block header %}
+    <h3>{{ p.name }}</h3>
+{% endblock %}
+
+{% block content %}
+
+    	<h3>Confirm Deletion</h3>
+        <form action="/places/delete/{{ place.id }}/" method="post">
+        {% csrf_token %}
+    	<h4>Are you sure you want to delete: {{ place.name }}</h4>
+        <input type="submit" name="confirm" value="Yes">&nbsp;&nbsp;<input type="submit" name="confirm" value="No">
+        </form>
+    
+        <p>Note: After deletion you will be returned to the city list.</p>
+
+{% endblock content %}

@@ -6,12 +6,37 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
 from django.contrib.auth.models import User
-from places.models import Place, Status
+from .models import Place, VisitType
+from .forms import PlaceForm
 from vote.models import Vote
 
 import re
 import sys
 import os
+import pdb
+
+opentable_data = {}
+opentable_data[9] = (2493, 'capers-reservations-campbell', 'Capers (2493)')
+opentable_data[44] = (2550, 'forbes-mill-steakhouse-los-gatos-reservations-los-gatos',
+                      "Forbes Mill Steakhouse - Los Gatos (2550)")
+opentable_data[46] = (61927, 'rosie-mccanns-irish-pub-and-restaurant-reservations-santa-cruz',
+                      "Rosie McCann's - Santa Cruz (61927)")
+
+
+def get_opentable(id):
+    id = int(id)
+    if id not in opentable_data:
+        return False
+
+    (restid, link, name) = opentable_data[id]
+    s = '<script type="text/javascript" \
+src="https://secure.opentable.com/frontdoor/default.aspx?rid={0}&restref={0}&\
+bgcolor=FFFFFF&titlecolor=0F0F0F&subtitlecolor=0F0F0F&\
+btnbgimage=https://secure.opentable.com/frontdoor/img/ot_btn_red.png&\
+otlink=FFFFFF&icon=dark&mode=short&hover=1">\
+</script>'.format(restid)
+    href = '<a href="http://www.opentable.com/{1}?rtype=ism&restref={0}" class="OT_ExtLink">{2}</a>'.format(restid, link, name)
+    return s + href
 
 
 def log_to_slack(message):
@@ -107,7 +132,8 @@ def place_detail(request, place_id):
         anon = False
     logprint('User: {} is viewing details on {}'.format(request.user, place.name))
     return render(request, 'places/place_detail.html',
-                  {'p': place, 'statustext': Status.as_string(place.status), 'anon': anon})
+                  {'p': place, 'visittype': VisitType.as_string(place.visited),
+                   'anon': anon, 'opentable': get_opentable(place_id)})
 
 
 @login_required
@@ -116,34 +142,39 @@ def place_edit(request, place_id):
     logprint('User: {} is editing place: {}'.format(request.user, place.name))
     if request.user == place.user:
         return render(request, 'places/place_edit.html',
-                      {'p': place, 'statustext': Status.as_string(place.status)})
+                      {'p': place, 'visittype': VisitType.as_string(place.visited)})
     else:
         return render(request, 'places/no_permission.html', {'p': place})
 
 
 @login_required
 def place_add(request):
-    if request.method == 'GET':
-        return render(request, 'places/place_add.html')
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = PlaceForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            d = form.cleaned_data
+            max_id = max([x.id for x in Place.objects.all()])
+            p = Place(user=request.user, name=d['name'], city=d['city'], locale=d['locale'],
+                      visited=d['visited'], rating=d['rating'])
+            p.id = max_id + 1
+            p.cuisine = d['cuisine']
+            p.good_for = d['good_for']
+            p.comment = d['comment']
+            p.yelp = d['yelp']
+            p.dog_friendly = d['dog_friendly']
+            p.outdoor = d['outdoor']
+            p.save()
+            m = 'User: {} added place: {} with id: {}'.format(p.user, p.name, p.id)
+            logprint(m)
+            # log_to_slack(m)
+            return place_detail(request, p.id)
     else:
-        args = request.POST
-        max_id = max([x.id for x in Place.objects.all()])
-        p = Place(user=request.user, name=args['name'], city=args['city'], locale=args['locale'])
-        p.id = max_id + 1
-        p.cuisine = args['cuisine']
-        p.rating = int(args['rating'])
-        p.good_for = args['good_for']
-        p.comment = args['comment']
-        p.yelp = args['yelp']
-        p.dog_friendly = 'dog_friendly' in args
-        p.outdoor = 'outdoor' in args
-        p.status = int(args['status'])
-        p.user = request.user
-        p.save()
-        m = 'User: {} added place: {} with id: {}'.format(request.user, p.name, p.id)
-        logprint(m)
-        log_to_slack(m)
-        return place_detail(request, p.id)
+        form = PlaceForm().as_table()
+    return render(request, 'places/place_add.html', {'form': form})
 
 
 @login_required
@@ -229,16 +260,16 @@ def place_save(request, place_id):
             if p.rating != int_val:
                 p.rating = int_val
                 changed = True
-        elif k == 'status':
+        elif k == 'visited':
             int_val = int(v)
-            if p.status != int_val:
-                p.status = int_val
+            if p.visited != int_val:
+                p.visited = int_val
                 changed = True
     if changed:
         logprint('User: {} edited place: {}'.format(request.user, p.name))
         p.save()
     return render(request, 'places/place_detail.html',
-                  {'p': p, 'statustext': Status.as_string(p.status)})
+                  {'p': p, 'visittype': VisitType.as_string(p.visited)})
 
 
 def search(request):

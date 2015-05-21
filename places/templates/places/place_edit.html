@@ -30,11 +30,11 @@
             <tr>
                 <td>Visit Type:</td>
                 <td>
-                  <select name="status"> 
-                    <option value="0" {% if p.status == 0 %}selected{% endif %}>Want To Go To</option>
-                    <option value="1" {% if p.status == 1 %}selected{% endif %}>Have Been To</option>
-                    <option value="2" {% if p.status == 2 %}selected{% endif %}>Not Interested</option>
-                    <option value="3" {% if p.status == 3 %}selected{% endif %}>Don't Go Again</option>
+                  <select name="visited"> 
+                    <option value="0" {% if p.visited == 0 %}selected{% endif %}>Want To Go To</option>
+                    <option value="1" {% if p.visited == 1 %}selected{% endif %}>Have Been To</option>
+                    <option value="2" {% if p.visited == 2 %}selected{% endif %}>Not Interested</option>
+                    <option value="3" {% if p.visited == 3 %}selected{% endif %}>Don't Go Again</option>
                   </select>
                 </td>
             </tr>
@@ -48,10 +48,10 @@
                 <td>Good For:</td><td><input type="text" name="good_for" value="{{ p.good_for }}"></td>
             </tr>
             <tr>
-                <td>Yelp Link:</td><td><input type="text" name="yelp" value="{{ p.yelp }}" size="70"></td>
+                <td>Comment:</td><td><input type="text" name="comment" value="{{ p.comment }}" size="70"></td>
             </tr>
             <tr>
-                <td>Comment:</td><td><input type="text" name="comment" value="{{ p.comment }}" size="70"></td>
+                <td>Yelp Link:</td><td><input type="text" name="yelp" value="{{ p.yelp }}" size="70"></td>
             </tr>
     	</table>
         <input type="submit" value="Submit">

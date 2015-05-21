@@ -3,12 +3,18 @@ from django.contrib.auth.models import User
 import os
 
 
-class Status:
+class VisitType:
     WantToGo = 0
     HaveBeenTo = 1
     NotInterested = 2
     DontGoAgain = 3
 
+    @classmethod
+    def type_list(cls):
+        tup = list()
+        for i in range(4):
+            tup.append((i, cls.as_string(i)))
+        return tup
 
     @classmethod
     def as_string(cls, int_value):
@@ -33,13 +39,11 @@ class Place(models.Model):
     outdoor = models.BooleanField(default=False, blank=True)
     dog_friendly = models.BooleanField(default=False, blank=True)
     rating = models.IntegerField(default=0)
-    want_to_go = models.BooleanField(default=False, blank=True)
     good_for = models.CharField(max_length=50, blank=True)
     comment = models.CharField(max_length=200, blank=True)
     yelp = models.CharField(max_length=200, blank=True)
-    opentable = models.CharField(max_length=200, blank=True)
     archived = models.BooleanField(default=False, blank=True)
-    status = models.IntegerField(default=0)
+    visited = models.IntegerField(default=0)
 
 
     @classmethod

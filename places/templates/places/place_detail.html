@@ -9,6 +9,8 @@
 {% block content %}
 
     	<h3>Details</h3>
+<div class="pure-g">
+    <div class="pure-u-2-3">
     	<table>
     		<tr><td class='place-field'>City</td>           <td><a href="/places/city/{{ p.city }}">{{ p.city }}</a></td></tr>
     		<tr><td class='place-field'>Locale</td>         <td>{{ p.locale }}</td></tr>
@@ -22,18 +24,23 @@
                 {% else %}<img = src="/static/star_{{ p.rating }}.gif" alt="rated {{ p.rating }} stars" height="55"/>
                 {% endif %}
             </td></tr>
-            <tr><td class='place-field'>Visit Type</td>       <td>{{ statustext }}</td></tr>
+            <tr><td class='place-field'>Visit Type</td>       <td>{{ visittype }}</td></tr>
     		<tr><td class='place-field'>Good For</td>       <td>{{ p.good_for }}</td></tr>
     		<tr><td class='place-field'>Comment</td>        <td>{{ p.comment }}</td></tr>
             {% endif %}
         </table>
-
+    </div>
+    {% if opentable %}
+    <div class="pure-u-1-3">
+    {{ opentable|safe }}
+    </div>
+    {% endif %}
+</div>
         <table>
         <tr>
         {% if p.user == user %}
     	<td><a class="pure-button pure-button-primary" href="/places/edit/{{ p.id }}">Edit Restaurant Information</a></td>
         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-        {% if p.yelp %}<td><a class="pure-button" href="{{ p.yelp }}" target="_blank">Open In Yelp</a></td>{% endif %}
         <td><a class="pure-button pure-button-disabled" href="/places/share/{{ p.id }}">Share</a></td>
         {% endif %}
         {% if p.user != user and user.is_authenticated %}
@@ -43,7 +50,6 @@
         <td><a href="#">Delete Restaurant</a></td>
         </tr>
         </table>
-    <hr>
 
 {% endblock content %}
 

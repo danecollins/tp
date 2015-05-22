@@ -21,6 +21,22 @@ opentable_data[44] = (2550, 'forbes-mill-steakhouse-los-gatos-reservations-los-g
                       "Forbes Mill Steakhouse - Los Gatos (2550)")
 opentable_data[46] = (61927, 'rosie-mccanns-irish-pub-and-restaurant-reservations-santa-cruz',
                       "Rosie McCann's - Santa Cruz (61927)")
+opentable_data[119] = (3961, 'frasca-food-and-wine-reservations-boulder', 'Frasca Food and Wine (3961)')
+opentable_data[23] = (38101, "gabriella-cafe-reservations-santa-cruz", "Gabriella Cafe (38101)")
+opentable_data[10] = (148627, "i-gatti-reservations-los-gatos", "I Gatti (148627)")
+opentable_data[125] = (23185, "jax-fish-house-reservations-boulder", "Jax Fish House - Boulder (23185)")
+opentable_data[51] = (50125, "johnnys-harborside-reservations-santa-cruz", "Johnny's Harborside (50125)")
+opentable_data[22] = (169, "kuletos-reservations-san-francisco", "Kuleto's (169)")
+opentable_data[17] = (36079, "kyoto-palace-restaurant-reservations-campbell", "Kyoto Palace Restaurant (36079)")
+opentable_data[27] = (7055, "lb-steak-santana-row-reservations-san-jose", "LB Steak - Santana Row (7055)")
+opentable_data[14] = (60544, "laili-reservations-santa-cruz", "Laili (60544)")
+opentable_data[19] = (1131, "los-gatos-brewing-company-reservations-los-gatos", "Los Gatos Brewing Company (1131)")
+opentable_data[20] = (15076, "maggianos-reservations-san-jose", "Maggiano's - San Jose (183) (15076)")
+opentable_data[16] = (44584, "oswald-reservations-santa-cruz", "Oswald (44584)")
+opentable_data[21] = (10363, "wine-cellar-restaurant-reservations-los-gatos", "Wine Cellar Restaurant (10363)")
+opentable_data[46] = (61927, "rosie-mccanns-irish-pub-and-restaurant-reservations-santa-cruz", "Rosie McCann's Irish Pub (61927)")
+opentable_data[136] = (2875, "shadowbrook-restaurant-reservations-capitola", "Shadowbrook Restaurant Capitola (2875)")
+opentable_data[38] = (3130, "village-california-bistro-and-wine-bar-reservations-san-jose", "Village California Bistro (3130)")
 
 
 def get_opentable(id):

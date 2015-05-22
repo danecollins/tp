@@ -20,3 +20,8 @@ fi
 
 echo "INFO: heroku pull completed" >> daily.log
 scripts/dbsummary.py >> daily.log 2>&1
+
+echo "INFO: next backup ladera database" >> daily.log
+cd ~/src/scripts
+./backup_ladera_prod.sh >> daily.log 2>&1
+

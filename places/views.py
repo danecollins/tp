@@ -163,10 +163,22 @@ def place_detail(request, place_id):
 @login_required
 def place_edit(request, place_id):
     place = get_object_or_404(Place, id=place_id)
+    init = {'name': place.name,
+            'city': place.city,
+            'locale': place.locale,
+            'cuisine': place.cuisine,
+            'outdoor': place.outdoor,
+            'dog_friendly': place.dog_friendly,
+            'visited': place.visited,
+            'rating': place.rating,
+            'good_for': place.good_for,
+            'comment': place.comment,
+            'yelp': place.yelp}
     logprint('User: {} is editing place: {}'.format(request.user, place.name))
     if request.user == place.user:
+        form = PlaceForm(initial=init)
         return render(request, 'places/place_edit.html',
-                      {'p': place, 'visittype': VisitType.as_string(place.visited)})
+                      {'p': place, 'form': form})
     else:
         return render(request, 'places/no_permission.html', {'p': place})
 
@@ -203,12 +215,7 @@ def place_add(request):
 
 @login_required
 def place_share(request, place_id, username):
-    # place = get_object_or_404(Place, id=place_id)
-    # user = User.objects.get(username=username)
-    # max_id = max([x.id for x in Place.objects.all()])
-    # place.id = max_id + 1
-    # place.user = user
-    # place.save()
+    pass
     return place_detail(request, place_id)
 
 
@@ -239,46 +246,48 @@ def place_copy(request, place_id):
 def place_save(request, place_id):
     args = request.POST
     p = get_object_or_404(Place, id=place_id)
-    changed = False
+    # this is not necessary but I only want to change the fields that have changed
+    # rather than overwriting all of them.  I'm hoping this is visible in the logs.
+    changed = []
     for k, v in args.items():
         if k == 'comment':
             if p.comment != v:
                 p.comment = v
-                changed = True
+                changed.append('comment')
         elif k == 'good_for':
             if p.good_for != v:
                 p.good_for = v
-                changed = True
+                changed.append('good_for')
         elif k == 'dog_friendly':
             bool_val = (v == 'on')
             if p.dog_friendly != bool_val:
                 p.dog_friendly = bool_val
-                changed = True
+                changed.append('dog_friendly')
         elif k == 'outdoor':
             bool_val = (v == 'on')
             if p.outdoor != bool_val:
                 p.outdoor = bool_val
-                changed = True
+                changed.append('outdoor')
         elif k == 'city':
             if p.city != v:
                 p.city = v
-                changed = True
+                changed.append('city')
         elif k == 'cuisine':
             if p.cuisine != v:
                 p.cuisine = v
-                changed = True
+                changed.append('cuisine')
         elif k == 'yelp':
             if p.yelp != v:
                 p.yelp = v
-                changed = True
+                changed.append('yelp')
         elif k == 'locale':
             if p.locale != v:
                 p.locale = v
-                changed = True
+                changed.append('locale')
         elif k == 'name':
             if p.name != v:
                 p.name = v
-                changed = True
+                changed.append('name')
         elif k == 'rating':
             try:
                 int_val = int(v)
@@ -286,17 +295,19 @@ def place_save(request, place_id):
                 int_val = 0
             if p.rating != int_val:
                 p.rating = int_val
-                changed = True
+                changed.append('rating')
         elif k == 'visited':
             int_val = int(v)
             if p.visited != int_val:
                 p.visited = int_val
-                changed = True
-    if changed:
-        logprint('User: {} edited place: {}'.format(request.user, p.name))
+                changed.append('visited')
+    if changed is not None:
+        logprint('User: {} edited place: {}. Changed fields: {}'.format(request.user, p.name,
+                                                                        ','.join(changed)))
         p.save()
     return render(request, 'places/place_detail.html',
                   {'p': p, 'visittype': VisitType.as_string(p.visited)})
+
 
 
 def search(request):

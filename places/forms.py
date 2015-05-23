@@ -6,12 +6,19 @@ rating_choices = ((0, 'Not Rated'), (1, '1 Star - OK'),
 
 cuisine_choices = (('American', 'American'),
                    ('BBQ', 'BBQ'),
+		   ('Cuban', 'Cuban'),
                    ('Chinese', 'Chinese'),
+		   ('French', 'French'),
                    ('Greek', 'Greek'),
                    ('Indian', 'Indian'),
                    ('Italian', 'Italian'),
+		   ('Japanese', 'Japanese'),
+		   ('Korean', 'Korean'),
+		   ('Mediterranean', 'Mediterranean')
                    ('Mexican', 'Mexican'),
-                   ('Thai', 'Thai'))
+		   ('Pizza', 'Pizza'),
+                   ('Thai', 'Thai'),
+		   ('Other', 'Other'))
 
 class PlaceForm(forms.Form):
     required_css_class = 'required'

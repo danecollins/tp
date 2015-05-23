@@ -1,8 +1,11 @@
-from django.test import TestCase
+from django.test import TestCase, Client
+from bs4 import BeautifulSoup
 
 # Create your tests here.
 from places.models import Place
+from places.forms import PlaceForm
 from django.contrib.auth.models import User
+
 import pdb
 
 
@@ -15,9 +18,9 @@ def get_user(n):
 
 
 def create_users():
-    u = User(username=username(1))
+    u = User.objects.create_user(username=username(1), password='password', first_name='Test', last_name='User')
     u.save()
-    u = User(username=username(2))
+    u = User.objects.create_user(username=username(2), password='password')
     u.save()
 
 
@@ -30,7 +33,7 @@ def create_engfer(user):
         outdoor=True,
         rating=3,
         dog_friendly=True,
-        want_to_go=False,
+        visited=1,
         good_for='casual dinner',
         comment='only open at dinner')
     p.save()
@@ -46,7 +49,7 @@ def create_johnnys(user):
         outdoor=False,
         rating=2,
         dog_friendly=False,
-        want_to_go=False,
+        visited=1,
         good_for='fancy dinner',
         comment='good seafood')
     p.save()
@@ -56,6 +59,12 @@ def create_johnnys(user):
 def create_campbell():
     user = get_user(1)
     for s in campbell_restaurants:
+        Place.from_csv(user, s)
+
+
+def create_sanjose():
+    user = get_user(1)
+    for s in sanjose_restaurants:
         Place.from_csv(user, s)
 
 
@@ -72,9 +81,20 @@ campbell_restaurants = [
     "Blue Line Pizza,Downtown,Campbell,1,1,2,0,,deep dish pizza",
     "Buca di Beppo,Pruneyard,Campbell,0,0,1,0,big groups,"]
 
+sanjose_restaurants = [
+    "Mama Mia's,Westgate,San Jose,1,1,2,0,Swirls,",
+    "Capers,Out-of-Town,San Jose,0,0,1,0,,",
+    "Willow Street,Westgate,San Jose,1,1,2,0,,deep dish pizza",
+    "Tomatina,Westgate,San Jose,0,0,1,0,big groups,"]
+
 
 def create_many_places():
     create_campbell()
+
+
+def create_all_places():
+    create_campbell()
+    create_sanjose()
 
 
 class TestUtility(TestCase):
@@ -90,7 +110,7 @@ class TestUtility(TestCase):
         self.assertEqual(u2.username, username(2))
 
 
-class TestPlace(TestCase):
+class TestModels(TestCase):
     def test_simple_create(self):
         create_users()
         create_engfer(1)
@@ -128,3 +148,194 @@ class TestPlace(TestCase):
         fn = '/Users/dane/src/tp/places/initial.txt'
         Place.from_file(get_user(1), fn)
         self.assertEqual(len(Place.objects.all()), 102)
+
+#############################################################################
+#
+# Form Tests
+#
+
+add_form_labels = ['Name', 'City', 'Locale', 'Cuisine', 'Outdoor Seating', 'Dog Friendly',
+                   'Visit Type', 'Rating', 'Good For', 'Comment', 'Yelp URL']
+
+class TestForms(TestCase):
+    def test_place_form(self):
+        p = PlaceForm()
+        html = p.as_table()
+        soup = BeautifulSoup(html)
+        field_labels = sorted([x.text for x in soup.find_all('label')])
+        should_be = sorted([x + ":" for x in add_form_labels])
+        self.assertEqual(field_labels, should_be)
+
+#############################################################################
+#
+# View Tests
+#
+
+# Utility Functions
+menus = {
+    u'Add Place': u'/places/add',
+    u'Search': u'/places/search',
+    u'About': u'/about/',
+    u'Blog': u'/blog/archive',
+    u'Logout': u'/logout?next=/',
+    u'Cities': u'/places/city'
+}
+
+anon_place_fields = [u'City', u'Locale', u'Cuisine',
+                     u'Outdoor Seating', u'Dog Friendly']
+
+user_place_fields = [u'City', u'Locale', u'Cuisine', u'Visit Type',
+                     u'Outdoor Seating', u'Dog Friendly',
+                     u'Rating', u'Good For', u'Comment']
+
+
+def get_menu_links(soup):
+    l = {}
+    for a in soup.find_all('a', class_="pure-menu-link"):
+        l[a.text] = a['href']
+    return l
+
+
+buttons = {
+    u'Login': u'/login',
+    u'Register': u'/newuser',
+    u'Use As Guest': u'/places/city'
+}
+
+
+def get_button_links(soup):
+    l = {}
+    for a in soup.find_all('a', class_='pure-button'):
+        l[a.text] = a['href']
+    return l
+
+
+def get_anon_page(p, c):
+    # make sure we're logged out
+    c.get('/logout')
+    response = c.get(p)
+    text_anon = response.content
+    soup_anon = BeautifulSoup(text_anon)
+    return soup_anon
+
+
+def get_user_page(p, c):
+    response = c.post('/login/', {'username': 'test1', 'password': 'password'})
+    response = c.get(p)
+    text_user = response.content
+    soup_user = BeautifulSoup(text_user)
+    return soup_user
+
+
+def get_page_variants(p):
+    c = Client()
+    soup_anon = get_anon_page(p, c)
+    soup_user = get_user_page(p, c)
+    return (soup_anon, soup_user)
+
+
+class TestViewHome(TestCase):
+    url = '/'
+
+    def test_page_title(self):
+        create_users()
+        (anon, user) = get_page_variants(self.url)
+        self.assertEqual(anon.title.text, 'Welcome to Track Places')
+        self.assertEqual(user.title.text, 'Welcome to Track Places')
+
+    def test_menu_anon(self):
+        create_users()
+        (anon, user) = get_page_variants(self.url)
+        # if not logged in there should be no logout link
+        anon_menus = menus.copy()
+        del anon_menus['Logout']
+        self.assertEqual(get_menu_links(anon), anon_menus)
+
+    def test_menu_user(self):
+        create_users()
+        (anon, user) = get_page_variants(self.url)
+        self.assertEqual(get_menu_links(user), menus)
+
+    def test_buttons_anon(self):
+        create_users()
+        (anon, user) = get_page_variants(self.url)
+        # should have buttons
+        self.assertEqual(get_button_links(anon), buttons)
+
+    def test_buttons_user(self):
+        create_users()
+        (anon, user) = get_page_variants(self.url)
+        # if logged in there hsould be no buttons
+        self.assertEqual(get_button_links(user), {})
+
+
+class TestViewCityList(TestCase):
+    url = '/places/city/'
+
+    def test_page_title(self):
+        create_users()
+        (anon, user) = get_page_variants(self.url)
+        self.assertEqual(anon.title.text, 'TrackPlaces - Cities')
+        self.assertEqual(user.title.text, 'TrackPlaces - Cities')
+
+    def test_page_header(self):
+        create_users()
+        (anon, user) = get_page_variants(self.url)
+        self.assertEqual(anon.body.div.h1.text, 'Cities for Guest User')
+        self.assertEqual(user.body.div.h1.text, 'Cities for Test')
+
+    def test_city_links(self):
+        create_users()
+        create_all_places()
+        (anon, user) = get_page_variants(self.url)
+        anon_cities = anon.find_all('a', class_='city-link')
+        self.assertEqual(len(anon_cities), 2)
+        user_cities = user.find_all('a', class_='city-link')
+        self.assertEqual(len(user_cities), 2)
+
+
+class TestViewPlaceDetail(TestCase):
+    '''Tests the place_details.html view'''
+    def get_url(self):
+        place = Place.objects.get(name='Blue Line Pizza')
+        #
+        # MUST HAVE A TRAILING / OR ELSE GET A REDIRECT ERROR !!!!!!!!!!!!!!!!!!!!!
+        url = '/places/view/{}/'.format(place.id)
+        return url
+
+    def test_page_title(self):
+        create_users()
+        create_all_places()
+        (anon, user) = get_page_variants(self.get_url())
+        self.assertEqual(anon.title.text, 'TrackPlaces - Details')
+        self.assertEqual(user.title.text, 'TrackPlaces - Details')
+
+    def test_page_header(self):
+        create_users()
+        create_all_places()
+        (anon, user) = get_page_variants(self.get_url())
+        self.assertEqual(anon.body.div.h3.text, 'Blue Line Pizza - Guest View')
+        self.assertEqual(user.body.div.h3.text, 'Blue Line Pizza')
+
+    def test_page_content(self):
+        create_users()
+        create_all_places()
+        (anon, user) = get_page_variants(self.get_url())
+        # all the table fields are labelled with a class
+        td_items = anon.find_all('td', class_='place-field')
+        fields = [x.text for x in td_items]
+        # test place etails field labels
+        self.assertEqual(fields, anon_place_fields)
+        td_items = user.find_all('td', class_='place-field')
+        fields = [x.text for x in td_items]
+        num_fields = len(user_place_fields)
+        self.assertEqual(len(fields), num_fields)
+        self.assertEqual(sorted(fields), sorted(user_place_fields))
+
+        self.assertEqual(get_button_links(anon), {})
+        user_buttons = get_button_links(user)
+        self.assertTrue(user_buttons['Edit Restaurant Information'].startswith('/places/edit'))
+        self.assertTrue(user_buttons['Share'].startswith('/places/share'))
+        desired = {u'Edit Restaurant Information': u'/places/edit/107',
+                   u'Share': u'/places/share/107'}
+

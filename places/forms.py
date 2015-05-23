@@ -29,7 +29,7 @@ class PlaceForm(forms.Form):
     city = forms.CharField(label='City', max_length=100)
     locale = forms.CharField(label='Locale', max_length=40)
     cuisine = forms.ChoiceField(label='Cuisine', choices=cuisine_choices, required=False)
-    outdoor = forms.BooleanField(label='Ourdoor Seating', required=False)
+    outdoor = forms.BooleanField(label='Outdoor Seating', required=False)
     dog_friendly = forms.BooleanField(label='Dog Friendly', required=False)
     visited = forms.TypedChoiceField(label='Visit Type',
                                      choices=VisitType.type_list(), coerce=int)

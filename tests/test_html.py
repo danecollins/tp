@@ -21,7 +21,7 @@ except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen
 
-site_url = 'http://localhost:8000'
+site_url = os.environ.get('TP_SITE_URL', 'http://localhost:8000')
 
 
 # Utility Functions

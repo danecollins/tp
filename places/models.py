@@ -74,7 +74,7 @@ class Place(models.Model):
         self.outdoor = fields[3] == '1'
         self.dog_fiendly = fields[4] == '1'
         self.rating = fields[5]
-        self.want_to_go = fields[6] == '1'
+        self.visited = fields[6] == '1'
         self.good_for = fields[7]
         self.comment = fields[8]
         self.save()
@@ -90,7 +90,7 @@ class Place(models.Model):
                 cls.from_csv(user, line, delimiter='\t')
 
     def __str__(self):
-        return '{} at the {} in {}'.format(self.name, self.locale, self.locale.city)
+        return '{} at the {} in {}'.format(self.name, self.locale, self.city)
 
     def __repr__(self):
         s = 'Place('
@@ -102,7 +102,7 @@ class Place(models.Model):
         s += 'outdoor="{}",'.format(self.outdoor)
         s += 'dog_friendly="{}",'.format(self.dog_friendly)
         s += 'rating="{}",'.format(self.rating)
-        s += 'want_to_go="{}",'.format(self.want_to_go)
+        s += 'visited="{}",'.format(self.visited)
         s += 'good_for="{}",'.format(self.good_for)
         s += 'comment="{}",'.format(self.comment)
         s += 'yelp="{}"'.format(self.yelp)

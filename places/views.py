@@ -194,8 +194,12 @@ def place_add(request):
             # process the data in form.cleaned_data as required
             d = form.cleaned_data
             max_id = max([x.id for x in Place.objects.all()])
-            p = Place(user=request.user, name=d['name'], city=d['city'], locale=d['locale'],
-                      visited=d['visited'], rating=d['rating'])
+            p = Place(user=request.user,
+                      name=d['name'].strip(),
+                      city=d['city'].strip(),
+                      locale=d['locale'].strip(),
+                      visited=d['visited'],
+                      rating=d['rating'])
             p.id = max_id + 1
             p.cuisine = d['cuisine']
             p.good_for = d['good_for']
@@ -270,7 +274,7 @@ def place_save(request, place_id):
                 changed.append('outdoor')
         elif k == 'city':
             if p.city != v:
-                p.city = v
+                p.city = v.strip()
                 changed.append('city')
         elif k == 'cuisine':
             if p.cuisine != v:
@@ -282,11 +286,11 @@ def place_save(request, place_id):
                 changed.append('yelp')
         elif k == 'locale':
             if p.locale != v:
-                p.locale = v
+                p.locale = v.strip()
                 changed.append('locale')
         elif k == 'name':
             if p.name != v:
-                p.name = v
+                p.name = v.strip()
                 changed.append('name')
         elif k == 'rating':
             try:

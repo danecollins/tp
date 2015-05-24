@@ -1,0 +1,37 @@
+#!/bin/bash
+
+
+if [ "$1" == "" ]; then
+	echo
+	echo "Usage: post_deploy_test [heroku|local] [stage|prod]"
+	echo
+	exit 1
+fi
+
+
+
+if [ "$1" == "local" ]; then
+	if [ "$2" == "stage" ]; then
+		export DATABASE_URL=$LOCAL_STAGE_URL
+		export TP_SITE_URL="http://localhost:8000"
+		echo "Local staging database"
+	else
+		export DATABASE_URL=$LOCAL_PROD_URL
+		export TP_SITE_URL="http://localhost:8000"
+		echo "Local production database"
+	fi
+else
+	if [ "$2" == "stage" ]; then
+		export DATABASE_URL=$HPG_STAGE_URL
+		export TP_SITE_URL="http://tpstage.heroku.com"
+		echo "Heroku staging database"
+	else
+		export DATABASE_URL=$HPG_PROD_URL
+		export TP_SITE_URL="http://trackplaces.heroku.com"
+		echo "Heroku production database"
+	fi
+fi
+echo "==============================="
+
+python tests/test_dbdata.py
+python tests/test_html.py

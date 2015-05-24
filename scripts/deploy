@@ -56,7 +56,7 @@ fi
 echo "Pushing code to *** $server ***"
 echo "------------------------------------"
 $PUSH_COMMAND
-if [ $? -ne 0 ]; then
+if [ $? == 0 ]; then
 	echo "Deployment SUCCESSFUL"
 else
 	echo "Deployment FAILED"

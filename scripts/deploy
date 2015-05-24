@@ -1,0 +1,63 @@
+#!/bin/bash
+
+
+if [ "$1" == "" ]; then
+	echo
+	echo "Usage: deploy [stage|prod] [test]"
+	echo
+	exit 1
+fi
+
+if [ "$1" == "stage" ]; then
+	server="tpstage"
+else
+	server="trackplaces"
+fi
+
+if [ "$2" == "test" ]; then
+	TEST_COMMAND="echo Not Running: python manage.py test"
+	PUSH_COMMAND="echo Not Running: git push $server origin"
+else
+	TEST_COMMAND="python manage.py test"
+	PUSH_COMMAND="git push $server origin"
+fi
+
+echo "Running tests..."
+cd ~/src/tp
+source ~/env/dj/bin/activate
+$TEST_COMMAND
+
+if [ $? != 0 ]; then
+	echo "TESTS FAILED."
+	echo "Deployment HALTED."
+	exit 1
+fi
+
+echo "Checking git status..."
+git_status=`git status -s`
+if [ "$git_status" != "" ]; then
+	echo "Git not up to date"
+	echo "------------------------"
+	echo "$git_status"
+	echo "------------------------"
+	echo "Exiting."
+	exit 1
+fi
+git_branch_status=`git status -sb`
+if [ "$git_branch_status" != "## master...origin/master" ]; then
+	echo "Origin Master is not up to date"
+	echo "------------------------"
+       	echo "$git_branch_status"
+	echo "------------------------"
+	echo "Exiting."
+	exit 1
+fi
+
+echo "Pushing code to *** $server ***"
+echo "------------------------------------"
+$PUSH_COMMAND
+if [ $? -ne 0 ]; then
+	echo "Deployment SUCCESSFUL"
+else
+	echo "Deployment FAILED"
+fi

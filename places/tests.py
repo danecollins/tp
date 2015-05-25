@@ -1,11 +1,10 @@
 from django.test import TestCase, Client
-from bs4 import BeautifulSoup
 
 # Create your tests here.
-from places.models import Place
-from places.forms import PlaceForm
+from .models import Place
+from .forms import PlaceForm
+from .html_utils import ParsePage as PP
 from django.contrib.auth.models import User
-
 import pdb
 
 
@@ -157,12 +156,12 @@ class TestModels(TestCase):
 add_form_labels = ['Name', 'City', 'Locale', 'Cuisine', 'Outdoor Seating', 'Dog Friendly',
                    'Visit Type', 'Rating', 'Good For', 'Comment', 'Yelp URL']
 
+
 class TestForms(TestCase):
     def test_place_form(self):
         p = PlaceForm()
         html = p.as_table()
-        soup = BeautifulSoup(html)
-        field_labels = sorted([x.text for x in soup.find_all('label')])
+        field_labels = sorted(PP.get_place_labels(html))
         should_be = sorted([x + ":" for x in add_form_labels])
         self.assertEqual(field_labels, should_be)
 
@@ -171,67 +170,27 @@ class TestForms(TestCase):
 # View Tests
 #
 
-# Utility Functions
-menus = {
-    u'Add Place': u'/places/add',
-    u'Search': u'/places/search',
-    u'About': u'/about/',
-    u'Blog': u'/blog/archive',
-    u'Logout': u'/logout?next=/',
-    u'Cities': u'/places/city'
-}
-
-anon_place_fields = [u'City', u'Locale', u'Cuisine',
-                     u'Outdoor Seating', u'Dog Friendly']
-
-user_place_fields = [u'City', u'Locale', u'Cuisine', u'Visit Type',
-                     u'Outdoor Seating', u'Dog Friendly',
-                     u'Rating', u'Good For', u'Comment']
-
-
-def get_menu_links(soup):
-    l = {}
-    for a in soup.find_all('a', class_="pure-menu-link"):
-        l[a.text] = a['href']
-    return l
-
-
-buttons = {
-    u'Login': u'/login',
-    u'Register': u'/newuser',
-    u'Use As Guest': u'/places/city'
-}
-
-
-def get_button_links(soup):
-    l = {}
-    for a in soup.find_all('a', class_='pure-button'):
-        l[a.text] = a['href']
-    return l
-
 
 def get_anon_page(p, c):
     # make sure we're logged out
     c.get('/logout')
     response = c.get(p)
     text_anon = response.content
-    soup_anon = BeautifulSoup(text_anon)
-    return soup_anon
+    return text_anon
 
 
 def get_user_page(p, c):
     response = c.post('/login/', {'username': 'test1', 'password': 'password'})
     response = c.get(p)
     text_user = response.content
-    soup_user = BeautifulSoup(text_user)
-    return soup_user
+    return text_user
 
 
 def get_page_variants(p):
     c = Client()
-    soup_anon = get_anon_page(p, c)
-    soup_user = get_user_page(p, c)
-    return (soup_anon, soup_user)
+    text_anon = get_anon_page(p, c)
+    text_user = get_user_page(p, c)
+    return (text_anon, text_user)
 
 
 class TestViewHome(TestCase):
@@ -240,33 +199,33 @@ class TestViewHome(TestCase):
     def test_page_title(self):
         create_users()
         (anon, user) = get_page_variants(self.url)
-        self.assertEqual(anon.title.text, 'Welcome to Track Places')
-        self.assertEqual(user.title.text, 'Welcome to Track Places')
+        self.assertEqual(PP.get_title(anon), 'Welcome to Track Places')
+        self.assertEqual(PP.get_title(user), 'Welcome to Track Places')
 
     def test_menu_anon(self):
         create_users()
         (anon, user) = get_page_variants(self.url)
         # if not logged in there should be no logout link
-        anon_menus = menus.copy()
+        anon_menus = PP.menus.copy()
         del anon_menus['Logout']
-        self.assertEqual(get_menu_links(anon), anon_menus)
+        self.assertEqual(PP.get_menu_links(anon), anon_menus)
 
     def test_menu_user(self):
         create_users()
         (anon, user) = get_page_variants(self.url)
-        self.assertEqual(get_menu_links(user), menus)
+        self.assertEqual(PP.get_menu_links(user), PP.menus)
 
     def test_buttons_anon(self):
         create_users()
         (anon, user) = get_page_variants(self.url)
         # should have buttons
-        self.assertEqual(get_button_links(anon), buttons)
+        self.assertEqual(PP.get_button_links(anon), PP.buttons)
 
     def test_buttons_user(self):
         create_users()
         (anon, user) = get_page_variants(self.url)
         # if logged in there hsould be no buttons
-        self.assertEqual(get_button_links(user), {})
+        self.assertEqual(PP.get_button_links(user), {})
 
 
 class TestViewCityList(TestCase):
@@ -275,22 +234,22 @@ class TestViewCityList(TestCase):
     def test_page_title(self):
         create_users()
         (anon, user) = get_page_variants(self.url)
-        self.assertEqual(anon.title.text, 'TrackPlaces - Cities')
-        self.assertEqual(user.title.text, 'TrackPlaces - Cities')
+        self.assertEqual(PP.get_title(anon), 'TrackPlaces - Cities')
+        self.assertEqual(PP.get_title(user), 'TrackPlaces - Cities')
 
     def test_page_header(self):
         create_users()
         (anon, user) = get_page_variants(self.url)
-        self.assertEqual(anon.body.div.h1.text, 'Cities for Guest User')
-        self.assertEqual(user.body.div.h1.text, 'Cities for Test')
+        self.assertEqual(PP.get_header(anon), 'Cities for Guest User')
+        self.assertEqual(PP.get_header(user), 'Cities for Test')
 
     def test_city_links(self):
         create_users()
         create_all_places()
         (anon, user) = get_page_variants(self.url)
-        anon_cities = anon.find_all('a', class_='city-link')
+        anon_cities = PP.get_city_links(anon)
         self.assertEqual(len(anon_cities), 2)
-        user_cities = user.find_all('a', class_='city-link')
+        user_cities = PP.get_city_links(user)
         self.assertEqual(len(user_cities), 2)
 
 
@@ -307,35 +266,30 @@ class TestViewPlaceDetail(TestCase):
         create_users()
         create_all_places()
         (anon, user) = get_page_variants(self.get_url())
-        self.assertEqual(anon.title.text, 'TrackPlaces - Details')
-        self.assertEqual(user.title.text, 'TrackPlaces - Details')
+        self.assertEqual(PP.get_title(anon), 'TrackPlaces - Details')
+        self.assertEqual(PP.get_title(user), 'TrackPlaces - Details')
 
     def test_page_header(self):
         create_users()
         create_all_places()
         (anon, user) = get_page_variants(self.get_url())
-        self.assertEqual(anon.body.div.h3.text, 'Blue Line Pizza - Guest View')
-        self.assertEqual(user.body.div.h3.text, 'Blue Line Pizza')
+        self.assertEqual(PP.get_header(anon), 'Blue Line Pizza - Guest View')
+        self.assertEqual(PP.get_header(user), 'Blue Line Pizza')
 
-    def test_page_content(self):
+    def test_page_fields(self):
         create_users()
         create_all_places()
         (anon, user) = get_page_variants(self.get_url())
-        # all the table fields are labelled with a class
-        td_items = anon.find_all('td', class_='place-field')
-        fields = [x.text for x in td_items]
-        # test place etails field labels
-        self.assertEqual(fields, anon_place_fields)
-        td_items = user.find_all('td', class_='place-field')
-        fields = [x.text for x in td_items]
-        num_fields = len(user_place_fields)
-        self.assertEqual(len(fields), num_fields)
-        self.assertEqual(sorted(fields), sorted(user_place_fields))
+        self.assertEqual(sorted(PP.anon_place_fields),
+                         sorted(PP.get_place_fields(anon)))
+        self.assertEqual(sorted(PP.user_place_fields),
+                         sorted(PP.get_place_fields(user)))
 
-        self.assertEqual(get_button_links(anon), {})
-        user_buttons = get_button_links(user)
+    def test_page_button_links(self):
+        create_users()
+        create_all_places()
+        (anon, user) = get_page_variants(self.get_url())
+        self.assertEqual(PP.get_button_links(anon), {})
+        user_buttons = PP.get_button_links(user)
         self.assertTrue(user_buttons['Edit Restaurant Information'].startswith('/places/edit'))
         self.assertTrue(user_buttons['Share'].startswith('/places/share'))
-        desired = {u'Edit Restaurant Information': u'/places/edit/107',
-                   u'Share': u'/places/share/107'}
-

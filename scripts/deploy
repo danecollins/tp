@@ -60,6 +60,8 @@ echo Executing: $PUSH_COMMAND
 $PUSH_COMMAND
 if [ $? == 0 ]; then
 	echo "Deployment SUCCESSFUL"
+	echo "Run tests now with: scripts/post_deploy_test heroku prod"
 else
 	echo "Deployment FAILED"
 fi
+

@@ -16,10 +16,10 @@ fi
 
 if [ "$2" == "test" ]; then
 	TEST_COMMAND="echo Not Running: python manage.py test"
-	PUSH_COMMAND="echo Not Running: git push $server origin"
+	PUSH_COMMAND="echo Not Running: git push $server master"
 else
 	TEST_COMMAND="python manage.py test"
-	PUSH_COMMAND="git push $server origin"
+	PUSH_COMMAND="git push $server master"
 fi
 
 echo "Running tests..."

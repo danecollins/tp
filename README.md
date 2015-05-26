@@ -9,12 +9,25 @@ Track Places Project
 ## Status
 * First beta release deployed on heroku
 
-## Todo
-TODO: User registration form
-TODO: Add cancel button to edit form
-TODO: Get rid of <hr> in login page
-TODO: Need a way to share a place, can do by url but no UI
-TODO: Create a read-only demo account
+## Utility Scripts
+* daily.sh
+  * drops the local database tpdata and then imports it from heroku's tpdata
+  * then runs dbsummary to post dbstats to slack
+
+* backup\_local.sh
+  * dumps the local tpdata to a text file
+
+* backup\_prod.sh
+  * dumps the heroku database
+
+* backup\_to\_table.sh
+  * loads a file into a table
+
+* dbpull.sh
+  * copies the heroku database into the local tpdata database
+
+* dbpush.sh
+  * copies the local tpdata database into the tpstage database
 
 ## Environment Notes
 

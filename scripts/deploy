@@ -17,9 +17,11 @@ fi
 if [ "$2" == "test" ]; then
 	TEST_COMMAND="echo Not Running: python manage.py test"
 	PUSH_COMMAND="echo Not Running: git push $server master"
+	POST_TEST="echo Not Running: scripts/post_deploy_test heroku $1"
 else
 	TEST_COMMAND="python manage.py test"
 	PUSH_COMMAND="git push $server master"
+	POST_TEST="scripts/post_deplot_test heroku $1"
 fi
 
 echo "Running tests..."
@@ -58,10 +60,11 @@ echo "Pushing code to *** $server ***"
 echo "------------------------------------"
 echo Executing: $PUSH_COMMAND
 $PUSH_COMMAND
-if [ $? == 0 ]; then
-	echo "Deployment SUCCESSFUL"
-	echo "Run tests now with: scripts/post_deploy_test heroku prod"
-else
+if [ $? -ne 0 ]; then
 	echo "Deployment FAILED"
+	exit 1
 fi
 
+echo "Deployment SUCCESSFUL"
+echo "Running tests now with: $POST_TEST"
+$POST_TEST

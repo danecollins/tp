@@ -3,14 +3,18 @@
 {% block title %}View Places{% endblock title %}
 
 {% block header %}
+<div class="pure-g">
+<div class="pure-u-3-24" align="left"></div>
+<div class="pure-u-20-24" align="left">
 <form action="{% url 'places:search' %}" method="post">
   {% csrf_token %}
    <p>
-      <label>Show places containing:</label>
+      <input type="submit" value="Find">
       <input type="text" name="pat" value={{ args.pat }}>
-      <input type="submit" value="Search">
+      in name, cuisine or city.
    </p>
   </form>
+</div></div>
 {% endblock header %}
 
 {% block content %}

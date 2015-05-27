@@ -117,6 +117,18 @@ def info(request):
 
 
 def locale_list(request, city):
+    unset = u'\u2753'
+    checked = u'\u2705'
+    unchecked = u'\u274C'
+
+    if request.method == 'GET':
+        args = {'outdoor': unset, 'dog_friendly': unset, 'cuisine': ''}
+    else:
+        print('Setting args to post method', file=sys.stderr)
+        args = request.POST
+
+    logprint('User:{} is on search page'.format(request.user))
+
     if request.user.is_anonymous():
         username = 'Guest User'
         places = []
@@ -130,23 +142,43 @@ def locale_list(request, city):
         username = request.user.username
         places = Place.objects.filter(city=city, user=request.user, archived=False)
 
+    if 'cuisine' in args and args['cuisine'] != '':
+        print('Filtering by cuisine={}'.format(args['cuisine']), file=sys.stderr)
+        places = [x for x in places if x.cuisine == args['cuisine']]
+    else:
+        print('No cuisine filtering')
+
+    if 'outdoor' in args and args['outdoor'] != unset:
+        if args['outdoor'] == unchecked:
+            value = False
+        else:
+            value = True
+        print('Filtering by outdoor={}'.format(value), file=sys.stderr)
+        places = [x for x in places if x.outdoor == value]
+
+    if 'dog_friendly' in args and args['dog_friendly'] != unset:
+        if args['dog_friendly'] == unchecked:
+            value = False
+        else:
+            value = True
+        print('Filtering by dog_friendly={}'.format(value), file=sys.stderr)
+        places = [x for x in places if x.dog_friendly == value]
+
     by_locale = defaultdict(set)
     id_by_name = {p.name: p.id for p in places}
     for p in places:
         by_locale[p.locale].add(p.name)
 
+    cuisine_list = set([x.cuisine for x in places])
+    cuisine_list = sorted(cuisine_list)
     return render(request, 'places/locale_list.html', {'llist': sorted(by_locale.keys()),
                                                        'dict': by_locale,
                                                        'ids': id_by_name,
                                                        'city': city,
-                                                       'username': username})
+                                                       'username': username,
+                                                       'cuisine_list': cuisine_list,
+                                                       'args': args})
 
-
-# def place_list(request, city, locale):
-#     locales = sorted(set([x.name for x in Place.objects.filter(city=city, locale=locale)]))
-#     return render(request, 'places/place_list.html', {'plist': locales,
-#                                                       'city': city,
-#                                                       'locale': locale})
 
 # we don't need to check the user since the place is found by id
 def place_detail(request, place_id):

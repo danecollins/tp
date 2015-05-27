@@ -101,7 +101,6 @@ class Place(models.Model):
                  'user': {'first_name': 'Dummy'}}
             return p
 
-
     @classmethod
     def from_file(cls, user, fn):
         assert os.path.exists(fn)

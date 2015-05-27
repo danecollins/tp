@@ -3,7 +3,50 @@
 {% block title %}TrackPlaces - Cities{% endblock %}
 
 {% block header %}
-    <h1>Locales for {{ city }}</h1>
+<h1>Locales for {{ city }}</h1>
+  <div class="container">
+    <form action="/places/city/{{ city }}/" method="post">
+      {% csrf_token %}
+
+      <label>Outdoor: </label>
+      <input 
+       id="outdoor" 
+       type="text"  
+       readonly="true"
+       name="outdoor"
+       size="1" 
+       value="{{ args.outdoor }}"  
+       onclick="switch(this.form.outdoor.value.charAt(0)) { 
+         case '&#x2753': this.form.outdoor.value='&#x2705;'; break;  
+         case '&#x2705': this.form.outdoor.value='&#x274C;'; break; 
+         case '&#x274C': this.form.outdoor.value='&#x2753;'; break; 
+       };" />
+       &nbsp;&nbsp;&nbsp;
+      <label>Dog Friendly: </label>
+      <input 
+       id="dog_friendly" 
+       type="text"  
+       readonly="true"
+       name='dog_friendly'
+       size="1" 
+       value="{{ args.dog_friendly }}"  
+       onclick="switch(this.form.dog_friendly.value.charAt(0)) { 
+         case '&#x2753': this.form.dog_friendly.value='&#x2705;'; break;  
+         case '&#x2705': this.form.dog_friendly.value='&#x274C;'; break; 
+         case '&#x274C': this.form.dog_friendly.value='&#x2753;'; break; 
+       };" />
+       &nbsp;&nbsp;&nbsp;
+        <label for="id_cuisine">Cuisine:</label>
+        <select id="id_cuisine" name="cuisine">
+        <option value=""></option>
+        {% for c in cuisine_list %}
+          <option value="{{ c }}">{{ c }}</option>
+        {% endfor %}
+        </select>
+       &nbsp;&nbsp;&nbsp;
+      <input type="submit" value="Filter">
+    </form>
+  </div>
 {% endblock %}
 
 {% block content %}

@@ -344,7 +344,6 @@ def place_save(request, place_id):
                   {'p': p, 'visittype': VisitType.as_string(p.visited)})
 
 
-
 def search(request):
     if request.method == 'GET':
         places = Place.objects.filter(archived=False)
@@ -353,7 +352,8 @@ def search(request):
     else:
         args = request.POST
         pat = re.compile(args['pat'], re.IGNORECASE)
-        places = [p for p in Place.objects.filter(archived=False) if pat.search(p.name)]
+        places = [p for p in Place.objects.filter(archived=False)
+                  if pat.search(p.name) or pat.search(p.cuisine) or pat.search(p.city)]
         logprint('User:{} searched for: {}'.format(request.user, args.get('pat', '')))
 
     # create a unique set of places, want to prefer places you own

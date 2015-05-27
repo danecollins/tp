@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [ "$1" == "" ]; then
 	echo
 	echo "Usage: deploy [stage|prod] [test]"
@@ -21,7 +20,7 @@ if [ "$2" == "test" ]; then
 else
 	TEST_COMMAND="python manage.py test"
 	PUSH_COMMAND="git push $server master"
-	POST_TEST="scripts/post_deplot_test heroku $1"
+	POST_TEST="scripts/post_deploy_test heroku $1"
 fi
 
 echo "Running tests..."
@@ -66,5 +65,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Deployment SUCCESSFUL"
+echo "sleep 60 to wait for server to be back up"
+sleep 60
 echo "Running tests now with: $POST_TEST"
 $POST_TEST

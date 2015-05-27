@@ -1,3 +1,4 @@
 #!/bin/bash -l
 
-heroku pg:push tpdata HEROKU_POSTGRESQL_MAUVE --app tpstage
+heroku pg:reset database --app tpstage
+heroku pg:push tpdata database --app tpstage

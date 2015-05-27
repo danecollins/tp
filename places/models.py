@@ -81,6 +81,28 @@ class Place(models.Model):
         return self
 
     @classmethod
+    def next_id(cls):
+        places = cls.objects.all()
+        if len(places) > 0:
+            largest_id = max([x.id for x in cls.objects.all()])
+            return (largest_id + 1)
+        else:
+            return 0
+
+    @classmethod
+    def last_added(cls):
+        places = cls.objects.all()
+        if len(places) > 0:
+            largest_id = max([x.id for x in cls.objects.all()])
+            return Place.objects.get(id=largest_id)
+        else:
+            # create a dummy object for the tests to run
+            p = {'name': 'Dummy Place', 'city': 'Dummy City', 'cuisine': 'Other',
+                 'user': {'first_name': 'Dummy'}}
+            return p
+
+
+    @classmethod
     def from_file(cls, user, fn):
         assert os.path.exists(fn)
         print(fn)

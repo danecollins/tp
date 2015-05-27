@@ -81,7 +81,7 @@ def index(request):
     logprint('User: {} is on home page'.format(request.user))
     if request.user.username == 'admin':
         logout(request)
-    return render(request, 'places/index.html')
+    return render(request, 'places/index.html', {'last': Place.last_added()})
 
 
 def city_list(request):
@@ -194,14 +194,13 @@ def place_add(request):
         if form.is_valid():
             # process the data in form.cleaned_data as required
             d = form.cleaned_data
-            max_id = max([x.id for x in Place.objects.all()])
             p = Place(user=request.user,
                       name=d['name'].strip(),
                       city=d['city'].strip(),
                       locale=d['locale'].strip(),
                       visited=d['visited'],
                       rating=d['rating'])
-            p.id = max_id + 1
+            p.id = Place.next_id()
             p.cuisine = d['cuisine']
             p.good_for = d['good_for']
             p.comment = d['comment']
@@ -238,8 +237,7 @@ def place_copy(request, place_id):
                   yelp=source.yelp,
                   )
 
-    max_id = max([x.id for x in Place.objects.all()])
-    place.id = max_id + 1
+    place.id = Place.next_id()
     place.save()
     m = 'User: {} copied place: {}'.format(request.user, place.name)
     logprint(m)

@@ -5,7 +5,7 @@
 {% block header %}
 <h1>Locales for {{ city }}</h1>
   <div class="container">
-    <form action="/places/city/{{ city }}/" method="post">
+    <form name="filter" action="/places/city/{{ city }}/" method="post">
       {% csrf_token %}
 
       <label>Outdoor: </label>
@@ -23,18 +23,18 @@
        };" />
        &nbsp;&nbsp;&nbsp;
       <label>Dog Friendly: </label>
-      <input 
+      <input style="border: none;"
        id="dog_friendly" 
        type="text"  
        readonly="true"
        name='dog_friendly'
-       size="3" 
+       size="2" 
        value="{{ args.dog_friendly }}"  
        onclick="switch(this.form.dog_friendly.value.charAt(0)) { 
          case '&#x2753': this.form.dog_friendly.value='&#x2705;'; break;  
          case '&#x2705': this.form.dog_friendly.value='&#x274C;'; break; 
          case '&#x274C': this.form.dog_friendly.value='&#x2753;'; break; 
-       };" />
+       };document.filter.cuisine.focus();" />
        &nbsp;&nbsp;&nbsp;
         <label for="id_cuisine">Cuisine:</label>
         <select id="id_cuisine" name="cuisine">

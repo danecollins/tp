@@ -336,6 +336,18 @@ def place_save(request, place_id):
             if p.visited != int_val:
                 p.visited = int_val
                 changed.append('visited')
+
+    # need to handle the checkboxes
+    if p.outdoor:
+        if 'outdoor' not in args:
+            p.outdoor = False
+            changed.append('outdoor')
+
+    if p.dog_friendly:
+        if 'dog_friendly' not in args:
+            p.dog_friendly = False
+            changed.append('dog_friendly')
+
     if changed is not None:
         logprint('User: {} edited place: {}. Changed fields: {}'.format(request.user, p.name,
                                                                         ','.join(changed)))

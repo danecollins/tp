@@ -11,7 +11,7 @@
     	<h3>Details</h3>
 <div class="pure-g">
     <div class="pure-u-2-3">
-    	<table>
+    	<table style="padding: 5px;">
     		<tr><td class='place-field'>City</td>           <td>{% if p.user == user %}<a href="/places/city/{{ p.city }}">{{ p.city }}</a>
                                                                 {% else %} {{ p.city }} {% endif %}</td></tr>
     		<tr><td class='place-field'>Locale</td>         <td>{{ p.locale }}</td></tr>
@@ -44,6 +44,10 @@
         {% if p.user != user and user.is_authenticated %}
         <td><a class="pure-button pure-button-primary" href="/places/copy/{{ p.id }}">Add To My Places</a></td>
         {% endif %}
+        {% if p.yelp|length > 4 %}
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td><a class="pure-button" style="background: red; color: white;" href="{{ p.yelp }}">Open in yelp</a></td>
+        {% endif %}
         {% if p.user == user %}
         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td><a href="/places/delete/{{ p.id }}">Delete Restaurant</a></td>
@@ -52,13 +56,3 @@
         </table>
 
 {% endblock content %}
-
-{% block extra %}
-    {% if p.yelp|length > 4 %}
-	    <object data={{ p.yelp }} width="1000" height="400">
-	      <embed src={{ p.yelp }} width="1000" height="400"> </embed>
-	      Error: Embedded data could not be displayed.
-	    </object>
-	    </div>
-    {% endif %}
-{% endblock extra %}

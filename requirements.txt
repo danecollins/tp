@@ -5,4 +5,4 @@ psycopg2==2.6
 static3==0.5.1
 gunicorn==19.3.0
 requests==2.7.0
-newrelic
+pytz==2015.4

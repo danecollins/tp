@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'places',
     'blog',
     'vote',
+    'watch',
     'registration',
 )
 

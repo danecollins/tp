@@ -20,6 +20,9 @@
         <tr>
             <th>Frequency</th><td>{{ watcher.freq }}</td>
         </tr>
+        <tr>
+            <th>State</th><td>{% if watcher.active %}Active{% else %}Disabled{% endif %}</td>
+        </tr>
     </table>
     <h3>Events</h3>
         <ul>

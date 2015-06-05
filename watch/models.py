@@ -43,6 +43,12 @@ class Watcher(models.Model):
 
     def __str__(self):
         return 'Watcher({},{},{},{})'.format(self.name,
-                                          self.tag,
-                                          self.freq,
-                                          self.active)
+                                             self.tag,
+                                             self.freq,
+                                             self.active)
+
+    def __repr__(self):
+        return "Watcher(name='{}', tag='{}', freq={}, active={})".format(self.name,
+                                                                         self.tag,
+                                                                         self.freq,
+                                                                         self.active)

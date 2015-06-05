@@ -1,0 +1,30 @@
+{% extends "watch/menu_base.html" %}
+
+{% block title %}List Watches{% endblock title %}
+
+{% block header %}
+<h3>Current Watches</h1>
+{% endblock header %}
+
+{% block content %}
+
+<div class="container">
+    <table class='pure-table'>
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Tag</td>
+                <td>Frequency (H)</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for watcher in wl %}
+            <td><a href="/watch/details/{{ watcher.id }}/">{{ watcher.name }}</a></td>
+            <td>{{ watcher.tag }}</td>
+            <td>{{ watcher.freq }}</td>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

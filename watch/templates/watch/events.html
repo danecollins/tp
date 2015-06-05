@@ -1,0 +1,19 @@
+{% extends "watch/menu_base.html" %}
+
+{% block title %}List Watches{% endblock title %}
+
+{% block header %}
+<h3>Current Watches</h1>
+{% endblock header %}
+
+{% block content %}
+
+<div class="container">
+    <ul>
+        {% for event in event_list %}
+            <li>{{ event.tag }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock content %}

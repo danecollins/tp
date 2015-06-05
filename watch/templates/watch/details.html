@@ -1,0 +1,32 @@
+{% extends "watch/menu_base.html" %}
+
+{% block title %}Watcher Details{% endblock title %}
+
+{% block header %}
+
+{% endblock header %}
+
+{% block content %}
+
+<div class="container">
+    <h3>Watcher Details</h1>
+    <table class="pure-table">
+        <tr>
+            <th>Name</th><td>{{ watcher.name }}</td>
+        </tr>
+        <tr>
+            <th>Tag</th><td>{{ watcher.tag }}</td>
+        </tr>
+        <tr>
+            <th>Frequency</th><td>{{ watcher.freq }}</td>
+        </tr>
+    </table>
+    <h3>Events</h3>
+        <ul>
+            {% for event in event_list %}
+                <li>{{ event.time }}</li>
+            {% endfor %}
+        </ul>
+</div>
+
+{% endblock content %}

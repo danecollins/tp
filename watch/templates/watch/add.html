@@ -1,0 +1,33 @@
+{% extends "watch/menu_base.html" %}
+
+{% block title %}Add Watch{% endblock title %}
+
+{% block header %}
+<h3>Adding Watch</h1>
+<style>
+th {
+  padding-right: 10px;
+  text-align: left;
+  font-weight: normal;
+}
+label.required {
+    color: red;
+}
+
+.large {
+    width: 200%;
+}
+
+</style>
+{% endblock header %}
+
+{% block content %}
+
+<form action="/watch/add/" method="POST">
+    {% csrf_token %}
+    <table cellpadding="10">
+        {{ form}}
+    </table>
+    <input type="submit" name="submit" value="Add Watcher" />
+</form>
+{% endblock content %}

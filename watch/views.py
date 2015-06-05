@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
-from .models import Event, Watcher
+from .models import Event, Watcher, id_generator
 from .forms import WatcherForm
+import pdb
 
 
 def event_history(request):
@@ -15,20 +16,26 @@ def event_history(request):
 
 def list(request):
     watcher_list = Watcher.objects.all()
-    return render(request, 'watch/list.html',
-                  {'wl': watcher_list})
+    return render(request, 'watch/list.html', {'wl': watcher_list})
 
 
 def add(request):
-    form = WatcherForm(request.POST or None)
-    if form.is_valid():
-        watch = form.save(commit=False)
-        watch.save()
-        return redirect('/watch/list')
-    return render(request, 'watch/add.html', {'form': form})
+    if request.method == 'POST':
+        form = WatcherForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            tag = form.cleaned_data['tag']
+            freq = int(form.cleaned_data['freq'])
+            w = Watcher(name=name, tag=tag, freq=freq)
+            w.save()
+            return redirect('/watch/list/')
+    else:
+        form = WatcherForm(initial={'tag': id_generator()})
+        return render(request, 'watch/add.html', {'form': form})
 
 
 def details(request, id):
     watcher = get_object_or_404(Watcher, id=id)
+    event_list = Event.objects.filter(tag=watcher.tag)
     return render(request, 'watch/details.html',
-                  {'watcher': watcher})
+                  {'watcher': watcher, 'event_list': event_list})

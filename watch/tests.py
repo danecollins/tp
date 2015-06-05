@@ -36,3 +36,12 @@ class TestWatcher(TestCase):
                     freq=60)
         x.save()
         self.assertEqual(len(Watcher.objects.all()), 1)
+
+    def test_string_rep(self):
+        x = Watcher(name='db backup', tag='hello', freq=60, active=True)
+        x.save()
+        expect = "Watcher(db backup,hello,60,True)"
+        self.assertEqual(expect, str(x))
+        expect = "Watcher(name='db backup', tag='hello', freq=60, active=True)"
+        self.assertEqual(expect, x.__repr__())
+

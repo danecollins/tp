@@ -1,9 +1,13 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
 from .models import Event, Watcher, id_generator
 from .forms import WatcherAddForm, WatcherEditForm
 from django.utils import timezone
+import sys
 
 
 def event_history(request):
@@ -21,9 +25,11 @@ def list(request):
 
 def add(request):
     if request.method == 'POST':
-        form = WatcherAddForm(request.POST)
+        watcher = Watcher.objects.get(id=id)
+        form = WatcherAddForm(request.POST, instance=watcher)
         if form.is_valid():
-            form.save()
+            watcher = form.save(commit=False)
+            watcher.save()
             return redirect('/watch/list/')
     else:
         form = WatcherAddForm(initial={'tag': id_generator()})
@@ -53,3 +59,4 @@ def checkin(request, tag):
     e.save()
     return render(request, 'watch/checkin.html',
                   {'tag': tag})
+

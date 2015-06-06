@@ -25,8 +25,7 @@ def list(request):
 
 def add(request):
     if request.method == 'POST':
-        watcher = Watcher.objects.get(id=id)
-        form = WatcherAddForm(request.POST, instance=watcher)
+        form = WatcherAddForm(request.POST)
         if form.is_valid():
             watcher = form.save(commit=False)
             watcher.save()
@@ -37,7 +36,8 @@ def add(request):
 
 def edit(request, id):
     if request.method == 'POST':
-        form = WatcherEditForm(request.POST)
+        watcher = Watcher.objects.get(id=id)
+        form = WatcherEditForm(request.POST, instance=watcher)
         if form.is_valid():
             form.save()
             return redirect('/watch/list/')

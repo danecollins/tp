@@ -21,9 +21,10 @@ fi
 echo "INFO: heroku pull completed" >> ~/daily.log
 export DATABASE_URL=postgres:///tpdata.heroku
 scripts/dbsummary.py >> ~/daily.log 2>&1
-#curl http://trackplaces.heroku.com/watch/checkin/JHUNHHH5
+curl http://localhost:8000/watch/checkin/MS8B1D1D
 
 echo "INFO: next backup ladera database" >> ~/daily.log
 cd ~/src/scripts
 ./backup_ladera_prod.sh >> ~/daily.log 2>&1
+curl http://localhost:8000/watch/checkin/U3M4GJI6
 

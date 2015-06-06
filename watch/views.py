@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 from .models import Event, Watcher, id_generator
 from .forms import WatcherAddForm, WatcherEditForm
-import pdb
+from django.utils import timezone
 
 
 def event_history(request):
@@ -46,3 +46,10 @@ def detail(request, id):
     event_list = Event.objects.filter(tag=watcher.tag)
     return render(request, 'watch/details.html',
                   {'watcher': watcher, 'event_list': event_list})
+
+
+def checkin(request, tag):
+    e = Event(tag=tag, log_type=Event.LOG, time=timezone.now())
+    e.save()
+    return render(request, 'watch/checkin.html',
+                  {'tag': tag})

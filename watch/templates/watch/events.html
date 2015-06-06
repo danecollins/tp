@@ -1,19 +1,32 @@
 {% extends "watch/menu_base.html" %}
 
-{% block title %}List Watches{% endblock title %}
+{% block title %}List Events{% endblock title %}
 
 {% block header %}
-<h3>Current Watches</h1>
+<h3>Latest Events</h1>
 {% endblock header %}
 
 {% block content %}
 
 <div class="container">
-    <ul>
-        {% for event in event_list %}
-            <li>{{ event.tag }}</li>
-        {% endfor %}
-    </ul>
+    <table class='pure-table'>
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Tab</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in event_list %}
+            <tr>
+                <td>{{ event.time }}</td>
+                <td>{{ event.tag }}</td>
+                <td>{{ event.type }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 {% endblock content %}

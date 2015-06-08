@@ -7,24 +7,39 @@
 {% block header %}
     <h1>Keep A List Of Your Favorite Restaurants</h1>
     <h2>And share them with your friends.</h2>
+    <style>
+        img {
+            width=250px;
+            border: 2px solid #666;
+            background: #fff;
+            padding: 2px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-            <h2 class="content-subhead">Track the restaurants you've been to or want to go to</h2>
+    <table><tr><td>
+            <h2 class="content-subhead">Personalized Restaurant Lists</h2>
             <p>
-                "What was the name of that great place I went to in Chicago? Did they have outdoor tables?"
+                Make lists of places you want to try. Rate places you've tried.
             </p>
-            <h2 class="content-subhead">You lists are smart</h2>
+            <h2 class="content-subhead">Same interface on the web and smart phones</h2>
+            <h2 class="content-subhead">Integration with other sites</h2>
             <p>
-                "TrackPlaces is the fastest way to get to the Yelp or OpenTable page for my restaurants"
+                One click to Yelp reviews or Open Table reservations.
             </p>
-            <h2 class="content-subhead">Last restaurant added by a user</h2>
+            
+    </td><td>&nbsp;&nbsp;</td><td>
+            <strong>Sample Restaurants Details</strong>
+            <img src='/static/tpdetails.jpg' alt_text='Track Places Details Page'>
+            <!--
+            <h4>Last restaurant added by a user</h4>
             <p>
-                <b>{{ last.name }}</b> in {{ last.city }}
+                {{ last.name }} in {{ last.city }}
                 {% if last.cuisine %}, with {{ last.cuisine }} cuisine{% endif %} added by {{ last.user.first_name }}
             </p>
-    </div>
+            -->
+    </td></table>
     {% if user.is_anonymous %}
     <div id="layout"><div class="hero"><div class="hero-cta">
         <p>
@@ -32,7 +47,7 @@
 
             <a class="pure-button pure-button-secondary button-xlarge" href="/newuser">Register</a>
 
-            <a class="pure-button pure-button-secondary button-xlarge" href="/places/city">Use As Guest</a>
+            <a class="pure-button pure-button-secondary button-xlarge" href="/places/city">Explore Site</a>
         </p>
     </div></div></div>
     {% endif %}
@@ -43,5 +58,6 @@
         </div>
     </div>
     </div>
+
 
 {% endblock %}

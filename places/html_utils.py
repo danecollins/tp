@@ -14,7 +14,7 @@ class ParsePage:
     buttons = {
         u'Login': u'/login',
         u'Register': u'/newuser',
-        u'Use As Guest': u'/places/city'
+        u'Explore Site': u'/places/city'
     }
 
     anon_place_fields = [u'City', u'Locale', u'Cuisine',

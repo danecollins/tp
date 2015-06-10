@@ -24,6 +24,8 @@ class ParsePage:
                          u'Outdoor Seating', u'Dog Friendly', 'Last Visited',
                          u'Rating', u'Good For', u'Comment']
 
+    anon_place_buttons = [u'Open in yelp']
+
     @classmethod
     def get_title(cls, html):
         soup = BeautifulSoup(html)

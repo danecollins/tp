@@ -86,7 +86,7 @@ class TestViewPlace(unittest.TestCase):
 
     def test_page_links(self):
         html = get_html(self.url)
-        self.assertEqual(PP.get_button_links(html), {})
+        self.assertEqual(PP.get_button_links(html).keys(), PP.anon_place_buttons)
 
 if __name__ == '__main__':
     unittest.main()

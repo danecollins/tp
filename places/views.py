@@ -39,6 +39,8 @@ opentable_data[136] = (2875, "shadowbrook-restaurant-reservations-capitola", "Sh
 opentable_data[38] = (3130, "village-california-bistro-and-wine-bar-reservations-san-jose", "Village California Bistro (3130)")
 opentable_data[140] = (52660, "le-garage-reservations-sausalito", "Le Garage (52660)")
 opentable_data[174] = (114103, "hults-reservations-los-gatos", "Hult's (114103)")
+opentable_data[186] = (91789, 'dry-creek-grill-reservations-san-jose', "Dry Creek Grill (91789)")
+
 
 
 def get_opentable(id):

@@ -17,6 +17,7 @@ cuisine_choices = (('American', 'American'),
                    ('Mediterranean', 'Mediterranean'),
                    ('Mexican', 'Mexican'),
                    ('Pizza', 'Pizza'),
+                   ('Seafood', 'Seafood'),
                    ('Thai', 'Thai'),
                    ('Other', 'Other'))
 

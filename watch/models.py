@@ -3,6 +3,7 @@ from django.db import models
 import string
 import random
 import pytz
+import pdb
 
 pst = pytz.timezone('America/Los_Angeles')
 
@@ -23,6 +24,17 @@ class Event(models.Model):
     log_type = models.CharField(max_length=3,
                                 choices=TYPE_CHOICES,
                                 default=LOG)
+
+    @classmethod
+    def recent(self):
+        events = Event.objects.all().order_by('-id')[:30]
+        tags = set([x.tag for x in events])
+        tag_name = {tag: Watcher.objects.get(tag=tag).name for tag in tags}
+        event_list = []
+        for e in events:
+            e.name = tag_name[e.tag]
+            event_list.append(e)
+        return event_list
 
     def __str__(self):
         tm = self.time.astimezone(pst)

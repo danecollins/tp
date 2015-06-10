@@ -11,9 +11,7 @@ import sys
 
 
 def event_history(request):
-    event_list = Event.objects.all()
-    if len(event_list) > 30:
-        event_list = event_list[:-30]
+    event_list = Event.recent()
     return render(request, 'watch/events.html',
                   {'event_list': event_list})
 

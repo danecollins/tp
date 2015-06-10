@@ -92,8 +92,8 @@ class Place(models.Model):
     @classmethod
     def last_added(cls):
         places = cls.objects.all()
-        if len(places) > 0:
-            largest_id = max([x.id for x in cls.objects.all()])
+        if places.exists():
+            largest_id = max([x.id for x in places])
             return Place.objects.get(id=largest_id)
         else:
             # create a dummy object for the tests to run
@@ -129,6 +129,24 @@ class Place(models.Model):
         s += 'yelp="{}"'.format(self.yelp)
         s += ')'
         return s
+
+    class Meta:
+        app_label = 'places'
+
+
+class Visit(models.Model):
+    when = models.DateField(auto_now_add=True)
+    place = models.ForeignKey(Place)
+    user = models.ForeignKey(User)
+
+    @classmethod
+    def last_visit(cls, place, user):
+        visits = cls.objects.filter(place=place, user=user)
+        if visits.exists():
+            visit = sorted(visits, key=lambda x: x.when)
+            return visit[0]
+        else:
+            return None
 
     class Meta:
         app_label = 'places'

@@ -21,7 +21,7 @@ class ParsePage:
                          u'Outdoor Seating', u'Dog Friendly']
 
     user_place_fields = [u'City', u'Locale', u'Cuisine', u'Visit Type',
-                         u'Outdoor Seating', u'Dog Friendly',
+                         u'Outdoor Seating', u'Dog Friendly', 'Last Visited',
                          u'Rating', u'Good For', u'Comment']
 
     @classmethod

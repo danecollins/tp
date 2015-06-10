@@ -23,8 +23,13 @@
             {% if p.user == user %}
             <tr><td class='place-field'>Rating</td>         <td><img = src="/static/star_{{ p.rating }}.gif" alt="rated {{ p.rating }} stars" height="55"/></td></tr>
             <tr><td class='place-field'>Visit Type</td>       <td>{{ visittype }}</td></tr>
-    		<tr><td class='place-field'>Good For</td>       <td>{{ p.good_for }}</td></tr>
-    		<tr><td class='place-field'>Comment</td>        <td>{{ p.comment }}</td></tr>
+            <tr>
+                <td class='place-field'>Last Visited</td>   <td>{{ last }}
+                &nbsp;<a class="pure-button button-small" href="/places/visit/{{ p.id }}">Add Visit</a></td>
+            </tr>
+            <tr><td class='place-field'>Good For</td>       <td>{{ p.good_for }}</td></tr>
+            <tr><td class='place-field'>Comment</td>        <td>{{ p.comment }}</td></tr>
+
             {% endif %}
         </table>
     </div>
@@ -35,6 +40,7 @@
     {% endif %}
 </div>
         <table>
+        <tr><td>&nbsp;</td></tr>
         <tr>
         {% if p.user == user %}
     	<td><a class="pure-button pure-button-primary" href="/places/edit/{{ p.id }}">Edit Restaurant Information</a></td>

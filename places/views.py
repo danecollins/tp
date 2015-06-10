@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
 from django.contrib.auth.models import User
-from .models import Place, VisitType
+from .models import Place, VisitType, Visit
 from .forms import PlaceForm
 from vote.models import Vote, Survey
 
@@ -106,6 +106,7 @@ def info(request):
     data['men_votes'] = len(Vote.objects.filter(type=False))
     data['women_votes'] = len(Vote.objects.filter(type=True))
     data['survey'] = Survey.get()
+    data['visits'] = len(Visit.objects.all())
 
     # get server information
     s = os.environ.get('TP_SERVER', 'Missing')
@@ -186,12 +187,30 @@ def place_detail(request, place_id):
     place = get_object_or_404(Place, id=place_id)
     if request.user.is_anonymous() or request.user != place.user:
         anon = True
+        last = ''
     else:
         anon = False
+        last = Visit.last_visit(place, request.user)
+        if last is None:
+            last = 'None Stored'
+        else:
+            last = str(last.when)
+
     logprint('User: {} is viewing details on {}'.format(request.user, place.name))
     return render(request, 'places/place_detail.html',
                   {'p': place, 'visittype': VisitType.as_string(place.visited),
-                   'anon': anon, 'opentable': get_opentable(place_id)})
+                   'last': last, 'anon': anon, 'opentable': get_opentable(place_id)})
+
+
+@login_required
+def visit(request, place_id):
+    place = get_object_or_404(Place, id=place_id)
+    user = request.user
+
+    visit, created = Visit.objects.get_or_create(place=place, user=user)
+    if created:
+        logprint('User: {} added a visit to {}'.format(user, place.name))
+    return place_detail(request, place_id)
 
 
 @login_required

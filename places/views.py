@@ -216,29 +216,6 @@ def visit(request, place_id):
 
 
 @login_required
-def place_edit(request, place_id):
-    place = get_object_or_404(Place, id=place_id)
-    init = {'name': place.name,
-            'city': place.city,
-            'locale': place.locale,
-            'cuisine': place.cuisine,
-            'outdoor': place.outdoor,
-            'dog_friendly': place.dog_friendly,
-            'visited': place.visited,
-            'rating': place.rating,
-            'good_for': place.good_for,
-            'comment': place.comment,
-            'yelp': place.yelp}
-    logprint('User: {} is editing place: {}'.format(request.user, place.name))
-    if request.user == place.user:
-        form = PlaceForm(initial=init)
-        return render(request, 'places/place_edit.html',
-                      {'p': place, 'form': form})
-    else:
-        return render(request, 'places/no_permission.html', {'p': place})
-
-
-@login_required
 def place_add(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -297,6 +274,29 @@ def place_copy(request, place_id):
     logprint(m)
     log_to_slack(m)
     return place_edit(request, place.id)
+
+
+@login_required
+def place_edit(request, place_id):
+    place = get_object_or_404(Place, id=place_id)
+    init = {'name': place.name,
+            'city': place.city,
+            'locale': place.locale,
+            'cuisine': place.cuisine,
+            'outdoor': place.outdoor,
+            'dog_friendly': place.dog_friendly,
+            'visited': place.visited,
+            'rating': place.rating,
+            'good_for': place.good_for,
+            'comment': place.comment,
+            'yelp': place.yelp}
+    logprint('User: {} is editing place: {}'.format(request.user, place.name))
+    if request.user == place.user:
+        form = PlaceForm(initial=init)
+        return render(request, 'places/place_edit.html',
+                      {'p': place, 'form': form})
+    else:
+        return render(request, 'places/no_permission.html', {'p': place})
 
 
 @login_required
@@ -374,8 +374,7 @@ def place_save(request, place_id):
         logprint('User: {} edited place: {}. Changed fields: {}'.format(request.user, p.name,
                                                                         ','.join(changed)))
         p.save()
-    return render(request, 'places/place_detail.html',
-                  {'p': p, 'visittype': VisitType.as_string(p.visited)})
+    return place_detail(request, place_id)
 
 
 def search(request):

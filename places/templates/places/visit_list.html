@@ -1,0 +1,29 @@
+{% extends 'menu_base.html' %}
+
+{% block title %}TrackPlaces - Visits{% endblock %}
+
+{% block header %}
+    <h3>Places You've Been</h3>
+{% endblock %}
+
+{% block content %}
+    <div class='container'>
+    	<table class='pure-table'>
+    		<thead>
+    			<tr>
+    				<th>Date</th>
+    				<th>Place</th>
+    			</tr>
+    		</thead>
+    		<tbody>
+    			{% for visit in visit_list %}
+        		<tr>
+                	<td>{{ visit.when }}</td>
+                	<td>{{ visit.place.name }}</td>
+                </tr>
+            	{% endfor %}
+            </tbody>
+           </table>
+    </div>
+
+{% endblock %}

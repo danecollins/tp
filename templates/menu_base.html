@@ -50,9 +50,12 @@
 
                 <ul class="pure-menu-list">
                     <!-- <li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li> -->
-                    <li class="pure-menu-item"><a href="/places/city" class="pure-menu-link">Cities</a></li>
-                    <li class="pure-menu-item"><a href="/places/add" class="pure-menu-link">Add Place</a></li>
-                    <li class="pure-menu-item"><a href="/places/search" class="pure-menu-link">Search</a></li>
+                    <li class="pure-menu-item"><a href="/places/city/" class="pure-menu-link">Cities</a></li>
+                    <li class="pure-menu-item"><a href="/places/add/" class="pure-menu-link">Add Place</a></li>
+                    <li class="pure-menu-item"><a href="/places/search/" class="pure-menu-link">Search</a></li>
+                    {% if not user.is_anonymous %}
+                    <li class="pure-menu-item"><a href="/places/visits/" class="pure-menu-link">Visits</a></li>
+                    {% endif %}
                     <li class="pure-menu-heading">Company</li>
                     <li class="pure-menu-item"><a href="{% url 'about' %}" class="pure-menu-link">About</a></li>
                     <li class="pure-menu-item"><a href="{% url 'blog:archive' %}" class="pure-menu-link">Blog</a></li>

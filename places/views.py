@@ -216,6 +216,13 @@ def visit(request, place_id):
 
 
 @login_required
+def visit_list(request):
+    user = request.user
+    visit_list = Visit.objects.filter(user=user)
+    return render(request, 'places/visit_list.html', {'visit_list': visit_list})
+
+
+@login_required
 def place_add(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':

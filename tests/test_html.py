@@ -41,7 +41,15 @@ class TestHomePage(unittest.TestCase):
         # if not logged in there should be no logout link
         anon_menus = PP.menus.copy()
         del anon_menus['Logout']
-        self.assertEqual(PP.get_menu_links(html), anon_menus)
+        del anon_menus['Visits']
+        from_html = PP.get_menu_links(html)
+
+        for menu_entry in anon_menus.keys():
+            self.assertEqual(anon_menus[menu_entry], from_html.get(menu_entry, 'Entry Missing'))
+            del from_html[menu_entry]
+
+        # there should be no items left
+        self.assertFalse(from_html.keys())
 
     def test_buttons_anon(self):
         html = get_html(self.url)

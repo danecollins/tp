@@ -3,12 +3,13 @@ from bs4 import BeautifulSoup
 
 class ParsePage:
     menus = {
-        u'Add Place': u'/places/add',
-        u'Search': u'/places/search',
+        u'Add Place': u'/places/add/',
+        u'Search': u'/places/search/',
         u'About': u'/about/',
         u'Blog': u'/blog/archive',
         u'Logout': u'/logout?next=/',
-        u'Cities': u'/places/city'
+        u'Cities': u'/places/city/',
+        u'Visits': u'/places/visits/'
     }
 
     buttons = {

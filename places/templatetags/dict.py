@@ -7,4 +7,4 @@ def hash(h, key):
 
 @register.filter
 def sort_hash(h, key):
-    return sorted(h[key])
+    return sorted(h[key], key=lambda x: x.lower())

@@ -175,7 +175,8 @@ def locale_list(request, city):
 
     cuisine_list = set([x.cuisine for x in places])
     cuisine_list = sorted(cuisine_list)
-    return render(request, 'places/locale_list.html', {'llist': sorted(by_locale.keys()),
+    sorted_locales = sorted(by_locale.keys(), key=lambda x: x.lower())
+    return render(request, 'places/locale_list.html', {'llist': sorted_locales,
                                                        'dict': by_locale,
                                                        'ids': id_by_name,
                                                        'city': city,
@@ -415,7 +416,7 @@ def search(request):
 
     # now all p_by_name have just one item
     places = [x[0] for x in p_by_name.values()]
-    places = sorted(places, key=lambda p: p.name)
+    places = sorted(places, key=lambda p: p.name.lower())
 
     return render(request, 'places/search.html',
                   {'places': places, 'args': args})

@@ -6,9 +6,8 @@ date >> ~/daily.log
 source ~/env/dj/bin/activate
 dropdb tpdata.heroku >> ~/daily.log 2>&1
 if [ $? -ne 0 ]; then
- 0   echo "ERROR: could not drop database" 
+    echo "ERROR: could not drop database" 
     echo "ERROR: could not drop database" >> ~/daily.log
-    exit 1
 fi
 
 heroku pg:pull HEROKU_POSTGRESQL_MAUVE tpdata.heroku --app trackplaces >> ~/daily.log 2>&1

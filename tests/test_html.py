@@ -3,10 +3,6 @@ from __future__ import unicode_literals
 
 import os
 
-import django
-from django.conf import settings
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
-django.setup()
 from django.test.client import Client
 
 # import pdb
@@ -94,7 +90,10 @@ class TestViewPlace(unittest.TestCase):
 
     def test_page_links(self):
         html = get_html(self.url)
-        self.assertEqual(PP.get_button_links(html).keys(), PP.anon_place_buttons)
+        links = PP.get_button_links(html)
+        # get just the button_text as a list
+        button_text = list(links.keys())
+        self.assertEqual(button_text, PP.anon_place_buttons)
 
 if __name__ == '__main__':
     unittest.main()

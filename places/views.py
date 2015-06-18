@@ -115,9 +115,11 @@ def info(request):
     x = os.environ.get('DATABASE_URL', '/Missing')
     d = x.split('/')[-1]
     debug = os.environ.get('DJANGO_DEBUG', 'Missing')
+    yelp_errs = Place.objects.filter(archived=False, yelp='')
     logprint('User: {} is on info page'.format(request.user))
     return render(request, 'places/info.html',
-                  {'data': data, 'server': s, 'database': d, 'debug': debug})
+                  {'data': data, 'server': s, 'database': d,
+                   'debug': debug, 'yelp_errs': yelp_errs})
 
 
 def locale_list(request, city):

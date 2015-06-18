@@ -52,4 +52,14 @@
 		</tr>
 	</tbody>
 </table>
+<hr>
+{% if yelp_errs %}
+<h2>Places missing Yelp Links</h2>
+<ul>
+	{% for p in yelp_errs %}
+		<li><a href="/places/view/{{p.id}}">{{ p.name }}</a></li>
+	{% endfor %}
+</ul>
+{% endif %}
+
 {% endblock content %}

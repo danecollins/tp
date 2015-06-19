@@ -3,7 +3,6 @@ from django.db import models
 import string
 import random
 import pytz
-import pdb
 
 pst = pytz.timezone('America/Los_Angeles')
 

@@ -1,9 +1,9 @@
 from django.test import TestCase, Client
 
 # Create your tests here.
-from .models import Place
-from .forms import PlaceForm
-from .html_utils import ParsePage as PP
+from places.models import Place, ChangeLog
+from places.forms import PlaceForm
+from places.html_utils import ParsePage as PP
 from django.contrib.auth.models import User
 import pdb
 
@@ -19,12 +19,14 @@ def get_user(n):
 def create_users():
     u = User.objects.create_user(username=username(1), password='password', first_name='Test', last_name='User')
     u.save()
+    ChangeLog.add(action=ChangeLog.CreateUser, user=u)
     u = User.objects.create_user(username=username(2), password='password')
     u.save()
+    ChangeLog.add(action=ChangeLog.CreateUser, user=u)
 
 
 def create_engfer(user):
-    p = Place(
+    p = Place.from_args(
         user=get_user(user),
         name='Engfer Pizza',
         locale='Harbor',
@@ -40,7 +42,7 @@ def create_engfer(user):
 
 
 def create_johnnys(user):
-    p = Place(
+    p = Place.from_args(
         user=get_user(user),
         name="Johnny's",
         locale='Harbor',
@@ -108,8 +110,15 @@ class TestUtility(TestCase):
         u2 = get_user(2)
         self.assertEqual(u2.username, username(2))
 
+#############################################################################
+#
+# Model Tests
+#
 
-class TestModels(TestCase):
+# ################################################################ PLACE MODEL
+
+
+class TestPlaceModel(TestCase):
     def test_simple_create(self):
         create_users()
         create_engfer(1)
@@ -147,6 +156,36 @@ class TestModels(TestCase):
         fn = '/Users/dane/src/tp/places/initial.txt'
         Place.from_file(get_user(1), fn)
         self.assertEqual(len(Place.objects.all()), 102)
+
+# ################################################################# CHANGE MODEL
+
+
+class TestChangeLogModel(TestCase):
+    def test_create_log_entry_user(self):
+        create_users()
+        u1 = get_user(1)
+        c1 = ChangeLog.add(action=ChangeLog.CreateUser, user=u1)
+        self.assertEqual(c1.action, ChangeLog.CreateUser)
+
+    def test_create_log_entry_create_place(self):
+        create_users()
+        p1 = create_engfer(1)
+        u1 = get_user(1)
+        c1 = ChangeLog.add(action=ChangeLog.CreatePlace, place=p1, user=u1)
+        self.assertEqual(c1.action, ChangeLog.CreatePlace)
+        self.assertEqual(c1.place, p1)
+
+    def test_create_by_creating_place(self):
+        create_users()
+        p1 = create_engfer(1)
+        cl = ChangeLog.objects.all()
+        self.assertEqual(len(cl), 3)
+        cl = ChangeLog.objects.filter(action=ChangeLog.CreatePlace)
+        self.assertEqual(len(cl), 1)
+        c1 = cl[0]
+        self.assertEqual(c1.user_id, 1)
+        self.assertEqual(c1.place_id, p1.id)
+
 
 #############################################################################
 #

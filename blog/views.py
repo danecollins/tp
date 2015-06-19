@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import redirect, render, render_to_response, get_object_or_404
 from django.template import RequestContext
 
-from models import Post, Comment
-from forms import PostForm, CommentForm
+from blog.models import Post, Comment
+from blog.forms import PostForm, CommentForm
 import sys
 import os
 

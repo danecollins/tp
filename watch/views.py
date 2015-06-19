@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
-from .models import Event, Watcher, id_generator
-from .forms import WatcherAddForm, WatcherEditForm
+from watch.models import Event, Watcher, id_generator
+from watch.forms import WatcherAddForm, WatcherEditForm
 from django.utils import timezone
 import sys
 

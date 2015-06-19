@@ -6,8 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
 from django.contrib.auth.models import User
-from .models import Place, VisitType, Visit
-from .forms import PlaceForm
+from places.models import Place, VisitType, Visit
+from places.forms import PlaceForm
 from vote.models import Vote, Survey
 
 import re

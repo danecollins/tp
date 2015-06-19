@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from models import Vote, Survey
+from vote.models import Vote, Survey
 
 
 def index(request):

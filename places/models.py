@@ -45,6 +45,13 @@ class Place(models.Model):
     archived = models.BooleanField(default=False, blank=True)
     visited = models.IntegerField(default=0)
 
+    # This is required so that we can log the event
+    @classmethod
+    def from_args(cls, *args, **kwargs):
+        obj = cls(*args, **kwargs)
+        obj.save()
+        ChangeLog.add(action=ChangeLog.CreatePlace, place=obj, user=obj.user)
+        return obj
 
     @classmethod
     def from_csv(cls, user, text, delimiter=','):
@@ -78,6 +85,7 @@ class Place(models.Model):
         self.good_for = fields[7]
         self.comment = fields[8]
         self.save()
+        ChangeLog.add(action=ChangeLog.CreatePlace, place=self, user=user)
         return self
 
     @classmethod
@@ -150,3 +158,37 @@ class Visit(models.Model):
 
     class Meta:
         app_label = 'places'
+
+
+class ChangeLog(models.Model):
+    CreateUser = 'CreateUser'
+    CreatePlace = 'CreatePlace'
+    ViewPlace = 'ViewPlace'
+    EditPlace = 'EditPlace'
+    AddVisit = 'AddVisit'
+    action_choices = [
+        (CreateUser, 'created a User'),
+        (CreatePlace, 'created a Place'),
+        (ViewPlace, 'viewed a Place'),
+        (EditPlace, 'edited a Place'),
+        (AddVisit, 'added a Visit')
+    ]
+    when = models.DateTimeField(auto_now_add=True)
+    action = models.CharField(max_length=12, choices=action_choices)
+    user = models.ForeignKey(User)
+    place = models.ForeignKey(Place, null=True)
+
+    @classmethod
+    def add(cls, *args, **kwargs):
+        obj = cls(*args, **kwargs)
+        obj.save()
+        return obj
+
+    def __str__(self):
+        if self.place:
+            return '{} {} to {} on {}'.format(self.user,
+                                              self.action.get_action_display(),
+                                              self.place.name, self.when)
+
+    class Meta:
+            app_label = 'places'

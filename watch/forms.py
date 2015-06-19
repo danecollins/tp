@@ -1,5 +1,5 @@
 from django import forms
-from .models import Watcher
+from watch.models import Watcher
 
 
 

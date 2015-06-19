@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render,render_to_response, get_object_or_
 from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from forms import UserForm
+from registration.forms import UserForm
 
 
 

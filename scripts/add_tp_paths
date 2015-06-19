@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cat << EOF >> ~/env/tp/bin/activate
+
+export PYTHONPATH=/Users/dane/src/tp
+export DJANGO_SETTINGS_MODULE=config.settings
+
+EOF

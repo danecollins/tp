@@ -19,10 +19,10 @@ def get_user(n):
 def create_users():
     u = User.objects.create_user(username=username(1), password='password', first_name='Test', last_name='User')
     u.save()
-    ChangeLog.add(action=ChangeLog.CreateUser, user=u)
+    ChangeLog.create_user(u)
     u = User.objects.create_user(username=username(2), password='password')
     u.save()
-    ChangeLog.add(action=ChangeLog.CreateUser, user=u)
+    ChangeLog.create_user(u)
 
 
 def create_engfer(user):
@@ -38,6 +38,7 @@ def create_engfer(user):
         good_for='casual dinner',
         comment='only open at dinner')
     p.save()
+    ChangeLog.create_place(p)
     return(p)
 
 
@@ -54,19 +55,22 @@ def create_johnnys(user):
         good_for='fancy dinner',
         comment='good seafood')
     p.save()
+    ChangeLog.create_place(p)
     return(p)
 
 
 def create_campbell():
     user = get_user(1)
     for s in campbell_restaurants:
-        Place.from_csv(user, s)
+        p = Place.from_csv(user, s)
+        ChangeLog.create_place(p)
 
 
 def create_sanjose():
     user = get_user(1)
     for s in sanjose_restaurants:
-        Place.from_csv(user, s)
+        p = Place.from_csv(user, s)
+        ChangeLog.create_place(p)
 
 
 def create_some_places():
@@ -157,34 +161,30 @@ class TestPlaceModel(TestCase):
         Place.from_file(get_user(1), fn)
         self.assertEqual(len(Place.objects.all()), 102)
 
-# ################################################################# CHANGE MODEL
+# ################################################################# CHANGE LOG MODEL
 
 
 class TestChangeLogModel(TestCase):
     def test_create_log_entry_user(self):
         create_users()
-        u1 = get_user(1)
-        c1 = ChangeLog.add(action=ChangeLog.CreateUser, user=u1)
-        self.assertEqual(c1.action, ChangeLog.CreateUser)
+        entries = ChangeLog.get_create_user()
+        self.assertTrue(len(entries) > 0)
 
     def test_create_log_entry_create_place(self):
         create_users()
         p1 = create_engfer(1)
         u1 = get_user(1)
-        c1 = ChangeLog.add(action=ChangeLog.CreatePlace, place=p1, user=u1)
-        self.assertEqual(c1.action, ChangeLog.CreatePlace)
-        self.assertEqual(c1.place, p1)
+        ChangeLog.create_place(p1)
+        c1 = ChangeLog.get_create_place()[0]
+        self.assertTrue(c1.message.find('created place') != -1)
 
     def test_create_by_creating_place(self):
         create_users()
-        p1 = create_engfer(1)
+        create_engfer(1)
         cl = ChangeLog.objects.all()
         self.assertEqual(len(cl), 3)
-        cl = ChangeLog.objects.filter(action=ChangeLog.CreatePlace)
+        cl = ChangeLog.get_create_place()
         self.assertEqual(len(cl), 1)
-        c1 = cl[0]
-        self.assertEqual(c1.user_id, 1)
-        self.assertEqual(c1.place_id, p1.id)
 
 
 #############################################################################

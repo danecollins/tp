@@ -50,7 +50,6 @@ class Place(models.Model):
     def from_args(cls, *args, **kwargs):
         obj = cls(*args, **kwargs)
         obj.save()
-        ChangeLog.add(action=ChangeLog.CreatePlace, place=obj, user=obj.user)
         return obj
 
     @classmethod
@@ -85,7 +84,6 @@ class Place(models.Model):
         self.good_for = fields[7]
         self.comment = fields[8]
         self.save()
-        ChangeLog.add(action=ChangeLog.CreatePlace, place=self, user=user)
         return self
 
     @classmethod
@@ -161,34 +159,33 @@ class Visit(models.Model):
 
 
 class ChangeLog(models.Model):
-    CreateUser = 'CreateUser'
-    CreatePlace = 'CreatePlace'
-    ViewPlace = 'ViewPlace'
-    EditPlace = 'EditPlace'
-    AddVisit = 'AddVisit'
-    action_choices = [
-        (CreateUser, 'created a User'),
-        (CreatePlace, 'created a Place'),
-        (ViewPlace, 'viewed a Place'),
-        (EditPlace, 'edited a Place'),
-        (AddVisit, 'added a Visit')
-    ]
     when = models.DateTimeField(auto_now_add=True)
-    action = models.CharField(max_length=12, choices=action_choices)
-    user = models.ForeignKey(User)
-    place = models.ForeignKey(Place, null=True)
+    message = models.CharField(max_length=100)
 
     @classmethod
-    def add(cls, *args, **kwargs):
-        obj = cls(*args, **kwargs)
-        obj.save()
-        return obj
+    def create_user(cls, user):
+        msg = 'Create user "{}"'.format(user.username)
+        cls(message=msg).save()
+
+    @classmethod
+    def get_create_user(cls):
+        return cls.objects.filter(message__startswith='Create user')
+
+    @classmethod
+    def create_place(cls, place):
+        msg = '"{}" created place named "{}"'.format(place.user.username, place.name)
+        cls(message=msg).save()
+
+    @classmethod
+    def get_create_place(cls):
+        return cls.objects.filter(message__contains='created place named')
+
+    def view_city_list(cls, username="anonymous"):
+        msg = '"{}" viewed the city list'.format(username)
+        cls(message=msg).save()
 
     def __str__(self):
-        if self.place:
-            return '{} {} to {} on {}'.format(self.user,
-                                              self.action.get_action_display(),
-                                              self.place.name, self.when)
+        return '{}: {}'.format(self.when, self.message)
 
     class Meta:
             app_label = 'places'

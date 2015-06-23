@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
 from django.contrib.auth.models import User
-from places.models import Place, VisitType, Visit
+from places.models import Place, VisitType, Visit, ChangeLog
 from places.forms import PlaceForm
 from vote.models import Vote, Survey
 
@@ -40,7 +40,6 @@ opentable_data[38] = (3130, "village-california-bistro-and-wine-bar-reservations
 opentable_data[140] = (52660, "le-garage-reservations-sausalito", "Le Garage (52660)")
 opentable_data[174] = (114103, "hults-reservations-los-gatos", "Hult's (114103)")
 opentable_data[186] = (91789, 'dry-creek-grill-reservations-san-jose', "Dry Creek Grill (91789)")
-
 
 
 def get_opentable(id):
@@ -95,6 +94,7 @@ def city_list(request):
         username = request.user.first_name
         cities = sorted(set([x.city for x in Place.objects.filter(user=request.user, archived=False)]))
 
+    ChangeLog.view_city_list(username=request.user.username)
     logprint('User: {} is on city list'.format(request.user))
     return render(request, 'places/city_list.html', {'clist': cities,
                                                      'username': username})
@@ -109,6 +109,7 @@ def info(request):
     data['women_votes'] = len(Vote.objects.filter(type=True))
     data['survey'] = Survey.get()
     data['visits'] = len(Visit.objects.all())
+    data['events'] = len(ChangeLog.objects.all())
 
     # get server information
     s = os.environ.get('TP_SERVER', 'Missing')
@@ -133,6 +134,7 @@ def locale_list(request, city):
         print('Setting args to post method', file=sys.stderr)
         args = request.POST
 
+    ChangeLog.view_locale_list(username=request.user.username)
     logprint('User:{} is on search page'.format(request.user))
 
     if request.user.is_anonymous():
@@ -201,6 +203,7 @@ def place_detail(request, place_id):
         else:
             last = str(last.when)
 
+    ChangeLog.place_detail(place, request.user.username)
     logprint('User: {} is viewing details on {}'.format(request.user, place.name))
     return render(request, 'places/place_detail.html',
                   {'p': place, 'visittype': VisitType.as_string(place.visited),
@@ -251,6 +254,7 @@ def place_add(request):
             p.save()
             m = 'User: {} added place: {} with id: {}'.format(p.user, p.name, p.id)
             logprint(m)
+            ChangeLog.place_add(p, request.user.username)
             # log_to_slack(m)
             return place_detail(request, p.id)
     else:
@@ -280,6 +284,7 @@ def place_copy(request, place_id):
 
     place.id = Place.next_id()
     place.save()
+    ChangeLog.place_copy(place, request.uesr.username)
     m = 'User: {} copied place: {}'.format(request.user, place.name)
     logprint(m)
     log_to_slack(m)
@@ -381,6 +386,7 @@ def place_save(request, place_id):
             changed.append('dog_friendly')
 
     if changed is not None:
+        ChangeLog.changed_place(p, request.user.username)
         logprint('User: {} edited place: {}. Changed fields: {}'.format(request.user, p.name,
                                                                         ','.join(changed)))
         p.save()
@@ -392,11 +398,13 @@ def search(request):
         places = Place.objects.filter(archived=False)
         args = {}
         logprint('User:{} is on search page'.format(request.user, args.get('pat', '')))
+        ChangeLog.search(request.user.username)
     else:
         args = request.POST
         pat = re.compile(args['pat'], re.IGNORECASE)
         places = [p for p in Place.objects.filter(archived=False)
                   if pat.search(p.name) or pat.search(p.cuisine) or pat.search(p.city)]
+        ChangeLog.search(request.user.username, args.get('pat', ''))
         logprint('User:{} searched for: {}'.format(request.user, args.get('pat', '')))
 
     # create a unique set of places, want to prefer places you own

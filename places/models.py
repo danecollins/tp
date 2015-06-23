@@ -180,8 +180,42 @@ class ChangeLog(models.Model):
     def get_create_place(cls):
         return cls.objects.filter(message__contains='created place named')
 
-    def view_city_list(cls, username="anonymous"):
+    @classmethod
+    def view_city_list(cls, username):
         msg = '"{}" viewed the city list'.format(username)
+        cls(message=msg).save()
+
+    @classmethod
+    def view_locale_list(cls, username):
+        msg = '"{}" viewed the locale list'.format(username)
+        cls(message=msg).save()
+
+    @classmethod
+    def place_detail(cls, place, username):
+        msg = '"{}" is viewing the details of "{}"'.format(username, place.name)
+        cls(message=msg).save()
+
+    @classmethod
+    def place_copy(cls, place, username):
+        msg = '"{}" copied over place "{}"'.format(username, place.name)
+        cls(message=msg).save()
+
+    @classmethod
+    def place_add(cls, place, username):
+        msg = '"{}" added place named "{}"'.format(username, place.name)
+        cls(message=msg).save()
+
+    @classmethod
+    def place_edit(cls, place, username):
+        msg = '"{}" edited place named "{}"'.format(username, place.name)
+        cls(message=msg).save()
+
+    @classmethod
+    def search(cls, username, search_term=False):
+        if search_term:
+            msg = '"{}" searched for "{}"'.format(username, search_term)
+        else:
+            msg = '"{}" is on the search page'.format(username)
         cls(message=msg).save()
 
     def __str__(self):

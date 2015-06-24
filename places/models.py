@@ -164,7 +164,7 @@ class ChangeLog(models.Model):
 
     @classmethod
     def create_user(cls, user):
-        msg = 'Create user "{}"'.format(user.username)
+        msg = 'Create user {}'.format(user.username)
         cls(message=msg).save()
 
     @classmethod
@@ -173,7 +173,7 @@ class ChangeLog(models.Model):
 
     @classmethod
     def create_place(cls, place):
-        msg = '"{}" created place named "{}"'.format(place.user.username, place.name)
+        msg = '{} created place named "{}"'.format(place.user.username or 'anon', place.name)
         cls(message=msg).save()
 
     @classmethod
@@ -182,40 +182,40 @@ class ChangeLog(models.Model):
 
     @classmethod
     def view_city_list(cls, username):
-        msg = '"{}" viewed the city list'.format(username)
+        msg = '{} viewed the city list'.format(username or 'anon')
         cls(message=msg).save()
 
     @classmethod
     def view_locale_list(cls, username):
-        msg = '"{}" viewed the locale list'.format(username)
+        msg = '{} viewed the locale list'.format(username or 'anon')
         cls(message=msg).save()
 
     @classmethod
     def place_detail(cls, place, username):
-        msg = '"{}" is viewing the details of "{}"'.format(username, place.name)
+        msg = '{} is viewing the details of "{}"'.format(username or 'anon', place.name)
         cls(message=msg).save()
 
     @classmethod
     def place_copy(cls, place, username):
-        msg = '"{}" copied over place "{}"'.format(username, place.name)
+        msg = '{} copied over place "{}"'.format(username or 'anon', place.name)
         cls(message=msg).save()
 
     @classmethod
     def place_add(cls, place, username):
-        msg = '"{}" added place named "{}"'.format(username, place.name)
+        msg = '{} added place named "{}"'.format(username or 'anon', place.name)
         cls(message=msg).save()
 
     @classmethod
     def place_edit(cls, place, username):
-        msg = '"{}" edited place named "{}"'.format(username, place.name)
+        msg = '{} edited place named "{}"'.format(username or 'anon', place.name)
         cls(message=msg).save()
 
     @classmethod
     def search(cls, username, search_term=False):
         if search_term:
-            msg = '"{}" searched for "{}"'.format(username, search_term)
+            msg = '{} searched for "{}"'.format(username or 'anon', search_term)
         else:
-            msg = '"{}" is on the search page'.format(username)
+            msg = '{} is on the search page'.format(username or 'anon')
         cls(message=msg).save()
 
     def __str__(self):

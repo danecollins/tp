@@ -54,6 +54,16 @@
 		<li><a href="/places/view/{{p.id}}">{{ p.name }}</a></li>
 	{% endfor %}
 </ul>
+<hr>
+{% endif %}
+
+{% if events %}
+<h2>Last Events</h2>
+<ul>
+	{% for e in events %}
+		<li>{{ e.when }} {{ e.message }}</li>
+	{% endfor %}
+</ul>
 {% endif %}
 
 {% endblock content %}

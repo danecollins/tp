@@ -269,6 +269,8 @@ def place_add(request):
 @login_required
 def place_share(request, place_id):
     p = get_object_or_404(Place, id=place_id)
+    m = 'User: {} is sharing "{}"'.format(request.user.username, p.name)
+    logprint(m)
     message = '''
 Here is the restaurant I wanted to share with you.
 It is called {} and it is in {}.
@@ -290,6 +292,9 @@ http://dev.trackplaces.com/places/view/{}/ - {}
                 error = False
             except twilio.TwilioRestException as e:
                 error = e
+            if error:
+                m = 'Twilio returned error: {}'.format(e)
+                logprint(m)
             return render(request, 'places/email_sent.html',
                           {'place': p, 'to': to_number, 'error': error})
     else:

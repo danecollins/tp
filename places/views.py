@@ -295,6 +295,9 @@ http://dev.trackplaces.com/places/view/{}/ - {}
             if error:
                 m = 'Twilio returned error: {}'.format(e)
                 logprint(m)
+            else:
+                m = 'Message sent to {} via twilio'.format(to_number)
+                logprint(m)
             return render(request, 'places/email_sent.html',
                           {'place': p, 'to': to_number, 'error': error})
     else:

@@ -45,7 +45,7 @@
         {% if p.user == user %}
     	<td><a class="pure-button pure-button-primary" href="/places/edit/{{ p.id }}">Edit Restaurant Information</a></td>
         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-        <td><a class="pure-button pure-button-disabled" href="/places/share/{{ p.id }}">Share</a></td>
+        <td><a class="pure-button pure-button-secondary" href="/places/share/{{ p.id }}">Share</a></td>
         {% endif %}
         {% if p.user != user and user.is_authenticated %}
         <td><a class="pure-button pure-button-primary" href="/places/copy/{{ p.id }}">Add To My Places</a></td>

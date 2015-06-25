@@ -44,6 +44,7 @@ class Place(models.Model):
     yelp = models.CharField(max_length=200, blank=True)
     archived = models.BooleanField(default=False, blank=True)
     visited = models.IntegerField(default=0)
+    updated = models.DateTimeField(auto_now=True)
 
     # This is required so that we can log the event
     @classmethod

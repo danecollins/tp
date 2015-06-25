@@ -272,7 +272,7 @@ def place_share(request, place_id):
     message = '''
 Here is the restaurant I wanted to share with you.
 It is called {} and it is in {}.
-http://dev.trackplaces.com/places/details/{}/ - {}
+http://dev.trackplaces.com/places/view/{}/ - {}
 '''.format(p.name, p.city, p.id, request.user.first_name)
 
     if request.method == 'POST':
@@ -290,7 +290,7 @@ http://dev.trackplaces.com/places/details/{}/ - {}
                 error = False
             except twilio.TwilioRestException as e:
                 error = e
-            return render(request, 'places/email_sent.html', 
+            return render(request, 'places/email_sent.html',
                           {'place': p, 'to': to_number, 'error': error})
     else:
         form = ShareForm(initial={'subject': 'Restaurant Information from TrackPlaces...'}).as_table()

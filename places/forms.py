@@ -28,7 +28,7 @@ class PlaceForm(forms.Form):
 
     name = forms.CharField(label='Name', max_length=100, required=True, widget=large)
     city = forms.CharField(label='City', max_length=100)
-    locale = forms.CharField(label='Locale', max_length=40)
+    locale = forms.CharField(label='Neighborhood', max_length=40)
     cuisine = forms.ChoiceField(label='Cuisine', choices=cuisine_choices, required=False)
     outdoor = forms.BooleanField(label='Outdoor Seating', required=False)
     dog_friendly = forms.BooleanField(label='Dog Friendly', required=False)

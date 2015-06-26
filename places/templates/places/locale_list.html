@@ -3,7 +3,7 @@
 {% block title %}TrackPlaces - Cities{% endblock %}
 
 {% block header %}
-<h1>Locales for {{ city }}</h1>
+<h1>Neighborhoods in {{ city }}</h1>
   <div class="container">
     <form name="filter" action="/places/city/{{ city }}/" method="post">
       {% csrf_token %}

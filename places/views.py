@@ -5,9 +5,15 @@ from collections import defaultdict
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
+import twilio
+from twilio.rest import TwilioRestClient
+import re
+import sys
+import os
+
 from django.contrib.auth.models import User
 from places.models import Place, VisitType, Visit, ChangeLog
-from places.forms import PlaceForm
+from places.forms import PlaceForm, ShareForm
 from vote.models import Vote, Survey
 
 import re
@@ -92,7 +98,8 @@ def city_list(request):
         cities = sorted(set([x.city for x in Place.objects.filter(archived=False)]))
     else:
         username = request.user.first_name
-        cities = sorted(set([x.city for x in Place.objects.filter(user=request.user, archived=False)]))
+        cities = sorted(set([x.city for x in Place.objects.filter(user=request.user,
+                                                                  archived=False)]))
 
     ChangeLog.view_city_list(username=request.user.username)
     logprint('User: {} is on city list'.format(request.user))
@@ -127,7 +134,7 @@ def info(request):
 
 def locale_list(request, city):
     unset = u'\u2753'
-    checked = u'\u2705'
+    # checked = u'\u2705'
     unchecked = u'\u274C'
 
     if request.method == 'GET':
@@ -265,9 +272,42 @@ def place_add(request):
 
 
 @login_required
-def place_share(request, place_id, username):
-    pass
-    return place_detail(request, place_id)
+def place_share(request, place_id):
+    p = get_object_or_404(Place, id=place_id)
+    m = 'User: {} is sharing "{}"'.format(request.user.username, p.name)
+    logprint(m)
+    message = '''
+Here is the restaurant I wanted to share with you.
+It is called {} and it is in {}.
+http://dev.trackplaces.com/places/view/{}/ - {}
+'''.format(p.name, p.city, p.id, request.user.first_name)
+
+    if request.method == 'POST':
+        form = ShareForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            to_number = "+1" + data['to_number']
+            from_number = data['from_number']
+            message += "- reply to: {}".format(from_number)  # append from number
+            ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
+            AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
+            client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
+            try:
+                message = client.messages.create(to=to_number, from_="+16692214546", body=message)
+                error = False
+            except twilio.TwilioRestException as e:
+                error = e
+            if error:
+                m = 'Twilio returned error: {}'.format(e)
+                logprint(m)
+            else:
+                m = 'Message sent to {} via twilio'.format(to_number)
+                logprint(m)
+            return render(request, 'places/email_sent.html',
+                          {'place': p, 'to': to_number, 'error': error})
+    else:
+        form = ShareForm(initial={'subject': 'Restaurant Information from TrackPlaces...'}).as_table()
+    return render(request, 'places/share_form.html', {'form': form, 'p': p, 'msg': message})
 
 
 @login_required

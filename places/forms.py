@@ -28,7 +28,7 @@ class PlaceForm(forms.Form):
 
     name = forms.CharField(label='Name', max_length=100, required=True, widget=large)
     city = forms.CharField(label='City', max_length=100)
-    locale = forms.CharField(label='Locale', max_length=40)
+    locale = forms.CharField(label='Neighborhood', max_length=40)
     cuisine = forms.ChoiceField(label='Cuisine', choices=cuisine_choices, required=False)
     outdoor = forms.BooleanField(label='Outdoor Seating', required=False)
     dog_friendly = forms.BooleanField(label='Dog Friendly', required=False)
@@ -39,3 +39,9 @@ class PlaceForm(forms.Form):
     good_for = forms.CharField(label='Good For', max_length=50, required=False)
     comment = forms.CharField(label='Comment', max_length=200, required=False, widget=large)
     yelp = forms.URLField(label='Yelp URL', max_length=200, required=False, widget=large)
+
+
+class ShareForm(forms.Form):
+    from_number = forms.CharField(label='Your Phone # (numbers only)', max_length=20, required=True)
+    to_number = forms.CharField(label='Send to Phone # (numbers only)', max_length=20, required=True)
+

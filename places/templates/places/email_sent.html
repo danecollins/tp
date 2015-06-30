@@ -1,0 +1,22 @@
+{% extends 'menu_base.html' %}
+
+{% block title %}SMS Sent{% endblock %}
+
+{% block header %}
+    <h3>Restaurant shared with {{ to }}</h3>
+
+{% endblock %}
+
+{% block content %}
+
+{% if error %}
+<h3>An Error Occured</h3>
+<p>Your restaurant could not be shared because</p>
+<pre>
+{{ error }}
+</pre>
+{% else %}
+<p>Restaurant information was sent by text.</p>
+{% endif %}
+
+{% endblock content %}

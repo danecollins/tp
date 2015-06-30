@@ -1,3 +1,6 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from django.test import TestCase, Client
 
 # Create your tests here.
@@ -5,7 +8,6 @@ from places.models import Place, ChangeLog
 from places.forms import PlaceForm
 from places.html_utils import ParsePage as PP
 from django.contrib.auth.models import User
-import pdb
 
 
 def username(n):
@@ -192,7 +194,7 @@ class TestChangeLogModel(TestCase):
 # Form Tests
 #
 
-add_form_labels = ['Name', 'City', 'Locale', 'Cuisine', 'Outdoor Seating', 'Dog Friendly',
+add_form_labels = ['Name', 'City', 'Neighborhood', 'Cuisine', 'Outdoor Seating', 'Dog Friendly',
                    'Visit Type', 'Rating', 'Good For', 'Comment', 'Yelp URL']
 
 

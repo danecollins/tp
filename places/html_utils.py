@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import unicode_literals
 from bs4 import BeautifulSoup
 
 
@@ -18,10 +20,10 @@ class ParsePage:
         u'Explore Site': u'/places/city'
     }
 
-    anon_place_fields = [u'City', u'Locale', u'Cuisine',
+    anon_place_fields = [u'City', u'Neighborhood', u'Cuisine',
                          u'Outdoor Seating', u'Dog Friendly']
 
-    user_place_fields = [u'City', u'Locale', u'Cuisine', u'Visit Type',
+    user_place_fields = [u'City', u'Neighborhood', u'Cuisine', u'Visit Type',
                          u'Outdoor Seating', u'Dog Friendly', 'Last Visited',
                          u'Rating', u'Good For', u'Comment']
 

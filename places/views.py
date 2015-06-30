@@ -13,7 +13,7 @@ from vote.models import Vote, Survey
 import re
 import sys
 import os
-import pdb
+
 
 opentable_data = {}
 opentable_data[9] = (2493, 'capers-reservations-campbell', 'Capers (2493)')
@@ -388,7 +388,7 @@ def place_save(request, place_id):
             changed.append('dog_friendly')
 
     if changed is not None:
-        ChangeLog.changed_place(p, request.user.username)
+        ChangeLog.place_edit(p, request.user.username)
         logprint('User: {} edited place: {}. Changed fields: {}'.format(request.user, p.name,
                                                                         ','.join(changed)))
         p.save()

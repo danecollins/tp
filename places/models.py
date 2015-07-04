@@ -161,7 +161,7 @@ class Visit(models.Model):
 
 class ChangeLog(models.Model):
     when = models.DateTimeField(auto_now_add=True)
-    message = models.CharField(max_length=100)
+    message = models.CharField(max_length=130)
 
     @classmethod
     def create_user(cls, user):
@@ -197,8 +197,9 @@ class ChangeLog(models.Model):
         cls(message=msg).save()
 
     @classmethod
-    def place_copy(cls, place, username):
-        msg = '{} copied over place "{}"'.format(username or 'anon', place.name)
+    def place_copy(cls, place, username, orig_id):
+        msg = '{} copied over place "{}" orig:{}, new:{}'.format(username or 'anon',
+                                                                 place.name, orig_id, place.id)
         cls(message=msg).save()
 
     @classmethod

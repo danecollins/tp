@@ -1,5 +1,5 @@
 from __future__ import print_function
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 from collections import defaultdict
 from django.contrib.auth.decorators import login_required
@@ -326,11 +326,12 @@ def place_copy(request, place_id):
 
     place.id = Place.next_id()
     place.save()
-    ChangeLog.place_copy(place, request.uesr.username)
+    ChangeLog.place_copy(place, request.user.username, place_id)
     m = 'User: {} copied place: {}'.format(request.user, place.name)
     logprint(m)
     log_to_slack(m)
-    return place_edit(request, place.id)
+    # because this is a new request it need a leading /
+    return redirect('/places/edit/{}/'.format(place.id))
 
 
 @login_required

@@ -133,12 +133,9 @@ def info(request):
 
 
 def locale_list(request, city):
-    unset = u'\u2753'
-    # checked = u'\u2705'
-    unchecked = u'\u274C'
 
     if request.method == 'GET':
-        args = {'outdoor': unset, 'dog_friendly': unset, 'cuisine': ''}
+        args = {'outdoor': False, 'dog_friendly': False, 'cuisine': ''}
     else:
         print('Setting args to post method', file=sys.stderr)
         args = request.POST
@@ -160,26 +157,18 @@ def locale_list(request, city):
         places = Place.objects.filter(city=city, user=request.user, archived=False)
 
     if 'cuisine' in args and args['cuisine'] != '':
-        print('Filtering by cuisine={}'.format(args['cuisine']), file=sys.stderr)
+        # print('Filtering by cuisine={}'.format(args['cuisine']), file=sys.stderr)
         places = [x for x in places if x.cuisine == args['cuisine']]
     else:
         print('No cuisine filtering')
 
-    if 'outdoor' in args and args['outdoor'] != unset:
-        if args['outdoor'] == unchecked:
-            value = False
-        else:
-            value = True
-        print('Filtering by outdoor={}'.format(value), file=sys.stderr)
-        places = [x for x in places if x.outdoor == value]
+    if 'outdoor' in args and args['outdoor']:
+        # print('Filtering by outdoor', file=sys.stderr)
+        places = [x for x in places if x.outdoor]
 
-    if 'dog_friendly' in args and args['dog_friendly'] != unset:
-        if args['dog_friendly'] == unchecked:
-            value = False
-        else:
-            value = True
-        print('Filtering by dog_friendly={}'.format(value), file=sys.stderr)
-        places = [x for x in places if x.dog_friendly == value]
+    if 'dog_friendly' in args and args['dog_friendly']:
+        print('Filtering by dog_friendly', file=sys.stderr)
+        places = [x for x in places if x.dog_friendly]
 
     by_locale = defaultdict(set)
     id_by_name = {p.name: p.id for p in places}

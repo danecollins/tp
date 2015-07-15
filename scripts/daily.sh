@@ -6,7 +6,7 @@ date >> ~/daily.log
 source ~/env/tp/bin/activate
 
 scripts/backup_prod.sh
-curl http://watch4.events/checkin/9YZNCBAR/
+curl -L http://watch4.events/checkin/9YZNCBAR/
 
 dropdb tpdata.heroku >> ~/daily.log 2>&1
 if [ $? -ne 0 ]; then
@@ -24,10 +24,9 @@ fi
 echo "INFO: heroku pull completed" >> ~/daily.log
 export DATABASE_URL=postgres:///tpdata.heroku
 scripts/dbsummary.py >> ~/daily.log 2>&1
-curl http://watch4.events/checkin/9YZNCBAR/
 
 echo "INFO: next backup ladera database" >> ~/daily.log
 cd ~/src/scripts
 ./backup_ladera_prod.sh >> ~/daily.log 2>&1
-curl http://watch4.events/checkin/8X1O1CJD/
+curl -L http://watch4.events/checkin/8X1O1CJD/
 

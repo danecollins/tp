@@ -48,7 +48,10 @@
         <td><a class="pure-button pure-button-secondary" href="/places/share/{{ p.id }}">Share</a></td>
         {% endif %}
         {% if p.user != user and user.is_authenticated %}
-        <td><a class="pure-button pure-button-primary" href="/places/copy/{{ p.id }}">Add To My Places</a></td>
+            <td><a class="pure-button pure-button-primary" href="/places/copy/{{ p.id }}">Add To My Places</a></td>
+            {% if user.username == 'dane'}
+                <p>Place is owned by {{p.user.username}}</p>
+            {% endif %}
         {% endif %}
         {% if p.yelp|length > 4 %}
         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>

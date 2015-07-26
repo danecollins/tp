@@ -28,3 +28,6 @@ echo "INFO: next backup ladera database" >> ~/daily.log
 cd ~/src/scripts
 ./backup_ladera_prod.sh >> ~/daily.log 2>&1
 
+## chain to w4e daily tasks
+/Users/dane/src/w4e/scripts/daily.sh
+

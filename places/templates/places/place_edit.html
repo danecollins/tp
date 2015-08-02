@@ -25,7 +25,7 @@ label.required {
 
 {% block content %}
 
-    	<h3>Edit Restaurant Information</h3>
+    	<h3>Edit {{ pltypeS }} Information</h3>
         <form action="/places/save/{{ p.id }}/" method="post">
         {% csrf_token %}
         <table cellpadding="10">

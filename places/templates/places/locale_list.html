@@ -5,12 +5,12 @@
 {% block header %}
 <h1>Neighborhoods in {{ city }}</h1>
   <div class="container">
-    <form name="filter" action="/places/city/{{ city }}/" method="post">
+    <form name="filter" action="/places/{{pltype}}/city/{{ city }}/" method="post">
       {% csrf_token %}
 <label>Dog Friendly Only:</label> <input name="dog_friendly" type="checkbox" {% if args.dog_friendly %}checked{% endif %}/>
 &nbsp;&nbsp;&nbsp;
+{% if pltype == 'rest' %}
 <label>Outdoor Only:</label> <input name="outdoor" type="checkbox" {% if args.outdoor %}checked{% endif %}/>
-
        &nbsp;&nbsp;&nbsp;
         <label for="id_cuisine">Cuisine:</label>
         <select id="id_cuisine" name="cuisine">
@@ -19,6 +19,9 @@
           <option value="{{ c }}">{{ c }}</option>
         {% endfor %}
         </select>
+{% else %}
+<label>Has a bar:</label> <input name="has_bar" type="checkbox" {% if args.has_bar %}checked{% endif %}/>
+{% endif %}
        &nbsp;&nbsp;&nbsp;
       <input name="submit" type="submit" value="Filter">
     </form>

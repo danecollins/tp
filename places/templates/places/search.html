@@ -6,12 +6,12 @@
 <div class="pure-g">
 <div class="pure-u-3-24" align="left"></div>
 <div class="pure-u-20-24" align="left">
-<form action="{% url 'places:search' %}" method="post">
+<form action="/places/{{ pltype }}/search/" method="post">
   {% csrf_token %}
    <p>
       <input type="submit" value="Find">
       <input type="text" name="pat" value={{ args.pat }}>
-      in name, cuisine or city.
+      in name{% if pltype == 'rest' %}, cuisine{% endif %} or city.
    </p>
   </form>
 </div></div>

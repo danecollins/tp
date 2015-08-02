@@ -5,6 +5,8 @@ rating_choices = ((0, 'Not Rated'), (1, '1 Star - OK'),
                   (2, '2 Stars - Really Good'), (3, '3 Stars - A Favorite'))
 
 cuisine_choices = (('American', 'American'),
+                   ('Bar and Grill', 'Bar and Grill'),
+                   ('Brewery', 'Brewery'),
                    ('BBQ', 'BBQ'),
                    ('Cuban', 'Cuban'),
                    ('Chinese', 'Chinese'),
@@ -31,6 +33,7 @@ class PlaceForm(forms.Form):
     locale = forms.CharField(label='Neighborhood', max_length=40)
     cuisine = forms.ChoiceField(label='Cuisine', choices=cuisine_choices, required=False)
     outdoor = forms.BooleanField(label='Outdoor Seating', required=False)
+    has_bar = forms.BooleanField(label='Has a bar', required=False)
     dog_friendly = forms.BooleanField(label='Dog Friendly', required=False)
     visited = forms.TypedChoiceField(label='Visit Type',
                                      choices=VisitType.type_list(), coerce=int)

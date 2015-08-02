@@ -24,13 +24,13 @@ label.required {
 
 {% block content %}
 
-<h3>Restaurant Information</h3>
+<h3>Add {{ pltypeS }} Information</h3>
 
-<form action="/places/add/" method="post">
+<form action="/places/{{ pltype }}/add/" method="post">
 {% csrf_token %}
 <table cellpadding="10">
 {{ form }}
 </table>
-<input type="submit" value="Add Place">
+<input type="submit" value="Add {{ pltypeS }}">
 </form>
 {% endblock content %}

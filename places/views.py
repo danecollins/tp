@@ -77,6 +77,20 @@ def log_to_slack(message):
         requests.post(url, data=json.dumps(payload))
 
 
+def pltype_url_string(p):
+    if p.pltype == Place.RESTAURANT:
+        return 'rest'
+    else:
+        return 'hotel'
+
+
+def pltype_user_string(p):
+    if p.pltype == Place.RESTAURANT:
+        return 'Restaurant'
+    else:
+        return 'Hotel'
+
+
 def logprint(s):
     s = 'app_log: ' + s
     if os.environ.get('DB', False):
@@ -92,18 +106,23 @@ def index(request):
     return render(request, 'places/index.html', {'last': Place.last_added()})
 
 
-def city_list(request):
+def city_list(request, pltype='rest'):
+    if pltype == 'rest':
+        query = Place.restaurants.all()
+    else:
+        query = Place.hotels.all()
+
     if request.user.is_anonymous():
         username = 'Guest User'
-        cities = sorted(set([x.city for x in Place.objects.filter(archived=False)]))
+        cities = sorted(set([x.city for x in query.all()]))
     else:
         username = request.user.first_name
-        cities = sorted(set([x.city for x in Place.objects.filter(user=request.user,
-                                                                  archived=False)]))
+        cities = sorted(set([x.city for x in query.filter(user=request.user)]))
 
     ChangeLog.view_city_list(username=request.user.username)
     logprint('User: {} is on city list'.format(request.user))
     return render(request, 'places/city_list.html', {'clist': cities,
+                                                     'pltype': pltype,
                                                      'username': username})
 
 
@@ -132,10 +151,10 @@ def info(request):
                    'events': last_events})
 
 
-def locale_list(request, city):
+def locale_list(request, city, pltype='rest'):
 
     if request.method == 'GET':
-        args = {'outdoor': False, 'dog_friendly': False, 'cuisine': ''}
+        args = {'outdoor': False, 'dog_friendly': False, 'has_bar': False, 'cuisine': ''}
     else:
         print('Setting args to post method', file=sys.stderr)
         args = request.POST
@@ -148,13 +167,20 @@ def locale_list(request, city):
         places = []
         # we can end up with duplicate places due to multiple users which we don't want
         place_names = set()
-        for place in Place.objects.filter(city=city, archived=False):
+        if pltype == 'rest':
+            query = Place.restaurants.all()
+        else:
+            query = Place.hotels.all()
+        for place in query.filter(city=city):
             if place.name not in place_names:
                 place_names.add(place.name)
                 places.append(place)
     else:
         username = request.user.username
-        places = Place.objects.filter(city=city, user=request.user, archived=False)
+        if pltype == 'rest':
+            places = Place.restaurants.filter(city=city, user=request.user)
+        else:
+            places = Place.hotels.filter(city=city, user=request.user)
 
     if 'cuisine' in args and args['cuisine'] != '':
         # print('Filtering by cuisine={}'.format(args['cuisine']), file=sys.stderr)
@@ -165,6 +191,10 @@ def locale_list(request, city):
     if 'outdoor' in args and args['outdoor']:
         # print('Filtering by outdoor', file=sys.stderr)
         places = [x for x in places if x.outdoor]
+
+    if 'has_bar' in args and args['has_bar']:
+        # print('Filtering by outdoor', file=sys.stderr)
+        places = [x for x in places if x.has_bar]
 
     if 'dog_friendly' in args and args['dog_friendly']:
         print('Filtering by dog_friendly', file=sys.stderr)
@@ -184,12 +214,14 @@ def locale_list(request, city):
                                                        'city': city,
                                                        'username': username,
                                                        'cuisine_list': cuisine_list,
+                                                       'pltype': pltype,
                                                        'args': args})
 
 
 # we don't need to check the user since the place is found by id
 def place_detail(request, place_id):
     place = get_object_or_404(Place, id=place_id)
+
     if request.user.is_anonymous() or request.user != place.user:
         anon = True
         last = ''
@@ -205,6 +237,7 @@ def place_detail(request, place_id):
     logprint('User: {} is viewing details on {}'.format(request.user, place.name))
     return render(request, 'places/place_detail.html',
                   {'p': place, 'visittype': VisitType.as_string(place.visited),
+                   'pltype': pltype_user_string(place),
                    'last': last, 'anon': anon, 'opentable': get_opentable(place_id)})
 
 
@@ -227,7 +260,7 @@ def visit_list(request):
 
 
 @login_required
-def place_add(request):
+def place_add(request, pltype='rest'):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -244,11 +277,16 @@ def place_add(request):
                       rating=d['rating'])
             p.id = Place.next_id()
             p.cuisine = d['cuisine']
+            p.has_bar = d['has_bar']
             p.good_for = d['good_for']
             p.comment = d['comment']
             p.yelp = d['yelp']
             p.dog_friendly = d['dog_friendly']
             p.outdoor = d['outdoor']
+            if pltype == 'rest':
+                p.pltype = Place.RESTAURANT
+            else:
+                p.pltype = Place.HOTEL
             p.save()
             m = 'User: {} added place: {} with id: {}'.format(p.user, p.name, p.id)
             logprint(m)
@@ -257,7 +295,13 @@ def place_add(request):
             return place_detail(request, p.id)
     else:
         form = PlaceForm().as_table()
-    return render(request, 'places/place_add.html', {'form': form})
+
+    if pltype == 'rest':
+        pltypeS = 'Restaurant'
+    else:
+        pltypeS = 'Hotel'
+    return render(request, 'places/place_add.html', {'form': form, 'pltype': pltype,
+                                                     'pltypeS': pltypeS})
 
 
 @login_required
@@ -266,10 +310,10 @@ def place_share(request, place_id):
     m = 'User: {} is sharing "{}"'.format(request.user.username, p.name)
     logprint(m)
     message = '''
-Here is the restaurant I wanted to share with you.
+Here is the {} I wanted to share with you.
 It is called {} and it is in {}.
 http://dev.trackplaces.com/places/view/{}/ - {}
-'''.format(p.name, p.city, p.id, request.user.first_name)
+'''.format(pltype_user_string(p), p.name, p.city, p.id, request.user.first_name)
 
     if request.method == 'POST':
         form = ShareForm(request.POST)
@@ -295,7 +339,7 @@ http://dev.trackplaces.com/places/view/{}/ - {}
             return render(request, 'places/email_sent.html',
                           {'place': p, 'to': to_number, 'error': error})
     else:
-        form = ShareForm(initial={'subject': 'Restaurant Information from TrackPlaces...'}).as_table()
+        form = ShareForm(initial={'subject': 'Place Information from TrackPlaces...'}).as_table()
     return render(request, 'places/share_form.html', {'form': form, 'p': p, 'msg': message})
 
 
@@ -305,10 +349,12 @@ def place_copy(request, place_id):
 
     place = Place(user=request.user,
                   name=source.name,
+                  pltype=source.pltype,
                   city=source.city,
                   locale=source.locale,
                   cuisine=source.cuisine,
                   dog_friendly=source.dog_friendly,
+                  has_bar=source.has_bar,
                   outdoor=source.outdoor,
                   yelp=source.yelp,
                   )
@@ -326,12 +372,14 @@ def place_copy(request, place_id):
 @login_required
 def place_edit(request, place_id):
     place = get_object_or_404(Place, id=place_id)
+    pltypeS = pltype_user_string(place)
     init = {'name': place.name,
             'city': place.city,
             'locale': place.locale,
             'cuisine': place.cuisine,
             'outdoor': place.outdoor,
             'dog_friendly': place.dog_friendly,
+            'has_bar': place.has_bar,
             'visited': place.visited,
             'rating': place.rating,
             'good_for': place.good_for,
@@ -341,7 +389,7 @@ def place_edit(request, place_id):
     if request.user == place.user:
         form = PlaceForm(initial=init)
         return render(request, 'places/place_edit.html',
-                      {'p': place, 'form': form})
+                      {'p': place, 'form': form, 'pltypeS': pltypeS})
     else:
         return render(request, 'places/no_permission.html', {'p': place})
 
@@ -367,6 +415,11 @@ def place_save(request, place_id):
             if p.dog_friendly != bool_val:
                 p.dog_friendly = bool_val
                 changed.append('dog_friendly')
+        elif k == 'has_bar':
+            bool_val = (v == 'on')
+            if p.has_bar != bool_val:
+                p.has_bar = bool_val
+                changed.append('has_bar')
         elif k == 'outdoor':
             bool_val = (v == 'on')
             if p.outdoor != bool_val:
@@ -417,6 +470,11 @@ def place_save(request, place_id):
             p.dog_friendly = False
             changed.append('dog_friendly')
 
+    if p.has_bar:
+        if 'has_bar' not in args:
+            p.has_bar = False
+            changed.append('has_bar')
+
     if changed is not None:
         ChangeLog.place_edit(p, request.user.username)
         logprint('User: {} edited place: {}. Changed fields: {}'.format(request.user, p.name,
@@ -425,16 +483,23 @@ def place_save(request, place_id):
     return place_detail(request, place_id)
 
 
-def search(request):
+def search(request, pltype='rest'):
     if request.method == 'GET':
-        places = Place.objects.filter(archived=False)
+        if pltype == 'rest':
+            places = Place.restaurants.all()
+        else:
+            places = Place.hotels.all()
         args = {}
         logprint('User:{} is on search page'.format(request.user, args.get('pat', '')))
         ChangeLog.search(request.user.username)
     else:
         args = request.POST
         pat = re.compile(args['pat'], re.IGNORECASE)
-        places = [p for p in Place.objects.filter(archived=False)
+        if pltype == 'rest':
+            places = Place.restaurants.all()
+        else:
+            places = Place.hotels.all()
+        places = [p for p in places
                   if pat.search(p.name) or pat.search(p.cuisine) or pat.search(p.city)]
         ChangeLog.search(request.user.username, args.get('pat', ''))
         logprint('User:{} searched for: {}'.format(request.user, args.get('pat', '')))
@@ -461,11 +526,12 @@ def search(request):
     places = sorted(places, key=lambda p: p.name.lower())
 
     return render(request, 'places/search.html',
-                  {'places': places, 'args': args})
+                  {'places': places, 'args': args, 'pltype': pltype})
 
 
 def delete(request, place_id):
     p = Place.objects.get(id=place_id)
+    pltype = pltype_url_string(p)
     if request.method == 'GET':
         return render(request, 'places/confirm.html', {'place': p})
     else:
@@ -476,7 +542,7 @@ def delete(request, place_id):
             p.archived = True
             p.save()
             logprint('User: {} deleted place named: {}'.format(request.user, p.name))
-            return city_list(request)
+            return city_list(request, pltype=pltype)
         else:
             return place_detail(request, p.id)
 

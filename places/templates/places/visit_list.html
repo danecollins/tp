@@ -14,6 +14,7 @@
     			<tr>
     				<th>Date</th>
     				<th>Place</th>
+                    <th>Place Type</th>
     			</tr>
     		</thead>
     		<tbody>
@@ -21,6 +22,7 @@
         		<tr>
                 	<td>{{ visit.when }}</td>
                 	<td>{{ visit.place.name }}</td>
+                    <td>{% if visit.place.pltype == 'R' %}Restaurant{% else %}Hotel{% endif %}</td>
                 </tr>
             	{% endfor %}
             </tbody>

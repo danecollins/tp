@@ -30,7 +30,25 @@ class VisitType:
             return 'Illegal Value'
 
 
+class HotelManager(models.Manager):
+    def get_queryset(self):
+        return super(HotelManager, self).get_queryset().filter(archived=False, pltype=Place.HOTEL)
+
+
+class RestaurantManager(models.Manager):
+    def get_queryset(self):
+        return super(RestaurantManager, self).get_queryset().filter(archived=False,
+                                                                    pltype=Place.RESTAURANT)
+
+
 class Place(models.Model):
+    RESTAURANT = 'R'
+    HOTEL = 'H'
+    PLACE_TYPES = (
+        (RESTAURANT, 'Restaurant'),
+        (HOTEL, 'Hotel')
+    )
+
     user = models.ForeignKey(User)
     name = models.CharField(max_length=100)
     locale = models.CharField(max_length=100)
@@ -38,6 +56,7 @@ class Place(models.Model):
     cuisine = models.CharField(max_length=100, blank=True)
     outdoor = models.BooleanField(default=False, blank=True)
     dog_friendly = models.BooleanField(default=False, blank=True)
+    has_bar = models.BooleanField(default=False, blank=True)
     rating = models.IntegerField(default=0)
     good_for = models.CharField(max_length=50, blank=True)
     comment = models.CharField(max_length=200, blank=True)
@@ -45,6 +64,10 @@ class Place(models.Model):
     archived = models.BooleanField(default=False, blank=True)
     visited = models.IntegerField(default=0)
     updated = models.DateTimeField(auto_now=True)
+    pltype = models.CharField(max_length=1, choices=PLACE_TYPES, default=RESTAURANT)
+    objects = models.Manager()
+    hotels = HotelManager()
+    restaurants = RestaurantManager()
 
     # This is required so that we can log the event
     @classmethod
@@ -52,40 +75,6 @@ class Place(models.Model):
         obj = cls(*args, **kwargs)
         obj.save()
         return obj
-
-    @classmethod
-    def from_csv(cls, user, text, delimiter=','):
-        # create a place from a csv string
-        # field order is:
-        #   0 - place name   string
-        #   1 - locale       string
-        #   2 - city         string
-        #   3 - outdoor      0 or 1
-        #   4 - dog_friendly 0 or 1
-        #   5 - rating       0 if unset, 1-3 otherwise
-        #   6 - want_to_go   0 or 1
-        #   7 - good_for     string
-        #   8 - comment      string
-        #
-        self = cls()
-        fields = text.split(delimiter)
-        if len(fields) != 9:
-            print('ERROR: invalid fields in from_csv. got {} should be 9'.format(len(fields)))
-            print(fields)
-            return None
-
-        self.user = user
-        self.name = fields[0]
-        self.locale = fields[1]
-        self.city = fields[2]
-        self.outdoor = fields[3] == '1'
-        self.dog_fiendly = fields[4] == '1'
-        self.rating = fields[5]
-        self.visited = fields[6] == '1'
-        self.good_for = fields[7]
-        self.comment = fields[8]
-        self.save()
-        return self
 
     @classmethod
     def next_id(cls):
@@ -121,12 +110,15 @@ class Place(models.Model):
         return '{} at the {} in {}'.format(self.name, self.locale, self.city)
 
     def __repr__(self):
-        s = 'Place('
+        s = '{}('.format(self.pltype)
         s += 'user={},'.format(self.user.__repr__())
         s += 'name="{}",'.format(self.name)
         s += 'locale="{}",'.format(self.locale)
         s += 'city="{}",'.format(self.city)
-        s += 'cuisine="{}"'.format(self.cuisine)
+        if self.pltype == Place.RESTAURANT:
+            s += 'cuisine="{}"'.format(self.cuisine)
+        else:
+            s += 'has_bar={}'.format(self.has_bar)
         s += 'outdoor="{}",'.format(self.outdoor)
         s += 'dog_friendly="{}",'.format(self.dog_friendly)
         s += 'rating="{}",'.format(self.rating)

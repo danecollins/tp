@@ -13,7 +13,7 @@ import os
 
 from django.contrib.auth.models import User
 from places.models import Place, VisitType, Visit, ChangeLog
-from places.forms import PlaceForm, ShareForm
+from places.forms import PlaceForm, ShareForm, RestaurantForm, HotelForm
 from vote.models import Vote, Survey
 
 import re
@@ -264,7 +264,11 @@ def place_add(request, pltype='rest'):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = PlaceForm(request.POST)
+        #form = PlaceForm(request.POST)
+        if pltype == 'rest':
+            form = RestaurantForm(request.POST)
+        else:
+            form = HotelForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
@@ -276,17 +280,20 @@ def place_add(request, pltype='rest'):
                       visited=d['visited'],
                       rating=d['rating'])
             p.id = Place.next_id()
-            p.cuisine = d['cuisine']
             p.has_bar = d['has_bar']
             p.good_for = d['good_for']
             p.comment = d['comment']
-            p.yelp = d['yelp']
             p.dog_friendly = d['dog_friendly']
-            p.outdoor = d['outdoor']
+
             if pltype == 'rest':
                 p.pltype = Place.RESTAURANT
+                p.cuisine = d['cuisine']
+                p.yelp = d['yelp']
+                p.outdoor = d['outdoor']
             else:
                 p.pltype = Place.HOTEL
+                p.yelp = d['tripadvisor']
+
             p.save()
             m = 'User: {} added place: {} with id: {}'.format(p.user, p.name, p.id)
             logprint(m)
@@ -294,7 +301,11 @@ def place_add(request, pltype='rest'):
             # log_to_slack(m)
             return place_detail(request, p.id)
     else:
-        form = PlaceForm().as_table()
+        #form = PlaceForm().as_table()
+        if pltype == 'rest':
+            form = RestaurantForm().as_table()
+        else:
+            form = HotelForm().as_table()
 
     if pltype == 'rest':
         pltypeS = 'Restaurant'
@@ -384,10 +395,15 @@ def place_edit(request, place_id):
             'rating': place.rating,
             'good_for': place.good_for,
             'comment': place.comment,
-            'yelp': place.yelp}
+            'yelp': place.yelp,
+            'tripadvisor': place.yelp}
     logprint('User: {} is editing place: {}'.format(request.user, place.name))
     if request.user == place.user:
-        form = PlaceForm(initial=init)
+        if place.pltype == Place.RESTAURANT:
+            form = RestaurantForm(initial=init)
+        else:
+            form = HotelForm(initial=init)
+
         return render(request, 'places/place_edit.html',
                       {'p': place, 'form': form, 'pltypeS': pltypeS})
     else:
@@ -434,6 +450,10 @@ def place_save(request, place_id):
                 p.cuisine = v
                 changed.append('cuisine')
         elif k == 'yelp':
+            if p.yelp != v:
+                p.yelp = v
+                changed.append('yelp')
+        elif k == 'tripadvisor':
             if p.yelp != v:
                 p.yelp = v
                 changed.append('yelp')

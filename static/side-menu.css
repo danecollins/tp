@@ -79,8 +79,8 @@ appears on the left side of the page.
 */
 
 #menu {
-    margin-left: -150px; /* "#menu" width */
-    width: 150px;
+    margin-left: -155px; /* "#menu" width */
+    width: 155px;
     position: fixed;
     top: 0;
     left: 0;

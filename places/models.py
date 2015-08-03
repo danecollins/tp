@@ -77,6 +77,41 @@ class Place(models.Model):
         return obj
 
     @classmethod
+    def from_csv(cls, user, text, delimiter=',', pltype=RESTAURANT):
+        # create a place from a csv string
+        # field order is:
+        #   0 - place name   string
+        #   1 - locale       string
+        #   2 - city         string
+        #   3 - outdoor      0 or 1
+        #   4 - dog_friendly 0 or 1
+        #   5 - rating       0 if unset, 1-3 otherwise
+        #   6 - want_to_go   0 or 1
+        #   7 - good_for     string
+        #   8 - comment      string
+        #
+        self = cls()
+        fields = text.split(delimiter)
+        if len(fields) != 9:
+            print('ERROR: invalid fields in from_csv. got {} should be 9'.format(len(fields)))
+            print(fields)
+            return None
+
+        self.user = user
+        self.name = fields[0]
+        self.locale = fields[1]
+        self.city = fields[2]
+        self.outdoor = fields[3] == '1'
+        self.dog_fiendly = fields[4] == '1'
+        self.rating = fields[5]
+        self.visited = fields[6] == '1'
+        self.good_for = fields[7]
+        self.comment = fields[8]
+        self.pltype = pltype
+        self.save()
+        return self
+
+    @classmethod
     def next_id(cls):
         places = cls.objects.all()
         if len(places) > 0:

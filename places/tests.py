@@ -5,7 +5,7 @@ from django.test import TestCase, Client
 
 # Create your tests here.
 from places.models import Place, ChangeLog
-from places.forms import PlaceForm
+from places.forms import RestaurantForm
 from places.html_utils import ParsePage as PP
 from django.contrib.auth.models import User
 
@@ -38,6 +38,7 @@ def create_engfer(user):
         dog_friendly=True,
         visited=1,
         good_for='casual dinner',
+        pltype=Place.RESTAURANT,
         comment='only open at dinner')
     p.save()
     ChangeLog.create_place(p)
@@ -55,6 +56,7 @@ def create_johnnys(user):
         dog_friendly=False,
         visited=1,
         good_for='fancy dinner',
+        pltype=Place.RESTAURANT,
         comment='good seafood')
     p.save()
     ChangeLog.create_place(p)
@@ -200,7 +202,7 @@ add_form_labels = ['Name', 'City', 'Neighborhood', 'Cuisine', 'Outdoor Seating',
 
 class TestForms(TestCase):
     def test_place_form(self):
-        p = PlaceForm()
+        p = RestaurantForm()
         html = p.as_table()
         field_labels = sorted(PP.get_place_labels(html))
         should_be = sorted([x + ":" for x in add_form_labels])
@@ -233,7 +235,7 @@ def get_page_variants(p):
     text_user = get_user_page(p, c)
     return (text_anon, text_user)
 
-
+import pdb
 class TestViewHome(TestCase):
     url = '/'
 
@@ -245,19 +247,13 @@ class TestViewHome(TestCase):
 
     def test_menu_anon(self):
         create_users()
-        (anon, user) = get_page_variants(self.url)
-        # if not logged in there should be no logout link
-        anon_menus = PP.menus.copy()
-        del anon_menus['Logout']
-        del anon_menus['Visits']
-        from_html = PP.get_menu_links(anon)
+        (anon, _) = get_page_variants(self.url)
 
-        for menu_entry in anon_menus.keys():
-            self.assertEqual(anon_menus[menu_entry], from_html.get(menu_entry, 'Entry Missing'))
-            del from_html[menu_entry]
-
-        # there should be no items left
-        self.assertFalse(from_html.keys())
+        # the menu entries we want to check are about, blog and login
+        menu_links = PP.get_menu_links(anon)
+        self.assertEqual(menu_links['About'], '/about/')
+        self.assertEqual(menu_links['Blog'], '/blog/archive')
+        self.assertEqual(menu_links['Login'], '/login?next=/places/rest/city')
 
     def test_menu_user(self):
         create_users()
@@ -278,7 +274,7 @@ class TestViewHome(TestCase):
 
 
 class TestViewCityList(TestCase):
-    url = '/places/city/'
+    url = '/places/rest/city/'
 
     def test_page_title(self):
         create_users()

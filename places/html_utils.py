@@ -5,13 +5,14 @@ from bs4 import BeautifulSoup
 
 class ParsePage:
     menus = {
-        u'Add Place': u'/places/add/',
-        u'Search': u'/places/search/',
+        u'': '#',
+        u'Add': u'/places/hotel/add/',
+        u'Search': u'/places/hotel/search/',
         u'About': u'/about/',
         u'Blog': u'/blog/archive',
         u'Logout': u'/logout?next=/',
-        u'Cities': u'/places/city/',
-        u'Visits': u'/places/visits/'
+        u'Cities': u'/places/hotel/city/',
+        u'Visits': u'/places/visits/',
     }
 
     buttons = {

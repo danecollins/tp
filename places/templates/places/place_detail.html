@@ -4,6 +4,11 @@
 
 {% block header %}
     <h3>{{ p.name }}{% if anon %} - Guest View{% endif %}</h3>
+    <style>
+        .place-field {
+            padding: 5px 15px 5px 0px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -15,7 +20,7 @@
     		<tr><td class='place-field'>City</td>           <td>{% if p.user == user %}<a href="/places/city/{{ p.city }}">{{ p.city }}</a>
                                                                 {% else %} {{ p.city }} {% endif %}</td></tr>
     		<tr><td class='place-field'>Neighborhood</td>         <td>{{ p.locale }}</td></tr>
-            {% if pltype == 'rest' %}
+            {% if pltype == 'Restaurant' %}
                 <tr><td class='place-field'>Cuisine</td>        <td>{{ p.cuisine }}</td></tr>
         		<tr><td class='place-field' style="padding-right: 10px;">Outdoor Seating</td>
                     <td>{% if p.outdoor %}<img src="/static/outdoor.png" alt="outdoor seating" height="55"/>
@@ -61,7 +66,7 @@
         {% endif %}
         {% if p.yelp|length > 4 %}
         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-        <td><a class="pure-button" style="background: red; color: white;" href="{{ p.yelp }}">Open Web Link</a></td>
+        <td><a class="pure-button" style="background: red; color: white;" href="{{ p.yelp }}">See Reviews</a></td>
         {% endif %}
         {% if p.user == user %}
         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>

@@ -28,7 +28,7 @@ class ParsePage:
                          u'Outdoor Seating', u'Dog Friendly', 'Last Visited',
                          u'Rating', u'Good For', u'Comment']
 
-    anon_place_buttons = [u'Open in yelp']
+    anon_place_buttons = [u'See Reviews']
 
     @classmethod
     def get_title(cls, html):

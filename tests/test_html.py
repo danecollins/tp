@@ -34,18 +34,13 @@ class TestHomePage(unittest.TestCase):
 
     def test_menu_anon(self):
         html = get_html(self.url)
-        # if not logged in there should be no logout link
-        anon_menus = PP.menus.copy()
-        del anon_menus['Logout']
-        del anon_menus['Visits']
-        from_html = PP.get_menu_links(html)
 
-        for menu_entry in anon_menus.keys():
-            self.assertEqual(anon_menus[menu_entry], from_html.get(menu_entry, 'Entry Missing'))
-            del from_html[menu_entry]
+        # the menu entries we want to check are about, blog and login
+        menu_links = PP.get_menu_links(html)
+        self.assertEqual(menu_links['About'], '/about/')
+        self.assertEqual(menu_links['Blog'], '/blog/archive')
+        self.assertEqual(menu_links['Login'], '/login?next=/places/rest/city')
 
-        # there should be no items left
-        self.assertFalse(from_html.keys())
 
     def test_buttons_anon(self):
         html = get_html(self.url)
@@ -54,7 +49,7 @@ class TestHomePage(unittest.TestCase):
 
 
 class TestCityPage(unittest.TestCase):
-    url = '/places/city/'
+    url = '/places/rest/city/'
 
     def test_page_title(self):
         html = get_html(self.url)

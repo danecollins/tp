@@ -280,7 +280,7 @@ def place_add(request, pltype='rest'):
                       visited=d['visited'],
                       rating=d['rating'])
             p.id = Place.next_id()
-            p.has_bar = d['has_bar']
+            
             p.good_for = d['good_for']
             p.comment = d['comment']
             p.dog_friendly = d['dog_friendly']
@@ -293,6 +293,7 @@ def place_add(request, pltype='rest'):
             else:
                 p.pltype = Place.HOTEL
                 p.yelp = d['tripadvisor']
+                p.has_bar = d['has_bar']
 
             p.save()
             m = 'User: {} added place: {} with id: {}'.format(p.user, p.name, p.id)

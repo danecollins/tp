@@ -237,7 +237,7 @@ def place_detail(request, place_id):
     logprint('User: {} is viewing details on {}'.format(request.user, place.name))
     return render(request, 'places/place_detail.html',
                   {'p': place, 'visittype': VisitType.as_string(place.visited),
-                   'pltype': pltype_user_string(place),
+                   'pltype': pltype_url_string(place), 'pltypeS': pltype_user_string(place),
                    'last': last, 'anon': anon, 'opentable': get_opentable(place_id)})
 
 

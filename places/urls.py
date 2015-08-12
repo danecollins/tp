@@ -16,4 +16,5 @@ urlpatterns = patterns('',
                        url(r'^copy/(?P<place_id>[\d]+)/$', views.place_copy, name='place_copy'),
                        url(r'^delete/(?P<place_id>[\d]+)/$', views.delete),
                        url(r'^visit/(?P<place_id>[\d]+)/$', views.visit),
+                       url(r'^yelp/(?P<place_id>[\d]+)/(?P<yelp_id>[\w\-\d]+)/$', views.set_yelp),
                        )

@@ -1,0 +1,55 @@
+{% extends 'menu_base.html' %}
+
+{% block title %}Select From Yelp{% endblock %}
+
+{% block header %}
+    <h3>Yelp Matches For {{ place.name }}</h3>
+
+<style>
+th {
+  padding-right: 10px;
+  text-align: left;
+  font-weight: normal;
+}
+label.required {
+    color: red;
+}
+
+.large {
+    width: 200%;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h3>Is one of these the correct restaurant?</h3>
+
+<table class='pure-table'>
+	<thead>
+		<tr>
+			<td></td>
+			<td>Name</td>
+			<td>Location</td>
+			<td>Type</td>
+		</tr>
+	</thead>
+	<tbody>
+	{% for ym in yelp_list %}
+		<tr>
+			<td><a href="/places/yelp/{{place.id}}/{{ym.id}}/">Select</a></td>
+			<td>{{ ym.name }}</td>
+			<td>{{ ym.location }}</td>
+			<td>{{ ym.cuisine }}</td>
+		</tr>
+	{% endfor %}
+		<tr>
+			<td><a href="/places/yelp/{{place.id}}/no_match/">No Match</a></td>
+			<td>&nbsp</td>
+			<td>&nbsp</td>
+			<td>&nbsp</td>
+		</tr>
+	</tbody>
+</table>
+{% endblock content %}

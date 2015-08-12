@@ -13,8 +13,9 @@ import os
 
 from django.contrib.auth.models import User
 from places.models import Place, VisitType, Visit, ChangeLog
-from places.forms import PlaceForm, ShareForm, RestaurantForm, HotelForm
+from places.forms import ShareForm, RestaurantForm, HotelForm
 from vote.models import Vote, Survey
+from places.yelp import get_yelp_matches, get_yelp_business
 
 import re
 import sys
@@ -260,11 +261,30 @@ def visit_list(request):
 
 
 @login_required
+def set_yelp(request, place_id, yelp_id):
+    p = get_object_or_404(Place, id=place_id)
+    if yelp_id != 'no_match':
+        business = get_yelp_business(yelp_id)
+
+        if business['name'] and business['url']:
+            p.name = business['name']
+            p.yelp = business['url']
+            p.save()
+    return place_detail(request, place_id)
+
+
+@login_required
+def select_yelp_match(request, p, yelp_matches):
+    # print('There are {} yelp matches'.format(len(yelp_matches)), file=sys.stderr)
+    return render(request, 'places/yelp_select.html',
+                  {'place': p, 'yelp_list': yelp_matches})
+
+
+@login_required
 def place_add(request, pltype='rest'):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        #form = PlaceForm(request.POST)
         if pltype == 'rest':
             form = RestaurantForm(request.POST)
         else:
@@ -280,7 +300,7 @@ def place_add(request, pltype='rest'):
                       visited=d['visited'],
                       rating=d['rating'])
             p.id = Place.next_id()
-            
+
             p.good_for = d['good_for']
             p.comment = d['comment']
             p.dog_friendly = d['dog_friendly']
@@ -299,10 +319,14 @@ def place_add(request, pltype='rest'):
             m = 'User: {} added place: {} with id: {}'.format(p.user, p.name, p.id)
             logprint(m)
             ChangeLog.place_add(p, request.user.username)
-            # log_to_slack(m)
-            return place_detail(request, p.id)
+
+            yelp_matches = get_yelp_matches(p.name, p.city)
+            if not yelp_matches:
+                return place_detail(request, p.id)
+            else:
+                return select_yelp_match(request, p, yelp_matches)
     else:
-        #form = PlaceForm().as_table()
+        # form = PlaceForm().as_table()
         if pltype == 'rest':
             form = RestaurantForm().as_table()
         else:

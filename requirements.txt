@@ -7,3 +7,4 @@ gunicorn==19.3.0
 requests==2.7.0
 pytz==2015.4
 twilio==4.4.0
+oauth2==1.5.211

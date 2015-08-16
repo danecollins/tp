@@ -12,8 +12,8 @@ import pdb
 DEFAULT_TERM = 'dinner'
 DEFAULT_LOCATION = 'Campbell, CA'
 SEARCH_LIMIT = 8
-SEARCH_PATH = '/v2/search/'
-BUSINESS_PATH = '/v2/business/'
+SEARCH_PATH = '/v2/search'
+BUSINESS_PATH = '/v2/business'
 
 # OAuth credential placeholders that must be filled in by users.
 CONSUMER_KEY = os.environ.get('YELP_CONSUMER_KEY')
@@ -54,9 +54,11 @@ def request(path, url_params=None):
     print('Querying {0} with params {1}...'.format(url, url_params),
           file=sys.stderr)
 
-    conn = urllib2.urlopen(signed_url, None)
     try:
+        conn = urllib2.urlopen(signed_url, None)
         response = json.loads(conn.read())
+    except:
+        print('Failed to get URL: {}'.format(signed_url), file=sys.stderr)
     finally:
         conn.close()
 

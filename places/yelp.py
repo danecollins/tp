@@ -15,12 +15,6 @@ SEARCH_LIMIT = 8
 SEARCH_PATH = '/v2/search'
 BUSINESS_PATH = '/v2/business'
 
-# OAuth credential placeholders that must be filled in by users.
-CONSUMER_KEY = os.environ.get('YELP_CONSUMER_KEY')
-CONSUMER_SECRET = os.environ.get('YELP_CONSUMER_SECRET')
-TOKEN = os.environ.get('YELP_TOKEN')
-TOKEN_SECRET = os.environ.get('YELP_TOKEN_SECRET')
-
 
 def request(path, url_params=None):
     """Prepares OAuth authentication and sends the request to the API.
@@ -32,6 +26,12 @@ def request(path, url_params=None):
     Raises:
         urllib2.HTTPError: An error occurs from the HTTP request.
     """
+    # OAuth credential placeholders that must be filled in by users.
+    CONSUMER_KEY = os.environ.get('YELP_CONSUMER_KEY')
+    CONSUMER_SECRET = os.environ.get('YELP_CONSUMER_SECRET')
+    TOKEN = os.environ.get('YELP_TOKEN')
+    TOKEN_SECRET = os.environ.get('YELP_TOKEN_SECRET')
+
     host = 'api.yelp.com'
     url_params = url_params or {}
     url = 'http://{0}{1}?'.format(host, urllib.quote(path.encode('utf8')))
@@ -53,12 +53,16 @@ def request(path, url_params=None):
 
     print('Querying {0} with params {1}...'.format(url, url_params),
           file=sys.stderr)
+    print('URL: {}'.format(signed_url))
 
     conn = urllib2.urlopen(signed_url, None)
     try:
         response = json.loads(conn.read())
     finally:
         conn.close()
+
+    if "error" in response:
+        print(response['error'], file=sys.stderr)
 
     return response
 

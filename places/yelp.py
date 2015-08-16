@@ -13,7 +13,7 @@ DEFAULT_TERM = 'dinner'
 DEFAULT_LOCATION = 'Campbell, CA'
 SEARCH_LIMIT = 8
 SEARCH_PATH = '/v2/search'
-BUSINESS_PATH = '/v2/business'
+BUSINESS_PATH = '/v2/business/'
 
 
 def request(path, url_params=None):

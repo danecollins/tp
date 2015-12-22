@@ -21,13 +21,20 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "INFO: heroku pull completed" >> ~/daily.log
-export DATABASE_URL=postgres:///tpdata.heroku
-scripts/dbsummary.py >> ~/daily.log 2>&1
 
 echo "INFO: next backup ladera database" >> ~/daily.log
 cd ~/src/scripts
 ./backup_ladera_prod.sh >> ~/daily.log 2>&1
+echo "INFO: ladera backup completed" >> ~/daily.log
 
-## chain to w4e daily tasks
+echo "Setting environment up for w4e" >> ~/daily.log
+source ~/env/w4e/bin/activate
+export DATABASE_URL=postgres:///tpdata.heroku
+scripts/dbsummary.py >> ~/daily.log 2>&1
+echo "Chaining to src/w4e/scripts/daily.sh" >> ~/daily.log
 /Users/dane/src/w4e/scripts/daily.sh
+echo "Completed W4e" >> ~/daily.log
+echo "src/tp/scripts/daily.sh completed" >> ~/daily.log
+echo "Source code backup" >> ~/daily.log
+/Users/dane/rs/cp_src
 

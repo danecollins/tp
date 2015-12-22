@@ -113,7 +113,12 @@ def get_yelp_matches(term, location):
     response = search(term, location)
     # response contains ['region', 'total', 'businesses']
 
-    businesses = response.get('businesses')
+    try:
+        businesses = response.get('businesses')
+    except Exception as e:
+        print('------ Got an exception in getting businesses from yelp', file=sys.stderr)
+        print(e, file=sys.stderr)
+
     # ['is_claimed', 'rating', 'mobile_url', 'rating_img_url', 'review_count',
     # 'name', 'rating_img_url_small', 'url', 'is_closed', 'phone', 'snippet_text',
     # 'image_url', 'categories', 'display_phone', 'rating_img_url_large', 'id',
@@ -122,10 +127,20 @@ def get_yelp_matches(term, location):
     if not businesses:
         return
 
-    matches = [dict(name=bus['name'],
-                    id=bus['id'],
-                    location=bus['location']['address'][0],
-                    cuisine=','.join([x[0] for x in bus['categories']]))
-               for bus in businesses]
-    # print(matches, file=sys.stderr)
+    matches = []
+    for bus in businesses:
+        item = dict(name=bus['name'], id=bus['id'])
+        try:
+            item['location'] = bus['location']['address'][0]
+        except:
+            item['location'] = ''
+
+        try:
+            item['cuisine'] = ','.join([x[0] for x in bus['categories']])
+        except:
+            item['cuisine'] = ''
+
+        matches.append(item)
+
+    print(matches, file=sys.stderr)
     return matches

@@ -320,11 +320,11 @@ def place_add(request, pltype='rest'):
             logprint(m)
             ChangeLog.place_add(p, request.user.username)
 
-            yelp_matches = get_yelp_matches(p.name, p.city)
-            if not yelp_matches:
-                return place_detail(request, p.id)
-            else:
-                return select_yelp_match(request, p, yelp_matches)
+            if not p.yelp and p.pltype == Place.RESTAURANT:
+                yelp_matches = get_yelp_matches(p.name, p.city)
+                if yelp_matches:
+                    return select_yelp_match(request, p, yelp_matches)
+            return place_detail(request, p.id)
     else:
         # form = PlaceForm().as_table()
         if pltype == 'rest':

@@ -20,6 +20,7 @@ from places.yelp import get_yelp_matches, get_yelp_business
 import re
 import sys
 import os
+import datetime
 
 
 opentable_data = {}
@@ -247,10 +248,17 @@ def visit(request, place_id):
     place = get_object_or_404(Place, id=place_id)
     user = request.user
 
-    visit, created = Visit.objects.get_or_create(place=place, user=user)
-    if created:
-        logprint('User: {} added a visit to {}'.format(user, place.name))
-    return place_detail(request, place_id)
+    # need to select when the visit was
+    if request.method == 'POST':
+        form = request.POST
+        visit_date = form['visit_date']
+        visit, created = Visit.objects.get_or_create(place=place, user=user, when=visit_date)
+        visit.save()
+        if created:
+            logprint('User: {} added a visit to {}'.format(user, place.name))
+        return place_detail(request, place_id)
+    else:
+        return render(request, 'places/visit_form.html', {'place': place})
 
 
 @login_required
@@ -321,9 +329,12 @@ def place_add(request, pltype='rest'):
             ChangeLog.place_add(p, request.user.username)
 
             if not p.yelp and p.pltype == Place.RESTAURANT:
-                yelp_matches = get_yelp_matches(p.name, p.city)
-                if yelp_matches:
-                    return select_yelp_match(request, p, yelp_matches)
+                try:
+                    yelp_matches = get_yelp_matches(p.name, p.city)
+                    if yelp_matches:
+                        return select_yelp_match(request, p, yelp_matches)
+                except:
+                    pass
             return place_detail(request, p.id)
     else:
         # form = PlaceForm().as_table()

@@ -1,0 +1,36 @@
+{% extends 'menu_base.html' %}
+
+{% block title %}TrackPlaces - Add Visit{% endblock %}
+
+{% block header %}
+    <h3>{{ p.name }}</h3>
+
+<style>
+th {
+  padding-right: 10px;
+  text-align: left;
+  font-weight: normal;
+}
+label.required {
+    color: red;
+}
+
+.large {
+    width: 200%;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h3>Add Visit for {{ place.name }}</h3>
+
+<form action="/places/visit/{{ place.id }}/" method="post">
+{% csrf_token %}
+<table cellpadding="10">
+<label for="visit_date">The date of your visit?</label><br>
+<input type="date" name="visit_date"><br>
+<input type="submit" value="Add Visit">
+</form>
+{% endblock content %}

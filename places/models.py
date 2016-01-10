@@ -168,8 +168,9 @@ class Place(models.Model):
         app_label = 'places'
 
 
+########################################################################## Visit
 class Visit(models.Model):
-    when = models.DateField(auto_now_add=True)
+    when = models.DateField()
     place = models.ForeignKey(Place)
     user = models.ForeignKey(User)
 

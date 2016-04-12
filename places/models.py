@@ -176,10 +176,9 @@ class Visit(models.Model):
 
     @classmethod
     def last_visit(cls, place, user):
-        visits = cls.objects.filter(place=place, user=user)
+        visits = cls.objects.filter(place=place, user=user).order_by('-when')
         if visits.exists():
-            visit = sorted(visits, key=lambda x: x.when)
-            return visit[0]
+            return visits.first()
         else:
             return None
 

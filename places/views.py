@@ -10,17 +10,13 @@ from twilio.rest import TwilioRestClient
 import re
 import sys
 import os
+import datetime
 
 from django.contrib.auth.models import User
 from places.models import Place, VisitType, Visit, ChangeLog
 from places.forms import ShareForm, RestaurantForm, HotelForm
 from vote.models import Vote, Survey
 from places.yelp import get_yelp_matches, get_yelp_business
-
-import re
-import sys
-import os
-import datetime
 
 
 opentable_data = {}

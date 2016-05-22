@@ -10,7 +10,6 @@ from twilio.rest import TwilioRestClient
 import re
 import sys
 import os
-import datetime
 
 from django.contrib.auth.models import User
 from places.models import Place, VisitType, Visit, ChangeLog
@@ -129,8 +128,8 @@ def info(request):
     data['username'] = "{}".format(request.user)
     data['num_users'] = len(User.objects.all())
     data['num_places'] = len(Place.objects.all())
-    data['men_votes'] = len(Vote.objects.filter(type=False))
-    data['women_votes'] = len(Vote.objects.filter(type=True))
+    data['men_votes'] = len(Vote.objects.filter(survey=Survey.get(), type=False))
+    data['women_votes'] = len(Vote.objects.filter(survey=Survey.get(), type=True))
     data['survey'] = Survey.get()
     data['visits'] = len(Visit.objects.all())
     data['events'] = len(ChangeLog.objects.all())
@@ -369,18 +368,17 @@ http://dev.trackplaces.com/places/view/{}/ - {}
             AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
             client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
             try:
-                message = client.messages.create(to=to_number, from_="+16692214546", body=message)
-                error = False
-            except twilio.TwilioRestException as e:
-                error = e
-            if error:
-                m = 'Twilio returned error: {}'.format(e)
-                logprint(m)
-            else:
+                client.messages.create(to=to_number, from_="+16692214546", body=message)
                 m = 'Message sent to {} via twilio'.format(to_number)
                 logprint(m)
+                error_msg = False
+            except twilio.TwilioRestException as e:
+                m = 'Twilio returned error: {}'.format(e)
+                logprint(m)
+                error_msg = m
+
             return render(request, 'places/email_sent.html',
-                          {'place': p, 'to': to_number, 'error': error})
+                          {'place': p, 'to': to_number, 'error': error_msg})
     else:
         form = ShareForm(initial={'subject': 'Place Information from TrackPlaces...'}).as_table()
     return render(request, 'places/share_form.html', {'form': form, 'p': p, 'msg': message})

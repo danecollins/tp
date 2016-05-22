@@ -6,25 +6,27 @@ from vote.models import Vote, Survey
 
 def index(request):
     s = Survey.get()
-    votes = Vote.objects.filter(survey=s)
+    votes = Vote.objects.filter(survey=s).order_by('-date')
     mtot = len([x for x in votes if not x.type])
     wtot = len([x for x in votes if x.type])
     return render(request, 'vote/index.html', {'mtot': mtot,
                                                'wtot': wtot,
-                                               'survey': s})
+                                               'survey': s,
+                                               'votes': votes[0:10]})
 
 
 def man(request):
     v = Vote(type=False)
     v.survey = Survey.get()
     v.save()
-    votes = Vote.objects.filter(survey=v.survey)
+    votes = Vote.objects.filter(survey=v.survey).order_by('-date')
     mtot = len([x for x in votes if not x.type])
     wtot = len([x for x in votes if x.type])
     return render(request, 'vote/vote.html', {'type': 'man',
                                               'survey': v.survey,
                                               'mtot': mtot,
-                                              'wtot': wtot})
+                                              'wtot': wtot,
+                                              'votes': votes[0:5]})
 
 
 def woman(request):
@@ -37,7 +39,8 @@ def woman(request):
     return render(request, 'vote/vote.html', {'type': 'woman',
                                               'survey': v.survey,
                                               'mtot': mtot,
-                                              'wtot': wtot})
+                                              'wtot': wtot,
+                                              'votes': votes[0:5]})
 
 
 def view_survey(request):

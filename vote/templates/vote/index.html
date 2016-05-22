@@ -3,7 +3,7 @@
 {% block title %}Vote Tallies{% endblock %}
 
 {% block header %}
-    <h1>Tally Page for Survey: {{ survey }}</h1>
+    <h1>Tally Page for: {{ survey }}</h1>
 {% endblock %}
 
 {% block content %}
@@ -12,4 +12,21 @@
         <li>Men: {{ mtot }}</li>
         <li>Women: {{ wtot }}</li>
     </ul>
+    <hr>
+    <table class="pure-table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Vote</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for vote in votes %}
+        <tr>
+            <td>{{ vote.date }}</td>
+            <td>{% if vote.type %}Woman{% else %}Man{% endif %}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

@@ -22,11 +22,6 @@ fi
 
 echo "INFO: heroku pull completed" >> ~/daily.log
 
-echo "INFO: next backup ladera database" >> ~/daily.log
-cd ~/src/scripts
-./backup_ladera_prod.sh >> ~/daily.log 2>&1
-echo "INFO: ladera backup completed" >> ~/daily.log
-
 echo "Setting environment up for w4e" >> ~/daily.log
 source ~/env/w4e/bin/activate
 export DATABASE_URL=postgres:///tpdata.heroku

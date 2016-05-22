@@ -19,4 +19,17 @@
         <li>Women: {{ wtot }}</li>
         <li>Survey: {{ survey }}</li>
     </ul>
+    <hr>
+    <table class="pure-table">
+        <tr>
+            <th>Date</th>
+            <th>Vote</th>
+        </tr>
+        {% for vote in votes %}
+        <tr>
+            <td>{{ vote.date }}</td>
+            <td>{% if vote.type %}Woman{% else %}Man{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </table>
 {% endblock %}

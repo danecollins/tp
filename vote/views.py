@@ -3,12 +3,15 @@ from django.shortcuts import render
 # Create your views here.
 from vote.models import Vote, Survey
 
+Man = False
+Woman = True
+
 
 def index(request):
     s = Survey.get()
     votes = Vote.objects.filter(survey=s).order_by('-date')
-    mtot = len([x for x in votes if not x.type])
-    wtot = len([x for x in votes if x.type])
+    mtot = votes.filter(type=Man).count()
+    wtot = votes.filter(type=Woman).count()
     return render(request, 'vote/index.html', {'mtot': mtot,
                                                'wtot': wtot,
                                                'survey': s,
@@ -20,8 +23,8 @@ def man(request):
     v.survey = Survey.get()
     v.save()
     votes = Vote.objects.filter(survey=v.survey).order_by('-date')
-    mtot = len([x for x in votes if not x.type])
-    wtot = len([x for x in votes if x.type])
+    mtot = votes.filter(type=Man).count()
+    wtot = votes.filter(type=Woman).count()
     return render(request, 'vote/vote.html', {'type': 'man',
                                               'survey': v.survey,
                                               'mtot': mtot,
@@ -33,9 +36,9 @@ def woman(request):
     v = Vote(type=True)
     v.survey = Survey.get()
     v.save()
-    votes = Vote.objects.filter(survey=v.survey)
-    mtot = len([x for x in votes if not x.type])
-    wtot = len([x for x in votes if x.type])
+    votes = Vote.objects.filter(survey=v.survey).order_by('-date')
+    mtot = votes.filter(type=Man).count()
+    wtot = votes.filter(type=Woman).count()
     return render(request, 'vote/vote.html', {'type': 'woman',
                                               'survey': v.survey,
                                               'mtot': mtot,

@@ -9,13 +9,23 @@ Woman = True
 
 def index(request):
     s = Survey.get()
+    current_vote = request.GET.get('type')
+    if current_vote in ('man', 'woman'):
+        if current_vote == 'man':
+            v = Vote(type=Man)
+        else:
+            v = Vote(type=Woman)
+        v.survey = s
+        v.save()
+
     votes = Vote.objects.filter(survey=s).order_by('-date')
     mtot = votes.filter(type=Man).count()
     wtot = votes.filter(type=Woman).count()
-    return render(request, 'vote/index.html', {'mtot': mtot,
+    return render(request, 'vote/index.html', {'vtot': mtot+wtot,
+                                               'mtot': mtot,
                                                'wtot': wtot,
                                                'survey': s,
-                                               'votes': votes[0:10]})
+                                               'votes': votes[0:5]})
 
 
 def man(request):

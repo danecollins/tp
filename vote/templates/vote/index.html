@@ -3,15 +3,41 @@
 {% block title %}Vote Tallies{% endblock %}
 
 {% block header %}
-    <h1>Tally Page for: {{ survey }}</h1>
+    <h2>Tally Page for: {{ survey }}</h2>
+    <style>
+    .button {
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 20px;
+    }
+    </style>
 {% endblock %}
 
 {% block content %}
-    <h2 class="content-subhead">Vote Totals</h2>
-    <ul>
-        <li>Men: {{ mtot }}</li>
-        <li>Women: {{ wtot }}</li>
-    </ul>
+    <h2 class="content-subhead">Vote Total {{ vtot }}</h2>
+
+    <hr>
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <a href="/vote/?type=man" class="button" style="background-color: #0000ff;">Man</a>
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <a href="/vote/?type=woman" class="button" style="background-color: #ff0000;">Woman</a>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
     <hr>
     <table class="pure-table">
         <thead>

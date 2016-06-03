@@ -1,0 +1,96 @@
+{% extends 'menu_base.html' %}
+
+{% block title %}Vote Tallies{% endblock %}
+
+{% block header %}
+    <h2>Tally Page for: {{ survey }}</h2>
+    <style>
+    .button {
+        border: none;
+        color: white;
+        padding: 25px 40px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 20px;
+    }
+    td {
+        padding: 10px 10px 10px 10px;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1 class="content-subhead">Vote Total {{ vtot }}</h1>
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <a href="/vote/?car=Tesla" class="button" style="background-color: #000000;">Tesla</a>
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <a href="/vote/?car=Leaf" class="button" style="background-color: rgb(84,176,218);">Leaf</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="/vote/?car=BMW" class="button" style="background-color: rgb(202,87,40);">BMW</a>
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <a href="/vote/?car=Fiat" class="button" style="background-color: rgb(254,85,39);">Fiat</a>
+                </td>
+            <tr>
+                <td>
+                    <a href="/vote/?car=Volt" class="button" style="background-color: #0000ff;">Volt</a>
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <a href="/vote/?car=Other" class="button" style="background-color: #777777;">Other</a>
+                </td>
+            </tr>
+            </tr>
+        </table>
+    </div>
+    <hr>
+    <table class="pure-table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Vote</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for vote in votes %}
+        <tr>
+            <td>{{ vote.date }}</td>
+            <td>{{ vote.choice }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <hr>
+    <table class="pure-table">
+        <thead>
+            <tr>
+                <th>Car</th>
+                <th>Count</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tally in tallies %}
+            <tr>
+                <td>{{ tally.choice }}</td>
+                <td>{{ tally.choice__count }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

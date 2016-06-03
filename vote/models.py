@@ -21,3 +21,4 @@ class Vote(models.Model):
     # men is False, women is True
     type = models.BooleanField(default=False, blank=True)
     survey = models.CharField(max_length=30, blank=True)
+    choice = models.CharField(max_length=20, blank=True)

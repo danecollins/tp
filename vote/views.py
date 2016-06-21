@@ -20,10 +20,14 @@ def index(request):
         v.survey = s
         v.save()
     elif current_car:
-        v = Vote()
-        v.survey = s
-        v.choice = current_car
-        v.save()
+        if current_car != 'delete':
+            v = Vote()
+            v.survey = s
+            v.choice = current_car
+            v.save()
+        else:
+            vote = Vote.objects.last()
+            vote.delete()
 
     votes = Vote.objects.filter(survey=s).order_by('-date')
     if s == 'cars16':

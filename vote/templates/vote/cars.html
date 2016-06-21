@@ -8,16 +8,30 @@
     .button {
         border: none;
         color: white;
-        padding: 20px 30px;
+        padding: 15px 15px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 20px;
+        font-size: 32px;
     }
     td {
         padding: 10px 10px 10px 10px;
     }
     </style>
+    <script>
+
+    function mkgrey(id) {
+        element = document.getElementById(id);
+        color = element.style.backgroundColor
+        element.style.backgroundColor = "grey"
+        setTimeout(function(){restore(element, color)}, 10000);
+    }
+
+    function restore(element, color) {
+        element.style.backgroundColor = color;
+    }
+
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -26,34 +40,44 @@
         <table>
             <tr>
                 <td>
-                    <a href="/vote/?car=Tesla" class="button" style="background-color: #000000;">Tesla</a>
+                    <a href="/vote/?car=Tesla" id="tesla" class="button"
+                       style="background-color: #000000;"
+                       onmousedown="mkgrey('tesla')">Tesla</a>
                 </td>
                 <td>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
                 <td>
-                    <a href="/vote/?car=Leaf" class="button" style="background-color: rgb(84,176,218);">Leaf</a>
+                    <a href="/vote/?car=Leaf" id="leaf" class="button"
+                     style="background-color: rgb(84,176,218);""
+                     onmousedown="mkgrey('leaf')">Leaf</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <a href="/vote/?car=BMW" class="button" style="background-color: rgb(202,87,40);">BMW</a>
+                    <a href="/vote/?car=BMW" id="bmw" class="button"
+                    style="background-color: rgb(202,87,40);"
+                    onmousedown="mkgrey('bmw')">BMW</a>
                 </td>
                 <td>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
                 <td>
-                    <a href="/vote/?car=Fiat" class="button" style="background-color: rgb(254,85,39);">Fiat</a>
+                    <a href="/vote/?car=Fiat" id="fiat" class="button"
+                     style="background-color: rgb(254,85,39);"
+                     onmousedown="mkgrey('fiat')">Fiat</a>
                 </td>
             <tr>
                 <td>
-                    <a href="/vote/?car=Volt" class="button" style="background-color: #0000ff;">Volt</a>
+                    <a href="/vote/?car=Volt" id="volt" class="button"
+                     style="background-color: #0000ff;"
+                     onmousedown="mkgrey('vol')">Volt</a>
                 </td>
                 <td>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
                 <td>
-                    <a href="/vote/?car=Other" class="button" style="background-color: #777777;">Other</a>
+                    <a href="/vote/?car=delete" class="button" style="background-color: #777777;">Delete</a>
                 </td>
             </tr>
             </tr>

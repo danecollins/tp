@@ -32,7 +32,13 @@ def index(request):
     votes = Vote.objects.filter(survey=s).order_by('-date')
     if s == 'tesla':
         cnt = votes.count()
-        tallies = Vote.objects.filter(survey=s).values('choice').annotate(Count('choice')).order_by('choice')
+        #tallies = Vote.objects.filter(survey=s).values('choice').annotate(Count('choice')).order_by('choice')
+        tallies = {}
+        tallies['TeslaS'] = Vote.objects.filter(survey=s, choice='TeslaS').count()
+        tallies['TeslaX'] = Vote.objects.filter(survey=s, choice='TeslaX').count()
+        tallies['Tesla3'] = Vote.objects.filter(survey=s, choice='Tesla3').count()
+
+
         return render(request, 'vote/cars.html', {'vtot': cnt,
                                                   'tallies': tallies,
                                                   'survey': s,

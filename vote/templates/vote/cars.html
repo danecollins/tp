@@ -42,7 +42,7 @@
                 <td>
                     <a href="/vote/?car=TeslaS" id="tesla_s" class="button"
                        style="background-color: #000000;"
-                       onmousedown="mkgrey('tesla_s')">Tesla S</a>
+                       onmousedown="mkgrey('tesla_s')">Tesla S</a> count: {{ tallies.TeslaS }}
                 </td>
                 <td>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -53,7 +53,7 @@
                 <td>
                     <a href="/vote/?car=TeslaX" id="tesla_x" class="button"
                     style="background-color: rgb(202,87,40);"
-                    onmousedown="mkgrey('tesla_x')">Tesla X</a>
+                    onmousedown="mkgrey('tesla_x')">Tesla X</a> count: {{ tallies.TeslaX }}
                 </td>
                 <td>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -63,7 +63,7 @@
                 <td>
                     <a href="/vote/?car=Tesla3" id="tesla_3" class="button"
                      style="background-color: #0000ff;"
-                     onmousedown="mkgrey('tesla_3')">Tesla 3</a>
+                     onmousedown="mkgrey('tesla_3')">Tesla 3</a> count: {{ tallies.Tesla3 }}
                 </td>
             </tr>
         </table>
@@ -86,21 +86,6 @@
         </tbody>
     </table>
     <hr>
-    <table class="pure-table">
-        <thead>
-            <tr>
-                <th>Car</th>
-                <th>Count</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for tally in tallies %}
-            <tr>
-                <td>{{ tally.choice }}</td>
-                <td>{{ tally.choice__count }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+
     <p style="font-size: .75em; text-align: right;">cars.html</p>
 {% endblock %}

@@ -19,16 +19,26 @@
     }
     </style>
     <script>
-
-    function mkgrey(id) {
-        element = document.getElementById(id);
-        color = element.style.backgroundColor
-        element.style.backgroundColor = "grey"
-        setTimeout(function(){restore(element, color)}, 10000);
-    }
-
-    function restore(element, color) {
-        element.style.backgroundColor = color;
+    function sendRequest(car_name)
+    {
+        var url = "/vote/car/" + car_name + "/";
+        console.log('set url to:' + url);
+        var req = new XMLHttpRequest()
+        // Create the callback:
+        req.onreadystatechange = function() {
+            if (req.readyState != 4) return; // Not there yet
+            if (req.status != 200) {
+                console.log("Status: " + req.statusText); // Some error
+                return;
+            }
+            // Request successful, read the response
+            var resp = req.responseText;
+            console.log('responded with:' + resp);
+            document.getElementById(car_name + "_count").innerHTML = resp;
+        }
+        req.open("GET", url, true);
+        req.send();
+        console.log('request sent');
     }
 
     </script>
@@ -40,9 +50,9 @@
         <table>
             <tr>
                 <td>
-                    <a href="/vote/?car=TeslaS" id="tesla_s" class="button"
+                    <button id="tesla_s" class="button"
                        style="background-color: #000000;"
-                       onmousedown="mkgrey('tesla_s')">Tesla S</a> count: {{ tallies.TeslaS }}
+                       onmousedown="sendRequest('tesla_s')">Tesla S</button> count: <span id="tesla_s_count">{{ tallies.TeslaS }}</span>
                 </td>
                 <td>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -51,9 +61,9 @@
             </tr>
             <tr>
                 <td>
-                    <a href="/vote/?car=TeslaX" id="tesla_x" class="button"
+                    <button id="tesla_x" class="button"
                     style="background-color: rgb(202,87,40);"
-                    onmousedown="mkgrey('tesla_x')">Tesla X</a> count: {{ tallies.TeslaX }}
+                    onmousedown="sendRequest('tesla_x')">Tesla X</button> count: <span id="tesla_x_count">{{ tallies.TeslaX }}</span>
                 </td>
                 <td>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -61,9 +71,9 @@
 
             <tr>
                 <td>
-                    <a href="/vote/?car=Tesla3" id="tesla_3" class="button"
+                    <button id="tesla_3" class="button"
                      style="background-color: #0000ff;"
-                     onmousedown="mkgrey('tesla_3')">Tesla 3</a> count: {{ tallies.Tesla3 }}
+                     onmousedown="sendRequest('tesla_3')">Tesla 3</button> count: <span id="tesla_3_count">{{ tallies.Tesla3 }}</span>
                 </td>
             </tr>
         </table>

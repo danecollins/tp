@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Count
+from django.http import HttpResponse
 
 # Create your views here.
 from vote.models import Vote, Survey
@@ -34,9 +35,9 @@ def index(request):
         cnt = votes.count()
         #tallies = Vote.objects.filter(survey=s).values('choice').annotate(Count('choice')).order_by('choice')
         tallies = {}
-        tallies['TeslaS'] = Vote.objects.filter(survey=s, choice='TeslaS').count()
-        tallies['TeslaX'] = Vote.objects.filter(survey=s, choice='TeslaX').count()
-        tallies['Tesla3'] = Vote.objects.filter(survey=s, choice='Tesla3').count()
+        tallies['TeslaS'] = Vote.objects.filter(survey=s, choice='tesla_s').count()
+        tallies['TeslaX'] = Vote.objects.filter(survey=s, choice='tesla_x').count()
+        tallies['Tesla3'] = Vote.objects.filter(survey=s, choice='tesla_3').count()
 
 
         return render(request, 'vote/cars.html', {'vtot': cnt,
@@ -51,6 +52,15 @@ def index(request):
                                                    'wtot': wtot,
                                                    'survey': s,
                                                    'votes': votes[0:5]})
+
+def add_car_vote(request, car_name):
+    s = Survey.get()
+    v = Vote()
+    v.survey = s
+    v.choice = car_name
+    v.save()
+    cnt = Vote.objects.filter(survey=s, choice=car_name).count()
+    return HttpResponse(str(cnt))
 
 
 def man(request):

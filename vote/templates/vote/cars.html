@@ -17,6 +17,10 @@
     td {
         padding: 10px 10px 10px 10px;
     }
+    .count {
+        font-size: 28px;
+    }
+
     </style>
     <script>
     function sendRequest(car_name)
@@ -52,7 +56,7 @@
                 <td>
                     <button id="tesla_s" class="button"
                        style="background-color: #000000;"
-                       onmousedown="sendRequest('tesla_s')">Tesla S</button> count: <span id="tesla_s_count">{{ tallies.TeslaS }}</span>
+                       onmousedown="sendRequest('tesla_s')">Tesla S</button>&nbsp;&nbsp;&nbsp;&nbsp;# <span class="count" id="tesla_s_count">{{ tallies.TeslaS }}</span>
                 </td>
                 <td>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -63,7 +67,7 @@
                 <td>
                     <button id="tesla_x" class="button"
                     style="background-color: rgb(202,87,40);"
-                    onmousedown="sendRequest('tesla_x')">Tesla X</button> count: <span id="tesla_x_count">{{ tallies.TeslaX }}</span>
+                    onmousedown="sendRequest('tesla_x')">Tesla X</button>&nbsp;&nbsp;&nbsp;&nbsp;# <span class="count" id="tesla_x_count">{{ tallies.TeslaX }}</span>
                 </td>
                 <td>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -73,7 +77,7 @@
                 <td>
                     <button id="tesla_3" class="button"
                      style="background-color: #0000ff;"
-                     onmousedown="sendRequest('tesla_3')">Tesla 3</button> count: <span id="tesla_3_count">{{ tallies.Tesla3 }}</span>
+                     onmousedown="sendRequest('tesla_3')">Tesla 3</button>&nbsp;&nbsp;&nbsp;&nbsp;# <span class="count" id="tesla_3_count">{{ tallies.Tesla3 }}</span>
                 </td>
             </tr>
         </table>

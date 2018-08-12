@@ -30,7 +30,7 @@ def index(request):
             vote.delete()
 
     votes = Vote.objects.filter(survey=s).order_by('-date')
-    if s == 'cars16':
+    if s == 'tesla':
         cnt = votes.count()
         tallies = Vote.objects.filter(survey=s).values('choice').annotate(Count('choice')).order_by('choice')
         return render(request, 'vote/cars.html', {'vtot': cnt,

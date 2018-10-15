@@ -30,7 +30,7 @@
 
         // update the count for immediate feedback
         var fieldname = car_name + "_count"
-        document.getElementById(fieldname).innerHTML = 1 + document.getElementById(fieldname).innerHTML
+        document.getElementById(fieldname).innerHTML = String(1 + Number(document.getElementById(fieldname).innerHTML));
         var req = new XMLHttpRequest()
         // Create the callback:
         req.onreadystatechange = function() {

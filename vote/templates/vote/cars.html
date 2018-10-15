@@ -27,6 +27,10 @@
     {
         var url = "/vote/car/" + car_name + "/";
         console.log('set url to:' + url);
+
+        // update the count for immediate feedback
+        var fieldname = car_name + "_count"
+        document.getElementById(fieldname).innerHTML = 1 + document.getElementById(fieldname).innerHTML
         var req = new XMLHttpRequest()
         // Create the callback:
         req.onreadystatechange = function() {

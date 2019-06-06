@@ -7,11 +7,7 @@ if [ "$1" == "" ]; then
 	exit 1
 fi
 
-if [ "$1" == "stage" ]; then
-	server="tpstage"
-else
-	server="trackplaces"
-fi
+server = 'heroku'
 
 if [ "$2" == "test" ]; then
 	TEST_COMMAND="echo Not Running: python manage.py test"

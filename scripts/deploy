@@ -21,7 +21,7 @@ else
 fi
 
 echo "Running flake..."
-flake places/*.py
+flake8 --statistics --max-line-length=120 places/*.py
 if [ $? != 0 ]; then
     echo "TESTS FAILED."
     echo "Deployment HALTED."

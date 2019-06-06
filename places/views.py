@@ -37,9 +37,12 @@ opentable_data[19] = (1131, "los-gatos-brewing-company-reservations-los-gatos", 
 opentable_data[20] = (15076, "maggianos-reservations-san-jose", "Maggiano's - San Jose (183) (15076)")
 opentable_data[16] = (44584, "oswald-reservations-santa-cruz", "Oswald (44584)")
 opentable_data[21] = (10363, "wine-cellar-restaurant-reservations-los-gatos", "Wine Cellar Restaurant (10363)")
-opentable_data[46] = (61927, "rosie-mccanns-irish-pub-and-restaurant-reservations-santa-cruz", "Rosie McCann's Irish Pub (61927)")
-opentable_data[136] = (2875, "shadowbrook-restaurant-reservations-capitola", "Shadowbrook Restaurant Capitola (2875)")
-opentable_data[38] = (3130, "village-california-bistro-and-wine-bar-reservations-san-jose", "Village California Bistro (3130)")
+opentable_data[46] = (61927, "rosie-mccanns-irish-pub-and-restaurant-reservations-santa-cruz",
+                      "Rosie McCann's Irish Pub (61927)")
+opentable_data[136] = (2875, "shadowbrook-restaurant-reservations-capitola",
+                       "Shadowbrook Restaurant Capitola (2875)")
+opentable_data[38] = (3130, "village-california-bistro-and-wine-bar-reservations-san-jose",
+                      "Village California Bistro (3130)")
 opentable_data[140] = (52660, "le-garage-reservations-sausalito", "Le Garage (52660)")
 opentable_data[174] = (114103, "hults-reservations-los-gatos", "Hult's (114103)")
 opentable_data[186] = (91789, 'dry-creek-grill-reservations-san-jose', "Dry Creek Grill (91789)")
@@ -57,7 +60,7 @@ bgcolor=FFFFFF&titlecolor=0F0F0F&subtitlecolor=0F0F0F&\
 btnbgimage=https://secure.opentable.com/frontdoor/img/ot_btn_red.png&\
 otlink=FFFFFF&icon=dark&mode=short&hover=1">\
 </script>'.format(restid)
-    href = '<a href="http://www.opentable.com/{1}?rtype=ism&restref={0}" class="OT_ExtLink">{2}</a>'.format(restid, link, name)
+    href = '<a href="http://www.opentable.com/{1}?rtype=ism&restref={0}" class="OT_ExtLink">{2}</a>'.format(restid, link, name)  # noqa
     return s + href
 
 
@@ -392,7 +395,6 @@ def place_copy(request, place_id):
     ChangeLog.place_copy(place, request.user.username, place_id)
     m = 'User: {} copied place: {}'.format(request.user, place.name)
     logprint(m)
-    log_to_slack(m)
     # because this is a new request it need a leading /
     return redirect('/places/edit/{}/'.format(place.id))
 

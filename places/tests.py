@@ -174,7 +174,6 @@ class TestChangeLogModel(TestCase):
     def test_create_log_entry_create_place(self):
         create_users()
         p1 = create_engfer(1)
-        u1 = get_user(1)
         ChangeLog.create_place(p1)
         c1 = ChangeLog.get_create_place()[0]
         self.assertTrue(c1.message.find('created place') != -1)
@@ -232,7 +231,7 @@ def get_page_variants(p):
     text_user = get_user_page(p, c)
     return (text_anon, text_user)
 
-import pdb
+
 class TestViewHome(TestCase):
     url = '/'
 

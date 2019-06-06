@@ -20,6 +20,14 @@ else
 	POST_TEST="scripts/post_deploy_test heroku $1"
 fi
 
+echo "Running flake..."
+flake places/*.py
+if [ $? != 0 ]; then
+    echo "TESTS FAILED."
+    echo "Deployment HALTED."
+    exit 1
+fi
+
 echo "Running tests..."
 cd ~/src/tp
 source ~/env/tp3/bin/activate

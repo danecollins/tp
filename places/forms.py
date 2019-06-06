@@ -56,6 +56,3 @@ class HotelForm(PlaceForm):
 class ShareForm(forms.Form):
     from_number = forms.CharField(label='Your Phone # (numbers only)', max_length=20, required=True)
     to_number = forms.CharField(label='Send to Phone # (numbers only)', max_length=20, required=True)
-
-
-

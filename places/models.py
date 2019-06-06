@@ -168,7 +168,7 @@ class Place(models.Model):
         app_label = 'places'
 
 
-########################################################################## Visit
+#  =======================================================================================
 class Visit(models.Model):
     when = models.DateField()
     place = models.ForeignKey(Place, on_delete=models.CASCADE)
@@ -257,4 +257,4 @@ class ChangeLog(models.Model):
         return '{}: {}'.format(self.when, self.message)
 
     class Meta:
-            app_label = 'places'
+        app_label = 'places'

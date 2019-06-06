@@ -27,7 +27,7 @@ fi
 
 echo "Running tests..."
 cd ~/src/tp
-source ~/env/tp/bin/activate
+source ~/env/tp3/bin/activate
 echo Executing: $TEST_COMMAND
 $TEST_COMMAND
 

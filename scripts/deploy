@@ -7,17 +7,16 @@ if [ "$1" == "" ]; then
 	exit 1
 fi
 
-server = 'heroku'
 
 if [ "$2" == "test" ]; then
 	TEST_COMMAND="echo Not Running: python manage.py test"
-	PUSH_COMMAND="echo Not Running: git push $server master"
+	PUSH_COMMAND="echo Not Running: git push heroku master"
 	POST_TEST="echo Not Running: scripts/post_deploy_test heroku $1"
     MIGRATE_COMMAND="echo Not Running heroku run python manage.py migrate --app"
 else
 	TEST_COMMAND="python manage.py test"
-	PUSH_COMMAND="git push $server master"
-    MIGRATE_COMMAND="heroku run python manage.py migrate --app $server"
+	PUSH_COMMAND="git push heroku master"
+    MIGRATE_COMMAND="heroku run python manage.py migrate --app heroku"
 	POST_TEST="scripts/post_deploy_test heroku $1"
 fi
 
@@ -53,7 +52,7 @@ if [ "$git_branch_status" != "## master...origin/master" ]; then
 	exit 1
 fi
 
-echo "Pushing code to *** $server ***"
+echo "Pushing code to *** heroku ***"
 echo "------------------------------------"
 echo Executing: $PUSH_COMMAND
 $PUSH_COMMAND

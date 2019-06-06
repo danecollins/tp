@@ -24,8 +24,6 @@ SECRET_KEY = 'ei525#5#vnh9ouwg18f708kcmsru%$otjqy4&537mu3lq&$(_7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 
-TEMPLATE_DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
-
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -44,7 +42,6 @@ INSTALLED_APPS = (
     'places',
     'blog',
     'vote',
-    'watch',
     'registration',
 )
 
@@ -85,7 +82,18 @@ import dj_database_url
 DATABASES['default'] = dj_database_url.config()
 
 # Add a project level template file
-TEMPLATE_DIRS = [ os.path.join(PROJECT_DIR, 'templates') ]
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(PROJECT_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                "django.contrib.auth.context_processors.auth",
+            ]
+        }
+    },
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/

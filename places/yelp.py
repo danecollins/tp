@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
 import json
 import sys
-import urllib
-import urllib2
+import requests
 import os
 import oauth2
-import pdb
+import urllib
 
 
 DEFAULT_TERM = 'dinner'
@@ -34,7 +32,7 @@ def request(path, url_params=None):
 
     host = 'api.yelp.com'
     url_params = url_params or {}
-    url = 'http://{0}{1}?'.format(host, urllib.quote(path.encode('utf8')))
+    url = 'http://{0}{1}?'.format(host, urllib.parse.quote(path.encode('utf8')))
 
     consumer = oauth2.Consumer(CONSUMER_KEY, CONSUMER_SECRET)
     oauth_request = oauth2.Request(method="GET", url=url, parameters=url_params)
@@ -55,9 +53,9 @@ def request(path, url_params=None):
           file=sys.stderr)
     print('URL: {}'.format(signed_url))
 
-    conn = urllib2.urlopen(signed_url, None)
+    conn = requests.get(signed_url, None)
     try:
-        response = json.loads(conn.read())
+        response = json.loads(conn.text)
     finally:
         conn.close()
 

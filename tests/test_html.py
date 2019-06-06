@@ -1,6 +1,3 @@
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import os
 
 from django.test.client import Client
@@ -9,12 +6,8 @@ from django.test.client import Client
 import unittest
 from places.html_utils import ParsePage as PP
 
-try:
-    # For Python 3.0 and later
-    from urllib.request import urlopen
-except ImportError:
-    # Fall back to Python 2's urllib2
-    from urllib2 import urlopen
+from urllib.request import urlopen
+
 
 site_url = os.environ.get('TP_SITE_URL', 'http://localhost:8000')
 

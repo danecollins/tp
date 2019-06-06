@@ -32,12 +32,12 @@ class ParsePage:
 
     @classmethod
     def get_title(cls, html):
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, "html.parser")
         return soup.title.text
 
     @classmethod
     def get_header(cls, html):
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, "html.parser")
         # header might be h1 or h3 depending on length
         try:
             head = soup.body.div.h1.text
@@ -47,7 +47,7 @@ class ParsePage:
 
     @classmethod
     def get_menu_links(cls, html):
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, "html.parser")
         l = {}
         for a in soup.find_all('a', class_="pure-menu-link"):
             l[a.text] = a['href']
@@ -55,7 +55,7 @@ class ParsePage:
 
     @classmethod
     def get_button_links(cls, html):
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, "html.parser")
         l = {}
         for a in soup.find_all('a', class_='pure-button'):
             l[a.text] = a['href']
@@ -63,15 +63,15 @@ class ParsePage:
 
     @classmethod
     def get_city_links(cls, html):
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, "html.parser")
         return soup.find_all('a', class_='city-link')
 
     @classmethod
     def get_place_fields(cls, html):
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, "html.parser")
         return [x.text for x in soup.find_all('td', class_='place-field')]
 
     @classmethod
     def get_place_labels(cls, html):
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, "html.parser")
         return [x.text for x in soup.find_all('label')]

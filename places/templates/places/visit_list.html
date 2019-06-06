@@ -15,14 +15,16 @@
     				<th>Date</th>
     				<th>Place</th>
                     <th>Place Type</th>
+                    <th>City</th>
     			</tr>
     		</thead>
     		<tbody>
     			{% for visit in visit_list %}
         		<tr>
                 	<td>{{ visit.when }}</td>
-                	<td>{{ visit.place.name }}</td>
+                	<td><a href="/places/view/{{visit.place.id}}/">{{ visit.place.name }}</a></td>
                     <td>{% if visit.place.pltype == 'R' %}Restaurant{% else %}Hotel{% endif %}</td>
+                    <td>{{ visit.place.city }}</td>
                 </tr>
             	{% endfor %}
             </tbody>

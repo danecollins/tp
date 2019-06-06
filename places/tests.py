@@ -1,6 +1,3 @@
-from __future__ import print_function
-from __future__ import unicode_literals
-
 from django.test import TestCase, Client
 
 # Create your tests here.

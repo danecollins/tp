@@ -61,19 +61,6 @@ otlink=FFFFFF&icon=dark&mode=short&hover=1">\
     return s + href
 
 
-def log_to_slack(message):
-    slack_token = os.environ.get('SLACK_TP', False)
-    tp_server = os.environ.get('TP_SERVER', False)
-    if slack_token:
-        import requests
-        import json
-
-        url = 'https://hooks.slack.com/services/{}'.format(slack_token)
-        bot_name = tp_server or 'heroku_p'
-        payload = {'text': message, 'username': bot_name, }
-        requests.post(url, data=json.dumps(payload))
-
-
 def pltype_url_string(p):
     if p.pltype == Place.RESTAURANT:
         return 'rest'
@@ -259,7 +246,7 @@ def visit(request, place_id):
 @login_required
 def visit_list(request):
     user = request.user
-    visit_list = Visit.objects.filter(user=user)
+    visit_list = Visit.objects.filter(user=user).order_by('-when')[:50]
     return render(request, 'places/visit_list.html', {'visit_list': visit_list})
 
 

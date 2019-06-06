@@ -49,7 +49,7 @@ class Place(models.Model):
         (HOTEL, 'Hotel')
     )
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=100)
     locale = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
@@ -171,8 +171,8 @@ class Place(models.Model):
 ########################################################################## Visit
 class Visit(models.Model):
     when = models.DateField()
-    place = models.ForeignKey(Place)
-    user = models.ForeignKey(User)
+    place = models.ForeignKey(Place, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     @classmethod
     def last_visit(cls, place, user):
@@ -210,11 +210,15 @@ class ChangeLog(models.Model):
 
     @classmethod
     def view_city_list(cls, username):
+        if not username:
+            return
         msg = '{} viewed the city list'.format(username or 'anon')
         cls(message=msg).save()
 
     @classmethod
     def view_locale_list(cls, username):
+        if not username:
+            return
         msg = '{} viewed the locale list'.format(username or 'anon')
         cls(message=msg).save()
 
@@ -241,6 +245,8 @@ class ChangeLog(models.Model):
 
     @classmethod
     def search(cls, username, search_term=False):
+        if not username:
+            return
         if search_term:
             msg = '{} searched for "{}"'.format(username or 'anon', search_term)
         else:

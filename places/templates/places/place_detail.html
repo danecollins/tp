@@ -26,7 +26,7 @@
                     <td>{% if p.outdoor %}<img src="/static/outdoor.png" alt="outdoor seating" height="55"/>
                         {% else %}<img src="/static/no_outdoor.png" alt="no outdoor seating" height="55"/>{% endif %}</td></tr>
             {% else %}
-                <tr><td class='place-field'>Has a bar?</td>        <td>{{ p.has_bar }}</td></tr>
+                <tr><td class='place-field'>Has a bar?</td><td>{%if p.has_bar %}Yes{%else%}No{%endif%}</td></tr>
             {% endif %}
     		<tr><td class='place-field'>Dog Friendly</td>
             <td>{% if p.dog_friendly %}<img src="/static/dogs.gif" alt="dogs allowed" height="55"/>

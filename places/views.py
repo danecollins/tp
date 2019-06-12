@@ -106,10 +106,13 @@ def city_list(request, pltype='rest'):
         username = request.user.first_name
         cities = sorted(set([x.city for x in query.filter(user=request.user)]))
 
-    ChangeLog.view_city_list(username=request.user.username)
+    place_count = Place.objects.all().count()
+
+    # ChangeLog.view_city_list(username=request.user.username)
     logprint('User: {} is on city list'.format(request.user))
     return render(request, 'places/city_list.html', {'clist': cities,
                                                      'pltype': pltype,
+                                                     'pcnt': place_count,
                                                      'username': username})
 
 
@@ -220,7 +223,8 @@ def place_detail(request, place_id):
         else:
             last = str(last.when)
 
-    ChangeLog.place_detail(place, request.user.username)
+    if not anon:
+        ChangeLog.place_detail(place, request.user.username)
     logprint('User: {} is viewing details on {}'.format(request.user, place.name))
     return render(request, 'places/place_detail.html',
                   {'p': place, 'visittype': VisitType.as_string(place.visited),

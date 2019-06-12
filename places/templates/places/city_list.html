@@ -1,9 +1,11 @@
+<!-- places/city_list.html -->
 {% extends 'menu_base.html' %}
 
 {% block title %}TrackPlaces - Cities{% endblock %}
 
 {% block header %}
     <h1>Cities for {{ username }}</h1>
+    <p>{{ clist|length }} cities, {{ pcnt }} total places</p>
 {% endblock %}
 
 {% block content %}

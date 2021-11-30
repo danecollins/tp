@@ -32,13 +32,13 @@
 {% load dict %}
     <div class='container'>
       <ul>
-            {% for locale in llist %}
+            {% for locale, sorted_places in locale_list %}
               <li>{{ locale }}</li>
               <ul>
                 <!-- TBD: need to sort the restaurants -->
-                {% for p in dict|hash:locale %}
-                  <li><a href='/places/view/{{ p.id }}'>
-                      {{ p.name }}</a>, {{ p.comment }}, {{ p.good_for }}
+                {% for place in sorted_places %}
+                  <li><a href='/places/view/{{ place.3 }}'>
+                      {{ place.0 }}</a>, {{ place.1 }} - {{ place.2 }}
                   </li>
                 {% endfor %}
               </ul>

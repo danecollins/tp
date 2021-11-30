@@ -166,12 +166,14 @@ def locale_list(request, city, pltype='rest'):
                 place_names.add(place.name)
                 places.append(place)
     else:
+        # get places for specific user
         username = request.user.username
         if pltype == 'rest':
             places = Place.restaurants.filter(city=city, user=request.user)
         else:
             places = Place.hotels.filter(city=city, user=request.user)
 
+    # execute filters on the page
     if 'cuisine' in args and args['cuisine'] != '':
         # print('Filtering by cuisine={}'.format(args['cuisine']), file=sys.stderr)
         places = [x for x in places if x.cuisine == args['cuisine']]
@@ -190,19 +192,22 @@ def locale_list(request, city, pltype='rest'):
         print('Filtering by dog_friendly', file=sys.stderr)
         places = [x for x in places if x.dog_friendly]
 
-    by_locale = defaultdict(set)
-    id_by_name = {p.name: p.id for p in places}
-    for p in places:
-        by_locale[p.locale].add(p)
+    # we want to group by locale and for each locale sort by name
+    # since you can't access items in a dict in a templace we have to 
+    # create this odd data structure
+    sorted_locales = sorted(set([p.locale for p in places]))
+    locale_list = []
+    for locale in sorted_locales:
+        places_in_locale = sorted([p for p in places if p.locale == locale], key=lambda x: x.name)
+        locale_list.append([locale, [(p.name, p.comment, p.good_for, p.id) for p in places_in_locale]])
 
-    cuisine_list = set([x.cuisine for x in places])
-    cuisine_list = sorted(cuisine_list)
-    loc_list = list(by_locale.keys())
-    sorted_locales = sorted(loc_list, key=lambda x: x.lower())
+    cuisine_list = sorted(set([x.cuisine for x in places]))
+    for locale, places in locale_list:
+        print(locale)
+        for p in places:
+            print(p[0], p[1], p[2])
 
-    return render(request, 'places/locale_list.html', {'llist': sorted_locales,
-                                                       'dict': by_locale,
-                                                       'ids': id_by_name,
+    return render(request, 'places/locale_list.html', {'locale_list': locale_list,
                                                        'city': city,
                                                        'username': username,
                                                        'cuisine_list': cuisine_list,

@@ -193,11 +193,13 @@ def locale_list(request, city, pltype='rest'):
     by_locale = defaultdict(set)
     id_by_name = {p.name: p.id for p in places}
     for p in places:
-        by_locale[p.locale].add(p.name)
+        by_locale[p.locale].add(p)
 
     cuisine_list = set([x.cuisine for x in places])
     cuisine_list = sorted(cuisine_list)
-    sorted_locales = sorted(by_locale.keys(), key=lambda x: x.lower())
+    loc_list = list(by_locale.keys())
+    sorted_locales = sorted(loc_list, key=lambda x: x.lower())
+
     return render(request, 'places/locale_list.html', {'llist': sorted_locales,
                                                        'dict': by_locale,
                                                        'ids': id_by_name,
